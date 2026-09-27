@@ -147,6 +147,12 @@ interface Texts {
     val trayLayout: String
     val layoutFull: String
     val layoutMini: String
+    val promoTitle: String
+    val promoBody: String
+    val promoScan: String
+    val promoOpen: String
+    val promoLater: String
+    val promoNever: String
     val trayAutostart: String
     val trayQuit: String
     val panelToggle: String
@@ -375,6 +381,12 @@ object Pt : Texts {
     override val trayLayout = "Formato"
     override val layoutFull = "Completo"
     override val layoutMini = "Só o Racco"
+    override val promoTitle = "Quer a experiência completa?"
+    override val promoBody = "Instale o Banditboard num celular Android: o painel fica sempre à vista na mesa e os avisos de limite chegam no celular."
+    override val promoScan = "Aponte a câmera do celular para baixar"
+    override val promoOpen = "Abrir o link"
+    override val promoLater = "Agora não"
+    override val promoNever = "Não mostrar de novo"
     override val trayAutostart = "Iniciar com o Windows"
     override val trayQuit = "Sair"
     override val panelToggle = "Painel web na rede local"
@@ -631,6 +643,12 @@ object En : Texts {
     override val trayLayout = "Layout"
     override val layoutFull = "Full"
     override val layoutMini = "Just Racco"
+    override val promoTitle = "Want the full experience?"
+    override val promoBody = "Install Banditboard on an Android phone: the dashboard stays in sight on your desk and the limit alerts reach your phone."
+    override val promoScan = "Point the phone camera here to download"
+    override val promoOpen = "Open the link"
+    override val promoLater = "Not now"
+    override val promoNever = "Don't show again"
     override val trayAutostart = "Start with Windows"
     override val trayQuit = "Quit"
     override val panelToggle = "Web dashboard on the local network"

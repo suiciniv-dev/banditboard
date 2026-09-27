@@ -58,6 +58,7 @@ fun main(args: Array<String>) {
     shot(File(out, "windows-widget.png"), SIZE) { Card(false) }
     shot(File(out, "windows-compact.png"), COMPACT) { Card(true) }
     shot(File(out, "windows-mini.png"), MINI) { Mini {} }
+    shot(File(out, "windows-promo.png"), DpSize(440.dp, 170.dp)) { PromoCard({}, {}) }
     shot(File(out, "racco.png"), DpSize(520.dp, 130.dp)) {
         Row(Modifier.fillMaxSize().background(C.bg).padding(16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             MODELS.forEachIndexed { i, m -> Mascot(Modifier.width(110.dp), model = m, seed = i, feel = feelOf(usage.value, m)) }

@@ -3,9 +3,33 @@ $ErrorActionPreference = 'SilentlyContinue'
 $targetsPath = [System.IO.Path]::Combine($HOME, '.claude', 'clawdboard-targets.json')
 $tmp = [System.IO.Path]::GetTempPath()
 $mark = [System.IO.Path]::Combine($tmp, 'clawdboard-uso.txt')
+$seen = [System.IO.Path]::Combine($tmp, 'clawdboard-sessoes.txt')
 
 if (-not $Work) {
-    [void][Console]::In.ReadToEnd()
+    $hookInput = [Console]::In.ReadToEnd()
+    try {
+        $h = $hookInput | ConvertFrom-Json
+        $model = ''
+        if ($h.transcript_path -and [System.IO.File]::Exists($h.transcript_path)) {
+            $fs = [System.IO.File]::Open($h.transcript_path, 'Open', 'Read', 'ReadWrite')
+            $len = [int][Math]::Min($fs.Length, 262144)
+            [void]$fs.Seek(-$len, 'End')
+            $buf = New-Object byte[] $len
+            [void]$fs.Read($buf, 0, $len)
+            $fs.Close()
+            $found = [regex]::Matches([System.Text.Encoding]::UTF8.GetString($buf), '"model"\s*:\s*"claude-([a-z]+)')
+            if ($found.Count -gt 0) { $model = $found[$found.Count - 1].Groups[1].Value }
+        }
+        if ($h.session_id) {
+            $now = [DateTimeOffset]::Now.ToUnixTimeSeconds()
+            $lines = @()
+            if ([System.IO.File]::Exists($seen)) { $lines = [System.IO.File]::ReadAllLines($seen) }
+            $keep = @($lines | Where-Object { $f = $_.Split("`t"); $f.Count -eq 3 -and $f[0] -ne $h.session_id -and ($now - [long]$f[2]) -lt 900 })
+            $keep += "$($h.session_id)`t$model`t$now"
+            [System.IO.File]::WriteAllLines($seen, [string[]]$keep)
+        }
+    } catch {
+    }
     if ([System.IO.File]::Exists($mark) -and [System.IO.File]::GetLastWriteTime($mark) -gt [DateTime]::Now.AddSeconds(-120)) { exit 0 }
     [System.IO.File]::WriteAllText($mark, [DateTime]::Now.ToString('o'))
     $psi = [System.Diagnostics.ProcessStartInfo]::new()
@@ -91,6 +115,16 @@ foreach ($m in [regex]::Matches($text, 'Current week \((?!all models)([^)]+)\):\
 }
 if ($scoped.Count -gt 0) { $payload.scoped = $scoped }
 if ($payload.Count -eq 0) { exit 0 }
+$active = @()
+try {
+    $now = [DateTimeOffset]::Now.ToUnixTimeSeconds()
+    foreach ($l in [System.IO.File]::ReadAllLines($seen)) {
+        $f = $l.Split("`t")
+        if ($f.Count -eq 3 -and ($now - [long]$f[2]) -lt 600) { $active += $f[1] }
+    }
+} catch {
+}
+if ($active.Count -gt 0) { $payload.sessions = [string[]]$active }
 
 $targets = @()
 try { $targets = @([System.IO.File]::ReadAllText($targetsPath) | ConvertFrom-Json | ForEach-Object { $_ }) } catch { exit 0 }

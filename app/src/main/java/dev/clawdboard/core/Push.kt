@@ -20,7 +20,16 @@ fun parsePush(o: JSONObject, now: Long): UsageSnapshot? {
             ScopedLimit(label, pct.coerceIn(0.0, 100.0), s.optLong("resets_at", 0L).takeIf { it > 0 }?.times(1000))
         }
     }.orEmpty()
-    return UsageSnapshot(five, seven, scoped, now)
+    val sessions = o.optJSONArray("sessions")?.let { arr -> (0 until arr.length()).map { arr.optString(it, "") } }
+    return UsageSnapshot(five, seven, scoped, now, sessions)
+}
+
+const val ACTIVE_MS = 10 * 60_000L
+
+fun UsageSnapshot.soloModel(now: Long): String? {
+    if (now - fetchedAt > ACTIVE_MS) return null
+    val only = sessions?.singleOrNull() ?: return null
+    return MODELS.firstOrNull { it.equals(only, ignoreCase = true) }
 }
 
 fun UsageSnapshot.settled(now: Long): UsageSnapshot {

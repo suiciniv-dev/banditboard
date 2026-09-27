@@ -1,5 +1,7 @@
 # 🦝 Banditboard
 
+<p align="right"><b>English</b> · <a href="README.pt-BR.md">Português</a></p>
+
 **Turn an old Android phone, or just your Windows PC, into a Claude Code usage monitor.**
 
 <p align="center">
@@ -67,7 +69,14 @@ You can turn them off in Settings → Screen.
 </p>
 
 Full, compact or just Racco: pick the layout in the tray icon menu. Just Racco sits in a corner showing the session, and a
-click opens the full dashboard. Drag it anywhere; it can also stay out of the taskbar and start with Windows.
+click opens the full dashboard. Drag it anywhere; it can also stay out of the taskbar and start with Windows. With a single
+Claude Code session open, Just Racco and the compact widget wear that session's model accessory (glasses for Opus, a top hat
+for Fable); with more than one, Racco goes back to plain.
+
+Without a phone connected, the widget suggests the phone app about once a week, with a QR code to download it. "Don't show
+again" turns it off.
+
+<img src="prints/1.9.0/windows-promo.png" width="440" alt="Suggestion to install the phone app, with a QR code">
 
 ### Racco reactions
 
@@ -118,7 +127,8 @@ The shots below show the classic Racco. The new default looks like this:
 3. Keep using Claude Code. After a response, the widget updates.
 
 Using both? Connect each one once. The hook keeps a list of destinations in `~/.claude/clawdboard-targets.json`
-and sends to all of them.
+and sends to all of them. If the phone was already connected, there is nothing to redo on it: connecting Windows adds the
+phone to the list by itself.
 
 > A Claude Code hook runs `/usage` after responses, at most every 2 minutes, without using any tokens. Usage from
 > claude.ai or other devices also shows up, because `/usage` reports the whole plan. The PC script is Windows-only for now.
@@ -126,7 +136,7 @@ and sends to all of them.
 ## 🔐 Security
 
 - The phone never holds a Claude token and never calls the Anthropic API. Claude Code on your PC reads your limits with `/usage` and a small script forwards them. The script never reads Claude Code's credentials.
-- The script sends only the percentages and their reset times, nothing from your conversations, files or sessions.
+- The script sends only the percentages, their reset times and the model family of each session active in the last 10 minutes ("opus", "sonnet"...), nothing from your conversations, files or session IDs.
 - Each push carries a 128-bit pairing key. The phone checks it against a SHA-256 hash, and "Create new key" invalidates the old command at once.
 - The pairing key is encrypted with AES-256-GCM using a key derived from your PIN (PBKDF2, 150,000 iterations) and wrapped by an Android Keystore key. The PIN is never stored.
 - 10 wrong PINs in a row wipe the pairing key, the history and the settings.
@@ -145,7 +155,9 @@ and sends to all of them.
           ▼
  clawdboard-usage.ps1 ──► claude -p "/usage"   (local command, no tokens, hooks off)
           │
-          └──► POST http://PHONE-IP:8080/api/push   (pairing key, only the numbers)
+          └──► POST to each destination in clawdboard-targets.json   (pairing key, only the numbers)
+                 ├──► http://PHONE-IP:8080/api/push
+                 └──► http://127.0.0.1:47810/api/push   (Windows app)
 
  ┌──────────────────┐
  │  Android phone   │ ──► status.claude.com    open incidents
@@ -165,8 +177,8 @@ and sends to all of them.
 new IP; the screen and the dashboard footer always show the current one. Reserve a fixed IP for the phone in the router's DHCP
 settings to avoid that; if the IP changes, run the command from the dashboard again.
 
-**Connecting Claude Code.** The command downloads an installer from the phone. It writes `~/.claude/clawdboard-usage.ps1`
-and adds it as a `Stop` and `SessionStart` hook in `~/.claude/settings.json`. The hook returns right away and, at most every
+**Connecting Claude Code.** The command downloads an installer from the phone. It writes `~/.claude/clawdboard-usage.ps1`,
+puts the destination in `~/.claude/clawdboard-targets.json` and adds it as a `Stop` and `SessionStart` hook in `~/.claude/settings.json`. The hook returns right away and, at most every
 2 minutes, starts a hidden background run of `claude -p "/usage" --no-session-persistence` with hooks turned off, reads the
 session, weekly and per-model lines and sends them. It uses `claude` from your PATH or the copy bundled with the VS Code
 extension. To undo it, restore `settings.json.antes-do-clawdboard` or remove the two `clawdboard-usage` hooks. When a window's

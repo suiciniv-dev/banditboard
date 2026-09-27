@@ -14,6 +14,7 @@ data class UsageSnapshot(
     val sevenDay: UsageWindow?,
     val scoped: List<ScopedLimit>,
     val fetchedAt: Long,
+    val sessions: List<String>? = null,
 ) {
     fun toJson(): JSONObject {
         fun w(x: UsageWindow?): Any = x?.let {

@@ -49,6 +49,7 @@ import androidx.compose.ui.window.TrayState
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberTrayState
+import androidx.compose.ui.window.rememberWindowState
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.graphics.toAwtImage
 import androidx.compose.ui.unit.Density
@@ -71,6 +72,7 @@ import dev.clawdboard.core.feelOf
 import dev.clawdboard.core.nextAlert
 import dev.clawdboard.core.parsePush
 import dev.clawdboard.core.settled
+import dev.clawdboard.core.soloModel
 import dev.clawdboard.core.txt
 import dev.clawdboard.ui.C
 import dev.clawdboard.ui.LocalLook
@@ -148,7 +150,7 @@ private fun notification(a: Alert): Notification {
 
 internal val SIZE = DpSize(480.dp, 190.dp)
 internal val COMPACT = DpSize(300.dp, 130.dp)
-internal val MINI = DpSize(96.dp, 96.dp)
+internal val MINI = DpSize(96.dp, 112.dp)
 
 enum class Layout { FULL, COMPACT, MINI }
 
@@ -182,6 +184,37 @@ fun main(args: Array<String>) {
         var inTaskbar by remember { mutableStateOf(Store.get("taskbar") == "true") }
         var layout by remember { mutableStateOf(runCatching { Layout.valueOf(Store.get("layout") ?: "") }.getOrDefault(Layout.FULL)) }
         var peek by remember { mutableStateOf(false) }
+        var promo by remember { mutableStateOf(false) }
+        LaunchedEffect(Unit) {
+            delay(if ("--promo" in args) 3_000L else 60_000L)
+            while (true) {
+                val now = System.currentTimeMillis()
+                if ("--promo" in args || (usage.value != null && Promo.due(now))) {
+                    Promo.shown(now)
+                    promo = true
+                    break
+                }
+                delay(3_600_000L)
+            }
+        }
+        if (promo) Window(
+            onCloseRequest = { promo = false },
+            title = "Banditboard",
+            icon = RaccoonIcon,
+            undecorated = true,
+            transparent = true,
+            resizable = false,
+            alwaysOnTop = true,
+            state = rememberWindowState(size = DpSize(440.dp, 170.dp)),
+        ) {
+            LaunchedEffect(Unit) {
+                val gc = window.graphicsConfiguration
+                val b = gc.bounds
+                val ins = Toolkit.getDefaultToolkit().getScreenInsets(gc)
+                window.setLocation(b.x + b.width - ins.right - window.width - 12, b.y + b.height - ins.bottom - window.height - 210)
+            }
+            PromoCard(onLater = { promo = false }, onNever = { Promo.never(); promo = false })
+        }
         val shown = if (layout == Layout.MINI && peek) Layout.FULL else layout
         var autostart by remember { mutableStateOf(Autostart.enabled()) }
         val p by prefsFlow.collectAsState()
@@ -271,7 +304,8 @@ internal fun Mini(onOpen: () -> Unit) {
     val pct = u?.fiveHour?.percent
     CompositionLocalProvider(LocalLook provides look) {
         Column(Modifier.fillMaxSize().clickable(onClick = onOpen).padding(6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Mascot(Modifier.fillMaxWidth(), feel = feelOf(u, "Opus"), reserveTop = false)
+            val solo = u?.soloModel(System.currentTimeMillis())
+            Mascot(Modifier.fillMaxWidth(), model = solo, feel = feelOf(u, solo ?: "Opus"), reserveTop = solo != null)
             Text(
                 fmtPct(pct), color = pct?.let { C.level(it) } ?: C.dim, fontSize = 13.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.background(C.bg.copy(alpha = 0.75f), RoundedCornerShape(8.dp)).padding(horizontal = 6.dp),
@@ -295,7 +329,8 @@ internal fun Dashboard(port: Int, compact: Boolean) {
                 Meter(txt.session, u?.fiveHour, now, small = true)
                 Meter(txt.week, u?.sevenDay, now, small = true)
             }
-            Mascot(Modifier.width(64.dp), feel = feelOf(u, "Opus"))
+            val solo = u?.soloModel(now)
+            Mascot(Modifier.width(64.dp), model = solo, feel = feelOf(u, solo ?: "Opus"))
         } else Row(Modifier.fillMaxSize().padding(horizontal = 18.dp, vertical = 14.dp), horizontalArrangement = Arrangement.spacedBy(18.dp)) {
             Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.SpaceBetween) {
                 Meter(txt.session, u?.fiveHour, now)
