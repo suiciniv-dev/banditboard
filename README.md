@@ -69,7 +69,7 @@ You can turn them off in Settings → Screen.
 </p>
 
 Full, compact or just Racco: pick the layout in the tray icon menu. Just Racco sits in a corner showing the session, and a
-click opens the full dashboard. Drag it anywhere; it can also stay out of the taskbar and start with Windows. With a single
+double-click opens the full dashboard. Drag it anywhere; it can also stay out of the taskbar and start with Windows. With a single
 Claude Code session open, Just Racco and the compact widget wear that session's model accessory (glasses for Opus, a top hat
 for Fable); with more than one, Racco goes back to plain.
 

@@ -70,7 +70,7 @@ Dá para desligar em Configurações → Tela.
 </p>
 
 Completo, compacto ou só o Racco: escolha o formato no menu do ícone da bandeja. O "Só o Racco" fica num canto mostrando a
-sessão, e um clique abre o painel completo. Arraste para onde quiser; ele também pode ficar fora da barra de tarefas e iniciar
+sessão, e um duplo clique abre o painel completo. Arraste para onde quiser; ele também pode ficar fora da barra de tarefas e iniciar
 com o Windows. Com uma única sessão do Claude Code aberta, o "Só o Racco" e o widget compacto usam o acessório do modelo
 dessa sessão (óculos no Opus, cartola no Fable); com mais de uma, o Racco volta ao normal.
 

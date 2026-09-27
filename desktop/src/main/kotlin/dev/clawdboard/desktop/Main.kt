@@ -2,6 +2,8 @@ package dev.clawdboard.desktop
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.window.WindowDraggableArea
 import androidx.compose.ui.draw.shadow
 import androidx.compose.foundation.layout.Arrangement
@@ -253,6 +255,7 @@ fun main(args: Array<String>) {
         key(inTaskbar, shown) { Window(
             visible = visible,
             create = {
+                val opened = peek
                 ComposeWindow().apply {
                     type = if (inTaskbar) java.awt.Window.Type.NORMAL else java.awt.Window.Type.UTILITY
                     isUndecorated = true
@@ -267,7 +270,7 @@ fun main(args: Array<String>) {
                         override fun windowClosing(e: WindowEvent) { visible = false }
                     })
                     addWindowFocusListener(object : WindowAdapter() {
-                        override fun windowLostFocus(e: WindowEvent) { peek = false }
+                        override fun windowLostFocus(e: WindowEvent) { if (opened) peek = false }
                     })
                 }
             },
@@ -295,6 +298,7 @@ fun main(args: Array<String>) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun Mini(onOpen: () -> Unit) {
     val snap by usage.collectAsState()
@@ -303,7 +307,7 @@ internal fun Mini(onOpen: () -> Unit) {
     val look = Look(skin = p.skin, tint = p.tint, animations = p.animations, species = p.mascot())
     val pct = u?.fiveHour?.percent
     CompositionLocalProvider(LocalLook provides look) {
-        Column(Modifier.fillMaxSize().clickable(onClick = onOpen).padding(6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(Modifier.fillMaxSize().combinedClickable(onClick = {}, onDoubleClick = onOpen).padding(6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             val solo = u?.soloModel(System.currentTimeMillis())
             Mascot(Modifier.fillMaxWidth(), model = solo, feel = feelOf(u, solo ?: "Opus"), reserveTop = solo != null)
             Text(
