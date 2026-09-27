@@ -5,6 +5,7 @@ New-Item -ItemType Directory -Force -Path $dir | Out-Null
 $script = Join-Path $dir 'clawdboard-usage.ps1'
 $oldScript = Join-Path $dir 'clawdboard-statusline.ps1'
 $settingsPath = Join-Path $dir 'settings.json'
+$targetsPath = Join-Path $dir 'clawdboard-targets.json'
 $backup = "$settingsPath.antes-do-clawdboard"
 
 $settings = New-Object PSObject
@@ -28,6 +29,21 @@ if ($line -and $line.Value.command -like '*clawdboard-statusline*') {
     }
 }
 if (Test-Path $oldScript) { Remove-Item $oldScript -Force }
+
+$targets = @()
+if (Test-Path $targetsPath) {
+    try { $targets = @([System.IO.File]::ReadAllText($targetsPath) | ConvertFrom-Json | ForEach-Object { $_ }) } catch { $targets = @() }
+} elseif (Test-Path $script) {
+    $old = [System.IO.File]::ReadAllText($script)
+    $u = [regex]::Match($old, '(?m)^\$url = ''(.*)''\s*$')
+    $k = [regex]::Match($old, '(?m)^\$key = ''(.*)''\s*$')
+    if ($u.Success -and $k.Success -and $u.Groups[1].Value -notlike '__*') {
+        $targets = @(New-Object PSObject -Property @{ id = 'phone'; url = $u.Groups[1].Value; key = $k.Groups[1].Value })
+    }
+}
+$targets = @($targets | Where-Object { $_.id -ne '__ID__' -and $_.url -ne '__URL__' })
+$targets += New-Object PSObject -Property @{ id = '__ID__'; url = '__URL__'; key = '__KEY__' }
+[System.IO.File]::WriteAllText($targetsPath, (ConvertTo-Json -InputObject @($targets) -Depth 4), $utf8)
 
 $usage = @'
 __USAGE__

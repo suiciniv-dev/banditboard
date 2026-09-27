@@ -1,6 +1,6 @@
 # 🦝 Banditboard
 
-**Turn an old Android phone into a Claude Code usage monitor.**
+**Turn an old Android phone, or just your Windows PC, into a Claude Code usage monitor.**
 
 <p align="center">
   <img src="prints/1.8.0/hero.gif" width="760" alt="Raccoons sleeping with an empty session, waking up, turning red near the limit, bursting at 100% and dancing when music plays">
@@ -9,11 +9,12 @@
 <p align="center">
   <a href="../../releases/latest"><img src="https://img.shields.io/github/v/release/suiciniv-dev/banditboard?label=download%20APK&color=d77757" alt="Download APK"></a>
   <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white" alt="Android 8.0+">
+  <img src="https://img.shields.io/badge/Windows-10%2B-0078D4?logo=windows&logoColor=white" alt="Windows 10+">
   <img src="https://img.shields.io/badge/Kotlin-Jetpack%20Compose-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin and Jetpack Compose">
   <a href="../../stargazers"><img src="https://img.shields.io/github/stars/suiciniv-dev/banditboard?style=flat" alt="GitHub stars"></a>
 </p>
 
-<p align="center"><b><a href="../../releases/latest">Download the latest APK</a></b> · <a href="../../releases">All releases</a></p>
+<p align="center"><b><a href="../../releases/latest">Download the APK or the Windows installer</a></b> · <a href="../../releases">All releases</a></p>
 
 ## What is Banditboard?
 
@@ -21,10 +22,15 @@ Banditboard is an always-on desk display for your Claude usage, made for that ol
 It shows how much of the 5-hour session and of the week you have used, when each one resets and whether any model has
 an open incident. Each model is Racco, a pixel-art raccoon who sleeps, sweats, bursts at 100% and dances when music plays.
 
+No spare phone? The Windows app is a small always-on-top widget that works on its own, and it can run next to the phone app:
+the same hook feeds both.
+
 ## ✨ Features
 
 - 📊 **Usage at a glance**: 5-hour session and 7-day week, with a countdown and the local time each one resets
-- 🦝 **Racco, the raccoon**: one per model (Haiku, Sonnet, Opus and Fable). They blink, wave, sleep when the session is empty, sweat from 85%, turn red from 90% and burst at 100%
+- 🦝 **Racco, the raccoon**: one per model (Haiku, Sonnet, Opus and Fable). They blink, wave, sleep when the session is empty, sweat from 85%, turn red from 90% and burst at 100%. The classic, more detailed Racco is still one tap away in the settings
+- 🔔 **Limit alerts**: a notification at 80%, 90% and 100% of the session or the week, and another when it resets, even with the app closed
+- 🪟 **Windows widget**: full, compact or just Racco in a corner of the screen, always on top, with alerts from Windows itself
 - 🔌 **No token on the phone**: the numbers come from Claude Code's own `/usage` on your PC, over the local network
 - 🎵 **Music mode**: whatever plays on the phone (Spotify, YouTube Music or any player), with cover, controls and volume, while the raccoons dance on every screen
 - 📈 **7-day history**: one sample every 30 minutes
@@ -42,10 +48,33 @@ The app speaks English and Brazilian Portuguese. It follows the phone's language
 
 | | | |
 |---|---|---|
-| <img src="prints/1.8.0/01-dashboard.png" alt="Dashboard"> | <img src="prints/1.8.0/02-mascots.png" alt="Mascots screen"> | <img src="prints/1.8.0/03-clock-portrait.png" alt="Desk clock in portrait"> |
+| <img src="prints/1.9.0/01-dashboard.png" alt="Dashboard"> | <img src="prints/1.9.0/02-mascots.png" alt="Mascots screen"> | <img src="prints/1.8.0/03-clock-portrait.png" alt="Desk clock in portrait"> |
 | Dashboard | Mascots | Desk clock |
 
+### Limit alerts
+
+<img src="prints/1.9.0/03-alerts.png" width="420" alt="Notifications: week at 80% and session at 90%, with the reset time">
+
+The phone keeps a quiet notification while it listens for your PC, so the alerts arrive even with the app closed.
+You can turn them off in Settings → Screen.
+
+### Windows widget
+
+<p>
+  <img src="prints/1.9.0/windows-widget.png" width="480" alt="Windows widget with session, week and the four raccoons">
+  <img src="prints/1.9.0/windows-compact.png" width="300" alt="Compact widget">
+  <img src="prints/1.9.0/windows-mini.png" width="96" alt="Just Racco">
+</p>
+
+Full, compact or just Racco: pick the layout in the tray icon menu. Just Racco sits in a corner showing the session, and a
+click opens the full dashboard. Drag it anywhere; it can also stay out of the taskbar and start with Windows.
+
 ### Racco reactions
+
+The shots below show the classic Racco. The new default looks like this:
+
+<img src="prints/1.9.0/racco.png" width="520" alt="The new Racco with each model's accessory">
+
 
 | | | |
 |---|---|---|
@@ -82,6 +111,15 @@ The app speaks English and Brazilian Portuguese. It follows the phone's language
 3. On the "Claude Code on your PC" card, click "Copy" and paste the command into PowerShell.
 4. Keep using Claude Code, in VS Code or in the terminal. After a response, the phone updates.
 
+**Only Windows, no phone:**
+
+1. Download `Banditboard-<version>.msi` from [Releases](../../releases/latest) and install it (no admin needed).
+2. Click "Connect Claude Code" on the widget.
+3. Keep using Claude Code. After a response, the widget updates.
+
+Using both? Connect each one once. The hook keeps a list of destinations in `~/.claude/clawdboard-targets.json`
+and sends to all of them.
+
 > A Claude Code hook runs `/usage` after responses, at most every 2 minutes, without using any tokens. Usage from
 > claude.ai or other devices also shows up, because `/usage` reports the whole plan. The PC script is Windows-only for now.
 
@@ -94,6 +132,7 @@ The app speaks English and Brazilian Portuguese. It follows the phone's language
 - 10 wrong PINs in a row wipe the pairing key, the history and the settings.
 - The web dashboard only runs on the local network, asks for the same PIN and only answers when the Host is an IP address, `localhost` or a `.local` name, which blocks DNS rebinding. Logging in on the dashboard also unlocks the phone screen.
 - The installer keeps a backup of your Claude Code settings in `settings.json.antes-do-clawdboard`, adds two hooks (`Stop` and `SessionStart`) and does not touch your status line.
+- The Windows app only listens on `127.0.0.1`, so nothing on your network can reach it, and it still checks the pairing key on every push.
 - Music mode needs notification access because Android only shows the active player to apps with that access. Banditboard uses it to see and control the player; it does not read your notifications.
 
 ## 🔧 Technical details
@@ -207,6 +246,14 @@ On my machine I use the shortcuts in `scripts\`, which point to Gradle in `D:\An
 .\scripts\instalar.ps1 -Ip 192.168.0.15   # phone IP with ADB over Wi-Fi; without -Ip it uses the test phone
 ```
 
+Windows app (Compose Desktop, sharing the core and the raccoon with the phone):
+
+```powershell
+.\gradlew.bat :desktop:run          # opens the widget
+.\gradlew.bat :desktop:packageMsi   # installer in desktop\build\compose\binaries\main\msi
+.\gradlew.bat :desktop:shots        # renders the widget screenshots into prints\
+```
+
 Diagnostics over ADB:
 
 ```powershell
@@ -225,6 +272,7 @@ adb logcat -s ClawdSelfTest
 - `MediaListener.kt`: the notification listener Android requires to see the active player
 - `assets/panel.html`: the web dashboard, with no external dependencies
 - `assets/pc/`: the PowerShell installer and the usage hook the phone serves to your PC
+- `desktop/`: the Windows widget, local server and tray, built from the same `core/` and `ui/` sources
 
 ### Roadmap
 

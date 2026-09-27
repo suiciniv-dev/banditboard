@@ -1,9 +1,5 @@
 package dev.clawdboard.core
 
-import android.content.Context
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -12,7 +8,7 @@ enum class Backdrop { DEFAULT, BLACK }
 enum class Brightness(val level: Float) { SYSTEM(-1f), LOW(0.05f), MEDIUM(0.35f), HIGH(1f) }
 enum class Orientation { LANDSCAPE, PORTRAIT, AUTO }
 enum class Skin { CLASSIC, MODELS, CROWNS, XMAS }
-enum class Species { RACCOON, CLAWD }
+enum class Species { RACCOON, RACCOON_CLASSIC, CLAWD }
 enum class Tint { NATURAL, RAINBOW, LAVENDER, MINT, BUBBLEGUM }
 
 data class Prefs(
@@ -22,6 +18,7 @@ data class Prefs(
     val orientation: Orientation = Orientation.LANDSCAPE,
     val pixelShift: Boolean = true,
     val autostart: Boolean = true,
+    val alerts: Boolean = true,
     val panelEnabled: Boolean = true,
     val backdrop: Backdrop = Backdrop.DEFAULT,
     val zoom: Int = 100,
@@ -33,7 +30,7 @@ data class Prefs(
     val clawdUnlocked: Boolean = false,
     val language: Language = Language.AUTO,
 ) {
-    fun mascot() = if (clawdUnlocked) species else Species.RACCOON
+    fun mascot() = if (species == Species.CLAWD && !clawdUnlocked) Species.RACCOON else species
 
     fun sanitized() = copy(
         dwellSec = dwellSec.coerceIn(5, 120),
@@ -43,7 +40,7 @@ data class Prefs(
     fun toJson(): JSONObject = JSONObject()
         .put("mode", mode.name)
         .put("dwellSec", dwellSec).put("brightness", brightness.name).put("orientation", orientation.name)
-        .put("pixelShift", pixelShift).put("autostart", autostart).put("panelEnabled", panelEnabled)
+        .put("pixelShift", pixelShift).put("autostart", autostart).put("alerts", alerts).put("panelEnabled", panelEnabled)
         .put("backdrop", backdrop.name).put("zoom", zoom)
         .put("skin", skin.name).put("tint", tint.name).put("animations", animations)
         .put("music", music)
@@ -57,6 +54,7 @@ data class Prefs(
         orientation = enumOr(o.str("orientation"), orientation),
         pixelShift = if (o.has("pixelShift")) o.optBoolean("pixelShift", pixelShift) else pixelShift,
         autostart = if (o.has("autostart")) o.optBoolean("autostart", autostart) else autostart,
+        alerts = if (o.has("alerts")) o.optBoolean("alerts", alerts) else alerts,
         panelEnabled = if (o.has("panelEnabled")) o.optBoolean("panelEnabled", panelEnabled) else panelEnabled,
         backdrop = enumOr(o.str("backdrop"), backdrop),
         zoom = if (o.has("zoom")) o.optInt("zoom", zoom) else zoom,
@@ -92,31 +90,3 @@ data class Prefs(
 
 inline fun <reified T : Enum<T>> enumOr(name: String?, fallback: T): T =
     if (name == null) fallback else enumValues<T>().firstOrNull { it.name == name } ?: fallback
-
-class SettingsStore(context: Context) {
-    private val sp = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
-    private val _flow = MutableStateFlow(read().also { I18n.language = it.language })
-    val flow: StateFlow<Prefs> = _flow.asStateFlow()
-    val value: Prefs get() = _flow.value
-
-    private fun read(): Prefs {
-        val raw = sp.getString("prefs", null) ?: return Prefs()
-        return runCatching { Prefs().merge(JSONObject(raw)) }.getOrDefault(Prefs())
-    }
-
-    @Synchronized
-    fun update(f: (Prefs) -> Prefs): Prefs {
-        val p = f(_flow.value).sanitized()
-        sp.edit().putString("prefs", p.toJson().toString()).apply()
-        I18n.language = p.language
-        _flow.value = p
-        return p
-    }
-
-    @Synchronized
-    fun clear() {
-        sp.edit().clear().apply()
-        I18n.language = Language.AUTO
-        _flow.value = Prefs()
-    }
-}

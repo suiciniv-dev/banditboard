@@ -194,12 +194,15 @@ class Repository(private val app: Context) {
 
     fun pushKeyValid(key: String?): Boolean = pairing.matches(key)
 
+    var onPush: ((UsageSnapshot) -> Unit)? = null
+
     fun receivePush(body: JSONObject): Boolean {
         val now = System.currentTimeMillis()
         val snap = parsePush(body, now) ?: return false
         pairing.save(body, now)
         history.record(snap)
         _state.update { it.copy(usage = snap.settled(now), lastPushAt = now) }
+        onPush?.invoke(snap)
         return true
     }
 

@@ -127,6 +127,28 @@ interface Texts {
     val pixelShift: String
     val pixelShiftHint: String
     val autostart: String
+    val alerts: String
+    val alertsHint: String
+    val alertChannel: String
+    val backgroundChannel: String
+    val backgroundTitle: String
+    val backgroundText: String
+    val alertFree: String
+    fun alertTitle(week: Boolean, level: Int): String
+    fun alertResets(at: String): String
+    val desktopConnect: String
+    val desktopConnected: String
+    val desktopConnectFailed: String
+    val desktopWaiting: String
+    val trayShow: String
+    val trayOnTop: String
+    val trayTaskbar: String
+    val trayCompact: String
+    val trayLayout: String
+    val layoutFull: String
+    val layoutMini: String
+    val trayAutostart: String
+    val trayQuit: String
     val panelToggle: String
     val language: String
     val mascots: String
@@ -329,6 +351,32 @@ object Pt : Texts {
     override val pixelShift = "Mover o conteúdo alguns pixels por minuto"
     override val pixelShiftHint = "Protege a tela AMOLED contra marcas"
     override val autostart = "Abrir sozinho quando o celular ligar"
+    override val alerts = "Avisar quando chegar perto do limite"
+    override val alertsHint = "Notifica em 80%, 90% e 100% e quando libera, mesmo com o app fechado. Deixa uma notificação fixa discreta."
+    override val alertChannel = "Avisos de limite"
+    override val backgroundChannel = "Recebendo o uso"
+    override val backgroundTitle = "Banditboard"
+    override val backgroundText = "Recebendo o uso do Claude do seu PC"
+    override val alertFree = "Pode voltar a usar o Claude."
+    override fun alertTitle(week: Boolean, level: Int) = when {
+        level == 0 -> if (week) "Limite da semana liberado" else "Sessão liberada"
+        level >= 100 -> if (week) "Limite da semana atingido" else "Limite da sessão atingido"
+        else -> if (week) "Semana em $level%" else "Sessão em $level%"
+    }
+    override fun alertResets(at: String) = "Libera $at"
+    override val desktopConnect = "Conectar Claude Code"
+    override val desktopConnected = "Claude Code conectado. O uso aparece aqui depois da próxima resposta dele."
+    override val desktopConnectFailed = "Não deu para conectar o Claude Code. Tente de novo."
+    override val desktopWaiting = "Esperando o primeiro envio do Claude Code"
+    override val trayShow = "Mostrar"
+    override val trayOnTop = "Sempre no topo"
+    override val trayTaskbar = "Mostrar na barra de tarefas"
+    override val trayCompact = "Compacto"
+    override val trayLayout = "Formato"
+    override val layoutFull = "Completo"
+    override val layoutMini = "Só o Racco"
+    override val trayAutostart = "Iniciar com o Windows"
+    override val trayQuit = "Sair"
     override val panelToggle = "Painel web na rede local"
     override val language = "Idioma"
     override val mascots = "Mascotes"
@@ -399,6 +447,7 @@ object Pt : Texts {
     }
     override fun label(s: Species) = when (s) {
         Species.RACCOON -> "Racco"
+        Species.RACCOON_CLASSIC -> "Racco clássico"
         Species.CLAWD -> "Clawd"
     }
     override fun label(t: Tint) = when (t) {
@@ -558,6 +607,32 @@ object En : Texts {
     override val pixelShift = "Shift the content a few pixels every minute"
     override val pixelShiftHint = "Protects AMOLED screens against burn-in"
     override val autostart = "Open automatically when the phone starts"
+    override val alerts = "Warn when getting close to the limit"
+    override val alertsHint = "Notifies at 80%, 90% and 100% and when it resets, even with the app closed. Keeps a discreet ongoing notification."
+    override val alertChannel = "Limit alerts"
+    override val backgroundChannel = "Receiving usage"
+    override val backgroundTitle = "Banditboard"
+    override val backgroundText = "Receiving Claude usage from your PC"
+    override val alertFree = "You can use Claude again."
+    override fun alertTitle(week: Boolean, level: Int) = when {
+        level == 0 -> if (week) "Weekly limit reset" else "Session reset"
+        level >= 100 -> if (week) "Weekly limit reached" else "Session limit reached"
+        else -> if (week) "Week at $level%" else "Session at $level%"
+    }
+    override fun alertResets(at: String) = "Resets $at"
+    override val desktopConnect = "Connect Claude Code"
+    override val desktopConnected = "Claude Code connected. Usage shows up here after its next reply."
+    override val desktopConnectFailed = "Could not connect Claude Code. Try again."
+    override val desktopWaiting = "Waiting for the first update from Claude Code"
+    override val trayShow = "Show"
+    override val trayOnTop = "Always on top"
+    override val trayTaskbar = "Show in taskbar"
+    override val trayCompact = "Compact"
+    override val trayLayout = "Layout"
+    override val layoutFull = "Full"
+    override val layoutMini = "Just Racco"
+    override val trayAutostart = "Start with Windows"
+    override val trayQuit = "Quit"
     override val panelToggle = "Web dashboard on the local network"
     override val language = "Language"
     override val mascots = "Mascots"
@@ -628,6 +703,7 @@ object En : Texts {
     }
     override fun label(s: Species) = when (s) {
         Species.RACCOON -> "Racco"
+        Species.RACCOON_CLASSIC -> "Classic Racco"
         Species.CLAWD -> "Clawd"
     }
     override fun label(t: Tint) = when (t) {

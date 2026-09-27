@@ -1,5 +1,6 @@
 package dev.clawdboard
 
+import android.Manifest
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Build
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -26,6 +28,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    private val askNotify = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -39,6 +43,14 @@ class MainActivity : ComponentActivity() {
         val repo = repo
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) { repo.runLoops() }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                repo.settings.flow.map { it.alerts }.distinctUntilChanged().collect { on ->
+                    BackgroundService.sync(applicationContext, on)
+                    if (on && !Notifier.canNotify(this@MainActivity)) askNotify.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
         }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -78,8 +90,9 @@ class MainActivity : ComponentActivity() {
     private fun handleDevIntent(i: Intent) {
         if (i.hasExtra("clawd")) {
             val on = i.getBooleanExtra("clawd", false)
-            repo.updateSettings { it.copy(clawdUnlocked = on, species = if (on) it.species else Species.RACCOON) }
+            repo.updateSettings { it.copy(clawdUnlocked = on, species = if (on || it.species != Species.CLAWD) it.species else Species.RACCOON) }
         }
+        if (BuildConfig.DEBUG) i.getStringExtra("pairkey")?.let { repo.pairing.remember(it) }
         if (!i.getBooleanExtra("demo", false)) return
         val p5 = if (i.hasExtra("p5")) i.getIntExtra("p5", 37).toDouble() else 37.0
         val p7 = if (i.hasExtra("p7")) i.getIntExtra("p7", 64).toDouble() else 64.0

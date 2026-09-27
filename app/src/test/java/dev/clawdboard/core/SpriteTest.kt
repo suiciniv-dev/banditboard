@@ -32,6 +32,30 @@ class SpriteTest {
     }
 
     @Test
+    fun banditFillsTheGridWithEyesOnTheMask() {
+        assertEquals(LOOK_ROWS, BANDIT.size)
+        BANDIT.forEach { assertEquals(it, 16, it.length) }
+        assertTrue(BANDIT.joinToString("").all { it in ".BLMN" })
+        BANDIT_EYES.forEach { e ->
+            for (shift in -1..1) for (dy in 0..1) assertEquals("olho $e desvio $shift", 'M', BANDIT[BANDIT_EYE_ROW + dy][e + shift])
+        }
+    }
+
+    @Test
+    fun panelDrawsTheSameBandit() {
+        val html = File("src/main/assets/panel.html").readText()
+        val rows = Regex("const BANDIT = \\[(.*?)];", RegexOption.DOT_MATCHES_ALL).find(html)!!.groupValues[1]
+        assertEquals(BANDIT.toList(), Regex("\"([^\"]*)\"").findAll(rows).map { it.groupValues[1] }.toList())
+    }
+
+    @Test
+    fun classicRaccoonStaysSelectable() {
+        assertEquals(Species.RACCOON, Prefs().mascot())
+        assertEquals(Species.RACCOON_CLASSIC, Prefs(species = Species.RACCOON_CLASSIC).mascot())
+        assertEquals("RACCOON_CLASSIC", lookJson(Prefs(species = Species.RACCOON_CLASSIC)).getString("species"))
+    }
+
+    @Test
     fun clawdOnlyShowsWhenUnlocked() {
         assertEquals(Species.RACCOON, Prefs(species = Species.CLAWD).mascot())
         assertEquals(Species.RACCOON, Prefs().merge(JSONObject().put("species", "CLAWD")).mascot())

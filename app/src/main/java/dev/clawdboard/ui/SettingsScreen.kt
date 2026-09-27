@@ -133,14 +133,15 @@ fun SettingsScreen(repo: Repository, st: Repository.State, prefs: Prefs, onClose
             Hint(txt.zoomHint)
             Toggle(txt.pixelShift, txt.pixelShiftHint, prefs.pixelShift) { v -> repo.updateSettings { it.copy(pixelShift = v) } }
             Toggle(txt.autostart, null, prefs.autostart) { v -> repo.updateSettings { it.copy(autostart = v) } }
+            Toggle(txt.alerts, txt.alertsHint, prefs.alerts) { v -> repo.updateSettings { it.copy(alerts = v) } }
             Toggle(txt.panelToggle, st.panelUrl, prefs.panelEnabled) { v -> repo.updateSettings { it.copy(panelEnabled = v) } }
 
             Section(txt.mascots)
             MascotRow(st.status, Modifier.widthIn(max = 420.dp), usage = st.usage, mascotWidth = 72.dp)
-            if (prefs.clawdUnlocked) {
-                Label(txt.mascot)
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Species.entries.forEach { m -> Chip(txt.label(m), prefs.species == m) { repo.updateSettings { it.copy(species = m) } } }
+            Label(txt.mascot)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Species.entries.filter { it != Species.CLAWD || prefs.clawdUnlocked }.forEach { m ->
+                    Chip(txt.label(m), prefs.mascot() == m) { repo.updateSettings { it.copy(species = m) } }
                 }
             }
             Label(txt.accessories)
@@ -234,7 +235,7 @@ fun SettingsScreen(repo: Repository, st: Repository.State, prefs: Prefs, onClose
                 txt.mascot,
                 if (prefs.mascot() == Species.CLAWD) txt.mascotClawd else txt.mascotRacco,
             )
-            if (prefs.mascot() == Species.RACCOON) Text(
+            if (prefs.mascot() != Species.CLAWD) Text(
                 txt.whyRaccoon,
                 color = C.text, fontSize = 13.sp, lineHeight = 19.sp, modifier = Modifier.padding(top = 6.dp, bottom = 6.dp),
             )

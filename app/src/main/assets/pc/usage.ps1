@@ -1,7 +1,6 @@
 param([switch]$Work)
 $ErrorActionPreference = 'SilentlyContinue'
-$url = '__URL__'
-$key = '__KEY__'
+$targetsPath = [System.IO.Path]::Combine($HOME, '.claude', 'clawdboard-targets.json')
 $tmp = [System.IO.Path]::GetTempPath()
 $mark = [System.IO.Path]::Combine($tmp, 'clawdboard-uso.txt')
 
@@ -93,20 +92,24 @@ foreach ($m in [regex]::Matches($text, 'Current week \((?!all models)([^)]+)\):\
 if ($scoped.Count -gt 0) { $payload.scoped = $scoped }
 if ($payload.Count -eq 0) { exit 0 }
 
-try {
-    $json = $payload | ConvertTo-Json -Compress -Depth 5
-    $req = [System.Net.HttpWebRequest]::Create("$url/api/push")
-    $req.Method = 'POST'
-    $req.Proxy = $null
-    $req.Timeout = 5000
-    $req.ContentType = 'application/json'
-    $req.Headers.Add('X-Clawdboard', '1')
-    $req.Headers.Add('X-Clawdboard-Key', $key)
-    $bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
-    $req.ContentLength = $bytes.Length
-    $stream = $req.GetRequestStream()
-    $stream.Write($bytes, 0, $bytes.Length)
-    $stream.Close()
-    $req.GetResponse().Close()
-} catch {
+$targets = @()
+try { $targets = @([System.IO.File]::ReadAllText($targetsPath) | ConvertFrom-Json | ForEach-Object { $_ }) } catch { exit 0 }
+$json = $payload | ConvertTo-Json -Compress -Depth 5
+$bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
+foreach ($t in $targets) {
+    try {
+        $req = [System.Net.HttpWebRequest]::Create("$($t.url)/api/push")
+        $req.Method = 'POST'
+        $req.Proxy = $null
+        $req.Timeout = 5000
+        $req.ContentType = 'application/json'
+        $req.Headers.Add('X-Clawdboard', '1')
+        $req.Headers.Add('X-Clawdboard-Key', $t.key)
+        $req.ContentLength = $bytes.Length
+        $stream = $req.GetRequestStream()
+        $stream.Write($bytes, 0, $bytes.Length)
+        $stream.Close()
+        $req.GetResponse().Close()
+    } catch {
+    }
 }

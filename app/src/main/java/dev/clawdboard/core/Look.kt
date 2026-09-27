@@ -26,6 +26,28 @@ val SPRITE = arrayOf(
     "...MM......MM...",
 )
 val EYE_COLS = intArrayOf(3, 11)
+
+val BANDIT = arrayOf(
+    "................",
+    "................",
+    "................",
+    "..BB........BB..",
+    "..BBBBBBBBBBBB..",
+    "..BBBBBBBBBBBB..",
+    ".MMMMMBBBBMMMMM.",
+    ".MMMMMBBBBMMMMM.",
+    "BBBBBBLNNLBBBBBB",
+    "BBBBBBLLLLBBBBBB",
+    "..BBBBBBBBBBBB..",
+    "..BBBBBBBBBBBB..",
+    "...B.B....B.B...",
+    "...B.B....B.B...",
+)
+val BANDIT_EYES = intArrayOf(4, 11)
+const val BANDIT_EYE_ROW = 6
+val BANDIT_ARMS = 8..9
+const val BANDIT_LEGS = 12
+val BANDIT_LEG_COLS = intArrayOf(3, 5, 10, 12)
 val EAR_ROWS = 3..4
 val LEFT_EAR = 1..4
 val RIGHT_EAR = 11..14
@@ -104,13 +126,16 @@ fun bodyArgb(tint: Tint, model: String?, species: Species = Species.RACCOON): Lo
 
 private fun natural(species: Species) = if (species == Species.CLAWD) CORAL else GRAY
 
-fun accessoryPixels(a: Accessory, species: Species = Species.RACCOON): List<Px> =
-    if (species == Species.CLAWD) clawdAccessory(a) ?: raccoonAccessory(a) else raccoonAccessory(a)
+fun accessoryPixels(a: Accessory, species: Species = Species.RACCOON): List<Px> = when (species) {
+    Species.CLAWD -> clawdAccessory(a, FRAME) ?: raccoonAccessory(a)
+    Species.RACCOON -> clawdAccessory(a, GOLD) ?: raccoonAccessory(a)
+    Species.RACCOON_CLASSIC -> raccoonAccessory(a)
+}
 
-private fun clawdAccessory(a: Accessory): List<Px>? = when (a) {
+private fun clawdAccessory(a: Accessory, frame: Long): List<Px>? = when (a) {
     Accessory.GLASSES -> listOf(4, 11).flatMap { e ->
-        listOf(Px(e - 1, 5, 3, 1, FRAME), Px(e - 1, 8, 3, 1, FRAME), Px(e - 1, 6, 1, 2, FRAME), Px(e + 1, 6, 1, 2, FRAME))
-    } + Px(6, 6, 4, 1, FRAME)
+        listOf(Px(e - 1, 5, 3, 1, frame), Px(e - 1, 8, 3, 1, frame), Px(e - 1, 6, 1, 2, frame), Px(e + 1, 6, 1, 2, frame))
+    } + Px(6, 6, 4, 1, frame)
     Accessory.HEADPHONES -> listOf(
         Px(3, 2, 10, 1, PHONES), Px(2, 3, 1, 2, PHONES), Px(13, 3, 1, 2, PHONES),
         Px(1, 5, 2, 3, PHONES), Px(13, 5, 2, 3, PHONES), Px(1, 6, 1, 1, PHONES_SHINE), Px(14, 6, 1, 1, PHONES_SHINE),

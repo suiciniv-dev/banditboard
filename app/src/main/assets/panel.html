@@ -436,9 +436,67 @@ function clawdSprite(model, m, i){
   const style = `--d:${-(i * 2.3 + .7).toFixed(1)}s;--lx:${i % 2 ? -1 : 1}px`;
   return `<svg class="${cls}" style="${style}" viewBox="0 0 16 ${T + 10}" fill="${body}" aria-hidden="true"><g class="all"><g class="bod">${torso}${arms}${eyes}${acc}</g>${legs}${extra}</g></svg>`;
 }
+const BANDIT = [
+  "................",
+  "................",
+  "................",
+  "..BB........BB..",
+  "..BBBBBBBBBBBB..",
+  "..BBBBBBBBBBBB..",
+  ".MMMMMBBBBMMMMM.",
+  ".MMMMMBBBBMMMMM.",
+  "BBBBBBLNNLBBBBBB",
+  "BBBBBBLLLLBBBBBB",
+  "..BBBBBBBBBBBB..",
+  "..BBBBBBBBBBBB..",
+  "...B.B....B.B...",
+  "...B.B....B.B...",
+];
+function banditSprite(model, m, i){
+  const lk = state && state.look, def = model && lk ? lk.models[model] : null;
+  const down = !!(m && m.down), out = !!(m && !down && m.mood === "EXHAUSTED");
+  const dancing = !!(m && !down && state && state.music && state.music.playing);
+  const sleepy = !!(m && !down && !out && !dancing && m.mood === "SLEEPY");
+  const sweaty = !!(m && !down && !out && m.mood === "SWEATY");
+  const heat = m && !down && !out ? m.heat : 0;
+  const base = def ? def.body : "#a39b90";
+  const body = down ? "#5a5247" : out ? "#4e3530" : heat > 0 ? mix(base, "#ff3b2f", heat) : base;
+  const fur = down ? "#7a7064" : out ? "#6e5a52" : heat > 0 ? mix(FUR, "#ffb0a3", heat) : FUR;
+  const mask = down ? "#3a342e" : out ? "#2a1f1c" : MASK;
+  const paint = {B: body, L: fur, M: mask, N: NOSE};
+  const r = (x, y, w, h, extra = "") => `<rect x="${x}" y="${y}" width="${w + .04}" height="${h + .04}"${extra}/>`;
+  let torso = "", armL = "", armR = "", legA = "", legB = "";
+  BANDIT.forEach((row, y) => [...row].forEach((ch, x) => {
+    if (ch === ".") return;
+    const cell = r(x, y, 1, 1, ` fill="${paint[ch]}"`);
+    if (y >= 12) { if (x === 3 || x === 10) legA += cell; else legB += cell; }
+    else if (y >= 8 && y <= 9 && x <= 1) armL += cell;
+    else if (y >= 8 && y <= 9 && x >= 14) armR += cell;
+    else torso += cell;
+  }));
+  const arms = i % 2 ? armL + `<g class="arm">${armR}</g>` : `<g class="arm">${armL}</g>` + armR;
+  let eyes;
+  if (down || out) eyes = [4, 11].map(c => `<path d="M${c - .45} 6.05L${c + 1.45} 7.95M${c - .45} 7.95L${c + 1.45} 6.05" stroke="${XEYE}" stroke-width=".45" fill="none" shape-rendering="geometricPrecision"/>`).join("");
+  else if (sleepy) eyes = [4, 11].map(c => r(c, 7.6, 1, .4, ` fill="${SHINE}"`)).join("");
+  else eyes = `<g class="eyes">${[4, 11].map(c => r(c, 6, 1, 2, ` fill="${SHINE}"`) + `<g class="lid">${r(c, 6, 1, 2, ` fill="${mask}"`)}${r(c, 7.6, 1, .4, ` fill="${SHINE}"`)}</g>`).join("")}</g>`;
+  const acc = def ? def.acc.map(([x, y, w, h, c]) => r(x, y, w, h, ` fill="${c}"`)).join("") : "";
+  const legs = `<g class="la">${legA}</g><g class="lb">${legB}</g>`;
+  let extra = "";
+  if (sweaty) extra += r(15, 3, 1, 2, ` class="drop" fill="#8fd3f4"`);
+  if (sleepy) extra += `<g class="z" fill="#a89a86">${r(13, 0, 3, 1)}${r(15, 1, 1, 1)}${r(14, 2, 1, 1)}${r(13, 3, 3, 1)}</g>`;
+  if (out) extra += `<g class="smoke" fill="#8a8078">${r(7, 3, 1, 1)}${r(8, 2, 1, 1, ` opacity=".6"`)}</g>`;
+  if (dancing && !out) {
+    const note = x => `${r(x + 1, 0, 2, 1)}${r(x + 1, 1, 1, 1)}${r(x, 2, 2, 1)}`;
+    extra += `<g class="note ${i % 2 ? "nl" : "nr"}" fill="#b9a6f2">${note(i % 2 ? 0 : 13)}</g><g class="note ${i % 2 ? "nr" : "nl"}" fill="#b9a6f2">${note(i % 2 ? 13 : 0)}</g>`;
+  }
+  const cls = ["cl", sleepy && "sleepy", heat > 0 && "hot", heat >= .5 && !dancing && "shake", def && def.kind === "GLASSES" && "nolook", (down || out) && "dead", dancing && !out && "dance", dancing && out && "tap"].filter(Boolean).join(" ");
+  const style = `--d:${-(i * 2.3 + .7).toFixed(1)}s;--lx:${i % 2 ? -1 : 1}px`;
+  return `<svg class="${cls}" style="${style}" viewBox="0 ${def ? 0 : SPRITE_TOP} 16 ${def ? BANDIT.length : BANDIT.length - SPRITE_TOP}" fill="${body}" shape-rendering="crispEdges" aria-hidden="true"><g class="all"><g class="bod">${torso}${arms}${eyes}${acc}</g>${legs}${extra}</g></svg>`;
+}
 function sprite(model, m, i){
   const lk = state && state.look, def = model && lk ? lk.models[model] : null;
   if (lk && lk.species === "CLAWD") return clawdSprite(model, m, i);
+  if (!lk || lk.species !== "RACCOON_CLASSIC") return banditSprite(model, m, i);
   const down = !!(m && m.down), out = !!(m && !down && m.mood === "EXHAUSTED");
   const dancing = !!(m && !down && state && state.music && state.music.playing);
   const sleepy = !!(m && !down && !out && !dancing && m.mood === "SLEEPY");

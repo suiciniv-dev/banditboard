@@ -18,6 +18,12 @@ import androidx.compose.ui.graphics.lerp
 import dev.clawdboard.core.ARM_LIFT
 import dev.clawdboard.core.ARM_ROWS
 import dev.clawdboard.core.Accessory
+import dev.clawdboard.core.BANDIT
+import dev.clawdboard.core.BANDIT_ARMS
+import dev.clawdboard.core.BANDIT_EYES
+import dev.clawdboard.core.BANDIT_EYE_ROW
+import dev.clawdboard.core.BANDIT_LEGS
+import dev.clawdboard.core.BANDIT_LEG_COLS
 import dev.clawdboard.core.EAR_ROWS
 import dev.clawdboard.core.EYE_COLS
 import dev.clawdboard.core.EYE_ROW
@@ -281,6 +287,7 @@ fun Mascot(
     }
 
     val clawd = look.species == Species.CLAWD
+    val bandit = look.species == Species.RACCOON
     val top = if (clawd) LOOK_TOP else SPRITE_TOP
     val base = Color(bodyArgb(look.tint, model, look.species))
     Canvas(modifier.aspectRatio(if (reserveTop) MASCOT_ASPECT else 16f / (LOOK_ROWS - top))) {
@@ -323,9 +330,9 @@ fun Mascot(
             drawRect(c, Offset(ox + x * u, oy + y * u), Size(w * u + 0.6f, h * u + 0.6f))
         fun rect(x: Int, y: Int, w: Int, h: Int, c: Color) = rect(x.toFloat(), y.toFloat(), w.toFloat(), h.toFloat(), c)
 
+        val footLeg = when (p.foot) { 1 -> 0; 2 -> 3; else -> -1 }
         if (clawd) CLAWD_BODY.forEachIndexed { r, row ->
             val y = LOOK_TOP + r * 2
-            val footLeg = when (p.foot) { 1 -> 0; 2 -> 3; else -> -1 }
             row.forEachIndexed { c, ch ->
                 if (ch == '.') return@forEachIndexed
                 when {
@@ -340,6 +347,24 @@ fun Mascot(
                     }
                     r == 2 && ((p.arm < 0 && c <= 1) || (p.arm > 0 && c >= 14)) -> rect(c, y - 1 + dy, 1, 2, body)
                     else -> rect(c, y + dy, 1, 2, body)
+                }
+            }
+        } else if (bandit) BANDIT.forEachIndexed { r, row ->
+            row.forEachIndexed { c, ch ->
+                if (ch == '.') return@forEachIndexed
+                val color = paint(ch)
+                when {
+                    r >= BANDIT_LEGS -> {
+                        val leg = BANDIT_LEG_COLS.indexOf(c)
+                        val lifted = (p.legs == 1 && leg % 2 == 0) || (p.legs == 2 && leg % 2 == 1) || leg == footLeg
+                        when {
+                            dy > 0 -> if (r > BANDIT_LEGS) rect(c, r, 1, 1, color)
+                            lifted -> if (r == BANDIT_LEGS) rect(c, r, 1, 1, color)
+                            else -> rect(c, r, 1, 1, color)
+                        }
+                    }
+                    r in BANDIT_ARMS && ((p.arm < 0 && c <= 1) || (p.arm > 0 && c >= 14)) -> rect(c, r - 1 + dy, 1, 1, color)
+                    else -> rect(c, r + dy, 1, 1, color)
                 }
             }
         } else SPRITE.forEachIndexed { r, row ->
@@ -365,7 +390,24 @@ fun Mascot(
             }
         }
 
-        if (clawd) {
+        if (bandit) {
+            val eyeY = BANDIT_EYE_ROW + dy
+            if (alive && !out) {
+                BANDIT_EYES.forEach { e ->
+                    val x = (e + p.look).toFloat()
+                    if (blink || sleepy) rect(x, eyeY + 1.6f, 1f, 0.4f, SHINE) else rect(x, eyeY.toFloat(), 1f, 2f, SHINE)
+                }
+            } else {
+                val stroke = u * 0.45f
+                BANDIT_EYES.forEach { col ->
+                    val cx = ox + (col + 0.5f) * u
+                    val cy = oy + (eyeY + 1) * u
+                    val hw = u * 0.95f
+                    drawLine(X_EYE, Offset(cx - hw, cy - hw), Offset(cx + hw, cy + hw), stroke, StrokeCap.Square)
+                    drawLine(X_EYE, Offset(cx - hw, cy + hw), Offset(cx + hw, cy - hw), stroke, StrokeCap.Square)
+                }
+            }
+        } else if (clawd) {
             val eyeY = LOOK_TOP + 2 + dy
             if (alive && !out) {
                 CLAWD_EYES.forEach { e ->
