@@ -60,7 +60,7 @@ object Promo {
 private val code: QrCode by lazy { QrCode.encodeText(Promo.URL, QrCode.Ecc.MEDIUM) }
 
 @Composable
-private fun Qr(modifier: Modifier) {
+internal fun Qr(modifier: Modifier) {
     Canvas(modifier.clip(RoundedCornerShape(10.dp)).background(Color.White).padding(6.dp)) {
         val n = code.size
         val u = size.width / n

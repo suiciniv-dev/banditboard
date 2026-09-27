@@ -25,6 +25,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.8.1")
     implementation("org.json:json:20240303")
     implementation("io.nayuki:qrcodegen:1.8.0")
+    implementation("net.java.dev.jna:jna:5.14.0")
 }
 
 tasks.register<JavaExec>("shots") {
@@ -40,7 +41,7 @@ compose.desktop {
             targetFormats(TargetFormat.Msi, TargetFormat.Exe)
             modules("java.instrument", "jdk.httpserver", "jdk.unsupported")
             packageName = "Banditboard"
-            packageVersion = "1.11.0"
+            packageVersion = "1.12.0"
             vendor = "suiciniv-dev"
             windows {
                 perUserInstall = true

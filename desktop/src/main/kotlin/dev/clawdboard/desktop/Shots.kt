@@ -19,12 +19,16 @@ import androidx.compose.ui.unit.dp
 import dev.clawdboard.core.I18n
 import dev.clawdboard.core.Language
 import dev.clawdboard.core.MODELS
+import dev.clawdboard.core.NewsItem
+import dev.clawdboard.core.Sample
+import dev.clawdboard.core.StatusSnapshot
 import dev.clawdboard.core.ScopedLimit
 import dev.clawdboard.core.UsageSnapshot
 import dev.clawdboard.core.UsageWindow
 import dev.clawdboard.core.feelOf
 import dev.clawdboard.ui.C
 import dev.clawdboard.ui.Mascot
+import dev.clawdboard.ui.zoned
 import org.jetbrains.skia.EncodedImageFormat
 import java.io.File
 
@@ -59,6 +63,20 @@ fun main(args: Array<String>) {
     shot(File(out, "windows-compact.png"), COMPACT) { Card(true) }
     shot(File(out, "windows-mini.png"), MINI) { Mini {} }
     shot(File(out, "windows-promo.png"), DpSize(440.dp, 170.dp)) { PromoCard({}, {}) }
+    val start = now - 7 * 86_400_000L
+    DeskHistory.samples.value = (0 until 336).map { k -> start + k * 1_800_000L }.filter { zoned(it).hour in 9..21 }.map { t ->
+        val h = zoned(t).hour + zoned(t).minute / 60.0 - 9
+        Sample(t, (h % 5) / 5 * 45, 18.0 + (t - start) / (7 * 86_400_000.0) * 43)
+    }
+    newsFlow.value = listOf(
+        NewsItem("Introducing the next Claude models", "", now - 2 * 86_400_000L, null),
+        NewsItem("Claude Code gets background agents", "", now - 5 * 86_400_000L, null),
+        NewsItem("Building safer AI systems together", "", now - 9 * 86_400_000L, null),
+    )
+    val controls = WidgetControls(Layout.MINI, {}, true, {}, false, {}, false, {}, true, {})
+    shot(File(out, "windows-dashboard.png"), DpSize(1200.dp, 2180.dp)) {
+        Panel(0, StatusSnapshot(emptySet(), emptyList(), now), controls)
+    }
     shot(File(out, "racco.png"), DpSize(520.dp, 130.dp)) {
         Row(Modifier.fillMaxSize().background(C.bg).padding(16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             MODELS.forEachIndexed { i, m -> Mascot(Modifier.width(110.dp), model = m, seed = i, feel = feelOf(usage.value, m)) }

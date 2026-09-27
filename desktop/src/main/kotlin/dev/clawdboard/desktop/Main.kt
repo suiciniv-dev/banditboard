@@ -56,6 +56,7 @@ import androidx.compose.ui.window.rememberTrayState
 import androidx.compose.ui.window.rememberWindowState
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.graphics.toAwtImage
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.runtime.key
@@ -140,6 +141,7 @@ private fun receive(body: JSONObject, tray: TrayState): Boolean {
     Store.put("lastAt", now.toString())
     usage.value = snap
     pushedAt.value = now
+    DeskHistory.record(snap)
     if (prefsFlow.value.alerts) {
         listOf(AlertKind.SESSION to snap.fiveHour, AlertKind.WEEK to snap.sevenDay).forEach { (kind, w) ->
             val (alert, level) = nextAlert(kind, w, Store.int("mark_${kind.name}"))
@@ -184,6 +186,7 @@ fun main(args: Array<String>) {
         val at = Store.get("lastAt")?.toLongOrNull() ?: 0L
         usage.value = runCatching { parsePush(JSONObject(raw), at) }.getOrNull()
         pushedAt.value = at
+        usage.value?.let { DeskHistory.record(it) }
     }
     application {
         val tray = rememberTrayState()
@@ -316,8 +319,9 @@ fun main(args: Array<String>) {
             onCloseRequest = { panel = false },
             title = "Banditboard",
             icon = RaccoonIcon,
-            state = rememberWindowState(size = DpSize(1000.dp, 640.dp), position = WindowPosition(Alignment.Center)),
+            state = rememberWindowState(size = DpSize(1200.dp, 820.dp), position = WindowPosition(Alignment.Center)),
         ) {
+            LaunchedEffect(Unit) { DarkTitle.apply(window, C.bg.toArgb(), C.text.toArgb()) }
             val controls = WidgetControls(
                 layout, { layout = it; Store.put("layout", it.name) },
                 onTop, { onTop = it; Store.put("onTop", it.toString()) },
@@ -405,12 +409,12 @@ internal fun Meter(label: String, w: UsageWindow?, now: Long, small: Boolean = f
 }
 
 @Composable
-internal fun Connect(port: Int) {
+internal fun Connect(port: Int, hint: Boolean = true) {
     val scope = rememberCoroutineScope()
     var busy by remember { mutableStateOf(false) }
     var result by remember { mutableStateOf<Boolean?>(null) }
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(
+        if (hint || result != null) Text(
             when (result) {
                 true -> txt.desktopConnected
                 false -> txt.desktopConnectFailed

@@ -150,6 +150,11 @@ interface Texts {
     val trayPanel: String
     val trayMusic: String
     val panelWidget: String
+    val panelSubtitle: String
+    val panelModels: String
+    val panelModelsHint: String
+    val panelNews: String
+    val panelClaude: String
     val promoTitle: String
     val promoBody: String
     val promoScan: String
@@ -387,6 +392,11 @@ object Pt : Texts {
     override val trayPanel = "Abrir painel"
     override val trayMusic = "Dançar com a música"
     override val panelWidget = "Widget"
+    override val panelSubtitle = "painel do Windows · uso do Claude"
+    override val panelModels = "Modelos"
+    override val panelModelsHint = "Barra colorida é o limite próprio do modelo. Cinza é o limite semanal geral, que vale para todos."
+    override val panelNews = "Notícias da Anthropic"
+    override val panelClaude = "Claude Code neste PC"
     override val promoTitle = "Quer a experiência completa?"
     override val promoBody = "Instale o Banditboard num celular Android: o painel fica sempre à vista na mesa e os avisos de limite chegam no celular."
     override val promoScan = "Aponte a câmera do celular para baixar"
@@ -652,6 +662,11 @@ object En : Texts {
     override val trayPanel = "Open dashboard"
     override val trayMusic = "Dance to music"
     override val panelWidget = "Widget"
+    override val panelSubtitle = "Windows dashboard · Claude usage"
+    override val panelModels = "Models"
+    override val panelModelsHint = "A colored bar is the model's own limit. Gray is the general weekly limit, shared by all."
+    override val panelNews = "Anthropic News"
+    override val panelClaude = "Claude Code on this PC"
     override val promoTitle = "Want the full experience?"
     override val promoBody = "Install Banditboard on an Android phone: the dashboard stays in sight on your desk and the limit alerts reach your phone."
     override val promoScan = "Point the phone camera here to download"
