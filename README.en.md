@@ -283,9 +283,7 @@ adb logcat -s ClawdSelfTest
 
 The phone app and the Windows app are the same Kotlin code. Jetpack Compose draws the Android screens and Compose
 Multiplatform draws the Windows widget, so Racco, his animations, the alert rules, the usage parsing and the texts in both
-languages live in one place: change the raccoon once and both apps get it. A native C# app would feel just as smooth on
-Windows, but it would mean writing and keeping all of that twice. The trade-off is a bigger Windows download, because the
-app ships its own Java runtime.
+languages live in one place: change the raccoon once and both apps get it.
 
 ### Architecture
 

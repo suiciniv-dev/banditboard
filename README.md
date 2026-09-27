@@ -299,9 +299,7 @@ adb logcat -s ClawdSelfTest
 
 O app do celular e o do Windows são o mesmo código em Kotlin. O Jetpack Compose desenha as telas do Android e o Compose
 Multiplatform desenha o widget do Windows. Por isso o Racco, as animações, as regras dos avisos, a leitura do uso e os textos
-em português e inglês ficam num lugar só: mexeu no guaxinim uma vez, os dois apps já recebem. Um app em C# ficaria tão fluido
-quanto no Windows, mas aí seria preciso escrever e manter tudo isso duas vezes. O preço é um download maior no Windows, porque
-o app leva o próprio Java junto.
+em português e inglês ficam num lugar só: mexeu no guaxinim uma vez, os dois apps já recebem.
 
 ### Organização do código
 
