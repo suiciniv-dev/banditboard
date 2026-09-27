@@ -69,7 +69,7 @@ Dá para desligar em Configurações → Tela.
   <img src="prints/1.9.0/windows-mini.png" width="96" alt="Só o Racco">
 </p>
 
-Completo, compacto ou só o Racco: escolha o formato no menu do ícone da bandeja. O "Só o Racco" fica num canto mostrando a
+Completo, compacto ou só o Racco: escolha o formato no menu do ícone da bandeja. Um duplo clique em qualquer widget, ou "Abrir painel" na bandeja, abre uma janela maior com o relógio, o uso, os quatro guaxinins, os incidentes abertos e todas as configurações do widget. Quando toca música no Windows (Spotify, navegador, qualquer app nos controles de mídia do Windows), os guaxinins dançam. O "Só o Racco" fica num canto mostrando a
 sessão, e um duplo clique abre o painel completo. Arraste para onde quiser; ele também pode ficar fora da barra de tarefas e iniciar
 com o Windows. Com uma única sessão do Claude Code aberta, o "Só o Racco" e o widget compacto usam o acessório do modelo
 dessa sessão (óculos no Opus, cartola no Fable); com mais de uma, o Racco volta ao normal.

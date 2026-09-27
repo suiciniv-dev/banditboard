@@ -147,6 +147,9 @@ interface Texts {
     val trayLayout: String
     val layoutFull: String
     val layoutMini: String
+    val trayPanel: String
+    val trayMusic: String
+    val panelWidget: String
     val promoTitle: String
     val promoBody: String
     val promoScan: String
@@ -381,6 +384,9 @@ object Pt : Texts {
     override val trayLayout = "Formato"
     override val layoutFull = "Completo"
     override val layoutMini = "Só o Racco"
+    override val trayPanel = "Abrir painel"
+    override val trayMusic = "Dançar com a música"
+    override val panelWidget = "Widget"
     override val promoTitle = "Quer a experiência completa?"
     override val promoBody = "Instale o Banditboard num celular Android: o painel fica sempre à vista na mesa e os avisos de limite chegam no celular."
     override val promoScan = "Aponte a câmera do celular para baixar"
@@ -643,6 +649,9 @@ object En : Texts {
     override val trayLayout = "Layout"
     override val layoutFull = "Full"
     override val layoutMini = "Just Racco"
+    override val trayPanel = "Open dashboard"
+    override val trayMusic = "Dance to music"
+    override val panelWidget = "Widget"
     override val promoTitle = "Want the full experience?"
     override val promoBody = "Install Banditboard on an Android phone: the dashboard stays in sight on your desk and the limit alerts reach your phone."
     override val promoScan = "Point the phone camera here to download"

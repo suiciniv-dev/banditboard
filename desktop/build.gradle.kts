@@ -7,7 +7,7 @@ plugins {
 }
 
 val shared = listOf(
-    "core/Alerts.kt", "core/Look.kt", "core/Models.kt", "core/Push.kt", "core/Settings.kt", "core/Texts.kt",
+    "core/Alerts.kt", "core/Http.kt", "core/Look.kt", "core/StatusApi.kt", "core/Models.kt", "core/Push.kt", "core/Settings.kt", "core/Texts.kt",
     "ui/Colors.kt", "ui/Format.kt", "ui/Mascot.kt",
 )
 
@@ -16,7 +16,7 @@ sourceSets.main {
     kotlin.include(shared.map { "dev/clawdboard/$it" } + "dev/clawdboard/desktop/**")
     resources.srcDir("../app/src/main/assets")
     resources.srcDir("../app/src/main/res/font")
-    resources.include("pc/**", "fredoka.ttf")
+    resources.include("pc/**", "fredoka.ttf", "music.ps1")
 }
 
 dependencies {
@@ -40,7 +40,7 @@ compose.desktop {
             targetFormats(TargetFormat.Msi, TargetFormat.Exe)
             modules("java.instrument", "jdk.httpserver", "jdk.unsupported")
             packageName = "Banditboard"
-            packageVersion = "1.10.0"
+            packageVersion = "1.11.0"
             vendor = "suiciniv-dev"
             windows {
                 perUserInstall = true

@@ -1,3 +1,5 @@
+@file:OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
+
 package dev.clawdboard.desktop
 
 import androidx.compose.foundation.background
@@ -77,7 +79,11 @@ import dev.clawdboard.core.settled
 import dev.clawdboard.core.soloModel
 import dev.clawdboard.core.txt
 import dev.clawdboard.ui.C
+import dev.clawdboard.ui.LocalDance
 import dev.clawdboard.ui.LocalLook
+import dev.clawdboard.core.StatusApi
+import dev.clawdboard.core.StatusSnapshot
+import androidx.compose.ui.window.WindowPosition
 import dev.clawdboard.ui.Look
 import dev.clawdboard.ui.Mascot
 import dev.clawdboard.ui.fmtAgo
@@ -98,7 +104,7 @@ import java.nio.channels.FileChannel
 import java.nio.file.StandardOpenOption
 import java.awt.Toolkit
 
-private val Fredoka = FontFamily(
+internal val Fredoka = FontFamily(
     Font("fredoka.ttf", FontWeight.Normal),
     Font("fredoka.ttf", FontWeight.Medium),
     Font("fredoka.ttf", FontWeight.SemiBold),
@@ -158,9 +164,9 @@ enum class Layout { FULL, COMPACT, MINI }
 
 private fun prefs(): Prefs = Store.get("prefs")?.let { runCatching { Prefs().merge(JSONObject(it)) }.getOrNull() } ?: Prefs()
 
-private val prefsFlow = MutableStateFlow(prefs().also { I18n.language = it.language })
+internal val prefsFlow = MutableStateFlow(prefs().also { I18n.language = it.language })
 
-private fun savePrefs(f: (Prefs) -> Prefs) {
+internal fun savePrefs(f: (Prefs) -> Prefs) {
     val p = f(prefsFlow.value).sanitized()
     Store.put("prefs", p.toJson().toString())
     I18n.language = p.language
@@ -173,6 +179,7 @@ fun main(args: Array<String>) {
     }.getOrNull() ?: return
     Store.key
     if ("--clawd" in args) savePrefs { it.copy(clawdUnlocked = true) }
+    WinMusic.start()
     Store.get("last")?.let { raw ->
         val at = Store.get("lastAt")?.toLongOrNull() ?: 0L
         usage.value = runCatching { parsePush(JSONObject(raw), at) }.getOrNull()
@@ -185,7 +192,17 @@ fun main(args: Array<String>) {
         var onTop by remember { mutableStateOf(Store.get("onTop") != "false") }
         var inTaskbar by remember { mutableStateOf(Store.get("taskbar") == "true") }
         var layout by remember { mutableStateOf(runCatching { Layout.valueOf(Store.get("layout") ?: "") }.getOrDefault(Layout.FULL)) }
-        var peek by remember { mutableStateOf(false) }
+        var panel by remember { mutableStateOf("--panel" in args) }
+        var danceOn by remember { mutableStateOf(Store.get("dance") != "false") }
+        val playing by WinMusic.playing.collectAsState()
+        val dance = danceOn && playing
+        var status by remember { mutableStateOf<StatusSnapshot?>(null) }
+        LaunchedEffect(Unit) {
+            while (true) {
+                withContext(Dispatchers.IO) { StatusApi.fetch() }?.let { status = it }
+                delay(300_000L)
+            }
+        }
         var promo by remember { mutableStateOf(false) }
         LaunchedEffect(Unit) {
             delay(if ("--promo" in args) 3_000L else 60_000L)
@@ -217,7 +234,7 @@ fun main(args: Array<String>) {
             }
             PromoCard(onLater = { promo = false }, onNever = { Promo.never(); promo = false })
         }
-        val shown = if (layout == Layout.MINI && peek) Layout.FULL else layout
+        val shown = layout
         var autostart by remember { mutableStateOf(Autostart.enabled()) }
         val p by prefsFlow.collectAsState()
         LaunchedEffect(server.port) {
@@ -230,15 +247,17 @@ fun main(args: Array<String>) {
             tooltip = "Banditboard",
             onAction = { visible = true },
             menu = {
+                Item(txt.trayPanel) { panel = true }
                 Item(txt.trayShow) { visible = true }
                 Menu(txt.trayLayout) {
                     listOf(Layout.FULL to txt.layoutFull, Layout.COMPACT to txt.trayCompact, Layout.MINI to txt.layoutMini).forEach { (l, name) ->
-                        CheckboxItem(name, layout == l) { _ -> layout = l; peek = false; Store.put("layout", l.name) }
+                        CheckboxItem(name, layout == l) { _ -> layout = l; Store.put("layout", l.name) }
                     }
                 }
                 CheckboxItem(txt.trayOnTop, onTop) { onTop = it; Store.put("onTop", it.toString()) }
                 CheckboxItem(txt.trayTaskbar, inTaskbar) { inTaskbar = it; Store.put("taskbar", it.toString()) }
                 if (Autostart.available) CheckboxItem(txt.trayAutostart, autostart) { Autostart.set(it); autostart = Autostart.enabled() }
+                CheckboxItem(txt.trayMusic, danceOn) { danceOn = it; Store.put("dance", it.toString()) }
                 CheckboxItem(txt.alerts, p.alerts) { v -> savePrefs { it.copy(alerts = v) } }
                 Menu(txt.mascot) {
                     Species.entries.filter { it != Species.CLAWD || p.clawdUnlocked }.forEach { s ->
@@ -255,7 +274,6 @@ fun main(args: Array<String>) {
         key(inTaskbar, shown) { Window(
             visible = visible,
             create = {
-                val opened = peek
                 ComposeWindow().apply {
                     type = if (inTaskbar) java.awt.Window.Type.NORMAL else java.awt.Window.Type.UTILITY
                     isUndecorated = true
@@ -269,9 +287,6 @@ fun main(args: Array<String>) {
                     addWindowListener(object : WindowAdapter() {
                         override fun windowClosing(e: WindowEvent) { visible = false }
                     })
-                    addWindowFocusListener(object : WindowAdapter() {
-                        override fun windowLostFocus(e: WindowEvent) { if (opened) peek = false }
-                    })
                 }
             },
             dispose = ComposeWindow::dispose,
@@ -282,19 +297,36 @@ fun main(args: Array<String>) {
                 val b = gc.bounds
                 val ins = Toolkit.getDefaultToolkit().getScreenInsets(gc)
                 window.setLocation(b.x + b.width - ins.right - window.width - 12, b.y + b.height - ins.bottom - window.height - 12)
-                if (peek) { window.toFront(); window.requestFocus() }
             }
-            WindowDraggableArea {
-                if (shown == Layout.MINI) Mini { peek = true }
-                else Box(Modifier.fillMaxSize().padding(8.dp).shadow(10.dp, RoundedCornerShape(22.dp)).clip(RoundedCornerShape(22.dp)).background(C.bg)) {
+            CompositionLocalProvider(LocalDance provides dance) { WindowDraggableArea {
+                if (shown == Layout.MINI) Mini { panel = true }
+                else Box(
+                    Modifier.fillMaxSize().padding(8.dp).shadow(10.dp, RoundedCornerShape(22.dp)).clip(RoundedCornerShape(22.dp)).background(C.bg)
+                        .combinedClickable(onClick = {}, onDoubleClick = { panel = true }),
+                ) {
                     Dashboard(server.port, shown == Layout.COMPACT)
                     Text(
                         "×", color = C.dim, fontSize = 16.sp,
-                        modifier = Modifier.align(Alignment.TopEnd).padding(end = 12.dp, top = 4.dp).clickable { if (peek) peek = false else visible = false },
+                        modifier = Modifier.align(Alignment.TopEnd).padding(end = 12.dp, top = 4.dp).clickable { visible = false },
                     )
                 }
-            }
+            } }
         } }
+        if (panel) Window(
+            onCloseRequest = { panel = false },
+            title = "Banditboard",
+            icon = RaccoonIcon,
+            state = rememberWindowState(size = DpSize(1000.dp, 640.dp), position = WindowPosition(Alignment.Center)),
+        ) {
+            val controls = WidgetControls(
+                layout, { layout = it; Store.put("layout", it.name) },
+                onTop, { onTop = it; Store.put("onTop", it.toString()) },
+                inTaskbar, { inTaskbar = it; Store.put("taskbar", it.toString()) },
+                if (Autostart.available) autostart else null, { Autostart.set(it); autostart = Autostart.enabled() },
+                danceOn, { danceOn = it; Store.put("dance", it.toString()) },
+            )
+            CompositionLocalProvider(LocalDance provides dance) { Panel(server.port, status, controls) }
+        }
     }
 }
 
@@ -357,7 +389,7 @@ internal fun Dashboard(port: Int, compact: Boolean) {
 }
 
 @Composable
-private fun Meter(label: String, w: UsageWindow?, now: Long, small: Boolean = false) {
+internal fun Meter(label: String, w: UsageWindow?, now: Long, small: Boolean = false) {
     val pct = w?.percent
     Column {
         Row(verticalAlignment = Alignment.Bottom) {
@@ -373,7 +405,7 @@ private fun Meter(label: String, w: UsageWindow?, now: Long, small: Boolean = fa
 }
 
 @Composable
-private fun Connect(port: Int) {
+internal fun Connect(port: Int) {
     val scope = rememberCoroutineScope()
     var busy by remember { mutableStateOf(false) }
     var result by remember { mutableStateOf<Boolean?>(null) }

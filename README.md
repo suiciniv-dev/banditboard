@@ -68,7 +68,7 @@ You can turn them off in Settings → Screen.
   <img src="prints/1.9.0/windows-mini.png" width="96" alt="Just Racco">
 </p>
 
-Full, compact or just Racco: pick the layout in the tray icon menu. Just Racco sits in a corner showing the session, and a
+Full, compact or just Racco: pick the layout in the tray icon menu. Double-click any widget, or pick "Open dashboard" in the tray, to open a larger window with the clock, usage, the four raccoons, open incidents and every widget setting. When music plays on Windows (Spotify, a browser, any app in the Windows media controls), the raccoons dance. Just Racco sits in a corner showing the session, and a
 double-click opens the full dashboard. Drag it anywhere; it can also stay out of the taskbar and start with Windows. With a single
 Claude Code session open, Just Racco and the compact widget wear that session's model accessory (glasses for Opus, a top hat
 for Fable); with more than one, Racco goes back to plain.
