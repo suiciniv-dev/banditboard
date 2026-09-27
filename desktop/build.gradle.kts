@@ -37,6 +37,7 @@ compose.desktop {
         mainClass = "dev.clawdboard.desktop.MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Msi, TargetFormat.Exe)
+            modules("java.instrument", "jdk.httpserver", "jdk.unsupported")
             packageName = "Banditboard"
             packageVersion = "1.9.0"
             vendor = "suiciniv-dev"

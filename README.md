@@ -113,7 +113,7 @@ The shots below show the classic Racco. The new default looks like this:
 
 **Only Windows, no phone:**
 
-1. Download `Banditboard-<version>.msi` from [Releases](../../releases/latest) and install it (no admin needed).
+1. Download `Banditboard-<version>.msi` from [Releases](../../releases/latest) and install it (no admin needed). If your antivirus or company policy blocks installed apps, use `Banditboard-<version>-windows.zip` instead: unzip it anywhere and run `Banditboard.exe`.
 2. Click "Connect Claude Code" on the widget.
 3. Keep using Claude Code. After a response, the widget updates.
 
