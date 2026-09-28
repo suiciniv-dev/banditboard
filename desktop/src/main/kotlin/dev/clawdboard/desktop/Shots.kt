@@ -61,7 +61,7 @@ fun main(args: Array<String>) {
     I18n.language = if (args.getOrNull(1) == "pt") Language.PT else Language.EN
     shot(File(out, "windows-widget.png"), SIZE) { Card(false) }
     shot(File(out, "windows-compact.png"), COMPACT) { Card(true) }
-    shot(File(out, "windows-mini.png"), MINI) { Mini {} }
+    shot(File(out, "windows-mini.png"), MINI) { Mini() }
     shot(File(out, "windows-promo.png"), DpSize(440.dp, 170.dp)) { PromoCard({}, {}) }
     val start = now - 7 * 86_400_000L
     DeskHistory.samples.value = (0 until 336).map { k -> start + k * 1_800_000L }.filter { zoned(it).hour in 9..21 }.map { t ->

@@ -1,12 +1,8 @@
-@file:OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 
 package dev.clawdboard.desktop
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.window.WindowDraggableArea
 import androidx.compose.ui.draw.shadow
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -297,17 +293,12 @@ fun main(args: Array<String>) {
             dispose = ComposeWindow::dispose,
             update = { it.isAlwaysOnTop = onTop },
         ) {
-            LaunchedEffect(Unit) {
-                val gc = window.graphicsConfiguration
-                val b = gc.bounds
-                val ins = Toolkit.getDefaultToolkit().getScreenInsets(gc)
-                window.setLocation(b.x + b.width - ins.right - window.width - 12, b.y + b.height - ins.bottom - window.height - 12)
-            }
-            CompositionLocalProvider(LocalDance provides dance) { WindowDraggableArea {
-                if (shown == Layout.MINI) Mini { panel = true }
+            LaunchedEffect(Unit) { WidgetSpot.place(shown, window) }
+            CompositionLocalProvider(LocalDance provides dance) {
+                val drag = Modifier.dragWindow(window, onDoubleClick = { panel = true }, onMoved = { WidgetSpot.save(shown, window) })
+                if (shown == Layout.MINI) Box(Modifier.fillMaxSize().then(drag)) { Mini() }
                 else Box(
-                    Modifier.fillMaxSize().padding(8.dp).shadow(10.dp, RoundedCornerShape(22.dp)).clip(RoundedCornerShape(22.dp)).background(C.bg)
-                        .combinedClickable(onClick = {}, onDoubleClick = { panel = true }),
+                    Modifier.fillMaxSize().padding(8.dp).shadow(10.dp, RoundedCornerShape(22.dp)).clip(RoundedCornerShape(22.dp)).background(C.bg).then(drag),
                 ) {
                     Dashboard(server.port, shown == Layout.COMPACT)
                     Text(
@@ -315,7 +306,7 @@ fun main(args: Array<String>) {
                         modifier = Modifier.align(Alignment.TopEnd).padding(end = 12.dp, top = 4.dp).clickable { visible = false },
                     )
                 }
-            } }
+            }
         } }
         if (panel) Window(
             onCloseRequest = { panel = false },
@@ -336,16 +327,15 @@ fun main(args: Array<String>) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-internal fun Mini(onOpen: () -> Unit) {
+internal fun Mini() {
     val snap by usage.collectAsState()
     val p by prefsFlow.collectAsState()
     val u = snap?.settled(System.currentTimeMillis())
     val look = Look(skin = p.skin, tint = p.tint, animations = p.animations, species = p.mascot())
     val pct = u?.fiveHour?.percent
     CompositionLocalProvider(LocalLook provides look) {
-        Column(Modifier.fillMaxSize().combinedClickable(onClick = {}, onDoubleClick = onOpen).padding(6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(Modifier.fillMaxSize().padding(6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             val solo = u?.soloModel(System.currentTimeMillis())
             Mascot(Modifier.fillMaxWidth(), model = solo, feel = feelOf(u, solo ?: "Opus"), reserveTop = solo != null)
             Text(

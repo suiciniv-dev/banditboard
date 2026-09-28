@@ -15,8 +15,8 @@ android {
         applicationId = "dev.clawdboard"
         minSdk = 26
         targetSdk = 35
-        versionCode = 17
-        versionName = "1.13.0"
+        versionCode = 18
+        versionName = "1.13.1"
     }
 
     buildTypes {
