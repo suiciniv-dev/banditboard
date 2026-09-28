@@ -58,7 +58,7 @@ fun main(args: Array<String>) {
         now,
     )
     pushedAt.value = now - 60_000L
-    I18n.language = Language.EN
+    I18n.language = if (args.getOrNull(1) == "pt") Language.PT else Language.EN
     shot(File(out, "windows-widget.png"), SIZE) { Card(false) }
     shot(File(out, "windows-compact.png"), COMPACT) { Card(true) }
     shot(File(out, "windows-mini.png"), MINI) { Mini {} }

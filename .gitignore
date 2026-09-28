@@ -7,3 +7,4 @@ local.properties
 .kotlin/
 dist/
 *.code-workspace
+promo/
