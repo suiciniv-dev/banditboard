@@ -16,7 +16,7 @@ sourceSets.main {
     kotlin.include(shared.map { "dev/clawdboard/$it" } + "dev/clawdboard/desktop/**")
     resources.srcDir("../app/src/main/assets")
     resources.srcDir("../app/src/main/res/font")
-    resources.include("pc/**", "fredoka.ttf", "music.ps1")
+    resources.include("pc/**", "fredoka.ttf", "music.ps1", "connect.ps1")
 }
 
 dependencies {
@@ -41,7 +41,7 @@ compose.desktop {
             targetFormats(TargetFormat.Msi, TargetFormat.Exe)
             modules("java.instrument", "jdk.httpserver", "jdk.unsupported")
             packageName = "Banditboard"
-            packageVersion = "1.13.1"
+            packageVersion = "1.13.2"
             vendor = "suiciniv-dev"
             windows {
                 perUserInstall = true

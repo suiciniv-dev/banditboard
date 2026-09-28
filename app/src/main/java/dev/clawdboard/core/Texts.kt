@@ -143,6 +143,19 @@ interface Texts {
     val desktopRefreshing: String
     val desktopRefreshFailed: String
     val desktopReconnect: String
+    val desktopTroublePolicy: String
+    val desktopTroubleSettings: String
+    val desktopTroubleDenied: String
+    val desktopTroubleTimeout: String
+    val desktopHelpPolicy: String
+    fun desktopHelpSettings(path: String): String
+    fun desktopHelpDenied(path: String): String
+    val desktopHelpTimeout: String
+    val desktopHelpOther: String
+    val desktopPowershellSaid: String
+    val desktopWhatToDo: String
+    val desktopOpenSettings: String
+    val desktopOpenLog: String
     val trayShow: String
     val trayOnTop: String
     val trayTaskbar: String
@@ -382,12 +395,25 @@ object Pt : Texts {
     }
     override fun alertResets(at: String) = "Libera $at"
     override val desktopConnect = "Conectar Claude Code"
-    override val desktopConnectFailed = "Não deu para conectar o Claude Code. Tente de novo."
+    override val desktopConnectFailed = "Não deu para conectar o Claude Code."
     override val desktopWaiting = "Esperando o primeiro envio do Claude Code"
     override val desktopRefresh = "Atualizar agora"
     override val desktopRefreshing = "Buscando o uso no Claude Code…"
     override val desktopRefreshFailed = "Não deu para ler o uso agora. Tente de novo em instantes."
     override val desktopReconnect = "Reconectar"
+    override val desktopTroublePolicy = "Este PC bloqueia scripts do PowerShell."
+    override val desktopTroubleSettings = "Não deu para ler o settings.json do Claude Code."
+    override val desktopTroubleDenied = "O Windows não deixou gravar na pasta do Claude Code."
+    override val desktopTroubleTimeout = "O PowerShell demorou demais para responder."
+    override val desktopHelpPolicy = "Uma política do Windows, definida pela TI ou por quem administra o PC, impede scripts do PowerShell, e o Banditboard usa um para receber o uso do Claude Code. Peça para liberarem scripts no seu usuário (política RemoteSigned) e toque em Conectar de novo."
+    override fun desktopHelpSettings(path: String) = "O arquivo $path tem algo que o PowerShell do Windows não aceita: vírgula sobrando, aspas faltando ou a mesma chave repetida com maiúsculas diferentes, como Path e PATH. O Banditboard não mexe no arquivo enquanto isso não for corrigido, para você não perder seus ajustes. Corrija, salve e toque em Conectar de novo."
+    override fun desktopHelpDenied(path: String) = "Veja se o settings.json dentro de $path não está marcado como somente leitura (botão direito, Propriedades) e se a pasta é do seu usuário. Depois toque em Conectar de novo."
+    override val desktopHelpTimeout = "O Banditboard parou depois de um minuto sem resposta. Costuma acontecer logo depois de ligar o PC, quando ele ainda está ocupado. Espere um pouco e toque em Conectar de novo."
+    override val desktopHelpOther = "Toque em Conectar de novo. Se continuar, abra o erro completo e mande o texto numa issue do Banditboard no GitHub."
+    override val desktopPowershellSaid = "O PowerShell disse:"
+    override val desktopWhatToDo = "O que fazer ›"
+    override val desktopOpenSettings = "Abrir o settings.json"
+    override val desktopOpenLog = "Ver o erro completo"
     override val trayShow = "Mostrar"
     override val trayOnTop = "Sempre no topo"
     override val trayTaskbar = "Mostrar na barra de tarefas"
@@ -655,12 +681,25 @@ object En : Texts {
     }
     override fun alertResets(at: String) = "Resets $at"
     override val desktopConnect = "Connect Claude Code"
-    override val desktopConnectFailed = "Could not connect Claude Code. Try again."
+    override val desktopConnectFailed = "Could not connect Claude Code."
     override val desktopWaiting = "Waiting for the first update from Claude Code"
     override val desktopRefresh = "Refresh now"
     override val desktopRefreshing = "Fetching usage from Claude Code…"
     override val desktopRefreshFailed = "Could not read usage right now. Try again in a moment."
     override val desktopReconnect = "Reconnect"
+    override val desktopTroublePolicy = "This PC blocks PowerShell scripts."
+    override val desktopTroubleSettings = "Could not read Claude Code's settings.json."
+    override val desktopTroubleDenied = "Windows did not allow writing to the Claude Code folder."
+    override val desktopTroubleTimeout = "PowerShell took too long to respond."
+    override val desktopHelpPolicy = "A Windows policy, set by IT or whoever manages this PC, blocks PowerShell scripts, and Banditboard uses one to receive usage from Claude Code. Ask them to allow scripts for your user (RemoteSigned policy), then tap Connect again."
+    override fun desktopHelpSettings(path: String) = "The file $path has something Windows PowerShell does not accept: a trailing comma, a missing quote, or the same key twice with different casing, like Path and PATH. Banditboard leaves the file alone until it is fixed, so you do not lose your settings. Fix it, save, and tap Connect again."
+    override fun desktopHelpDenied(path: String) = "Check that settings.json inside $path is not marked read-only (right-click, Properties) and that the folder belongs to your user. Then tap Connect again."
+    override val desktopHelpTimeout = "Banditboard gave up after a minute without an answer. This usually happens right after the PC starts, while it is still busy. Wait a bit and tap Connect again."
+    override val desktopHelpOther = "Tap Connect again. If it keeps failing, open the full error and send the text in a Banditboard issue on GitHub."
+    override val desktopPowershellSaid = "PowerShell said:"
+    override val desktopWhatToDo = "What to do ›"
+    override val desktopOpenSettings = "Open settings.json"
+    override val desktopOpenLog = "See the full error"
     override val trayShow = "Show"
     override val trayOnTop = "Always on top"
     override val trayTaskbar = "Show in taskbar"

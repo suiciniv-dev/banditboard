@@ -39,6 +39,9 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.platform.Font
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -300,7 +303,7 @@ fun main(args: Array<String>) {
                 else Box(
                     Modifier.fillMaxSize().padding(8.dp).shadow(10.dp, RoundedCornerShape(22.dp)).clip(RoundedCornerShape(22.dp)).background(C.bg).then(drag),
                 ) {
-                    Dashboard(server.port, shown == Layout.COMPACT)
+                    Dashboard(server.port, shown == Layout.COMPACT) { panel = true }
                     Text(
                         "×", color = C.dim, fontSize = 16.sp,
                         modifier = Modifier.align(Alignment.TopEnd).padding(end = 12.dp, top = 4.dp).clickable { visible = false },
@@ -347,7 +350,7 @@ internal fun Mini() {
 }
 
 @Composable
-internal fun Dashboard(port: Int, compact: Boolean) {
+internal fun Dashboard(port: Int, compact: Boolean, onHelp: (() -> Unit)? = null) {
     val snap by usage.collectAsState()
     val at by pushedAt.collectAsState()
     var now by remember { mutableLongStateOf(System.currentTimeMillis()) }
@@ -366,7 +369,7 @@ internal fun Dashboard(port: Int, compact: Boolean) {
         } else Row(Modifier.fillMaxSize().padding(horizontal = 18.dp, vertical = 14.dp), horizontalArrangement = Arrangement.spacedBy(18.dp)) {
             Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.SpaceBetween) {
                 Meter(txt.session, u?.fiveHour, now)
-                if (u == null) Connect(port)
+                if (u == null) Connect(port, onHelp = onHelp)
                 else {
                     Meter(txt.week, u.sevenDay, now)
                     Text(txt.updatedAgo(fmtAgo(now - at)), color = C.dim, fontSize = 11.sp)
@@ -401,11 +404,52 @@ internal fun Meter(label: String, w: UsageWindow?, now: Long, small: Boolean = f
 }
 
 @Composable
-internal fun Connect(port: Int, hint: Boolean = true) {
+private fun Trouble(f: Failure, onHelp: (() -> Unit)?) {
+    val title = when (f.cause) {
+        Cause.POLICY -> txt.desktopTroublePolicy
+        Cause.SETTINGS -> txt.desktopTroubleSettings
+        Cause.DENIED -> txt.desktopTroubleDenied
+        Cause.TIMEOUT -> txt.desktopTroubleTimeout
+        Cause.OTHER -> txt.desktopConnectFailed
+    }
+    if (onHelp != null) Text(
+        buildAnnotatedString {
+            withStyle(SpanStyle(color = C.warn)) { append(title) }
+            append(" ")
+            withStyle(SpanStyle(color = C.clawd, fontWeight = FontWeight.SemiBold)) { append(txt.desktopWhatToDo) }
+        },
+        fontSize = 12.sp, modifier = Modifier.clickable { onHelp() },
+    ) else {
+        val help = when (f.cause) {
+            Cause.POLICY -> txt.desktopHelpPolicy
+            Cause.SETTINGS -> txt.desktopHelpSettings(Hook.settings.path)
+            Cause.DENIED -> txt.desktopHelpDenied(Hook.claudeDir.path)
+            Cause.TIMEOUT -> txt.desktopHelpTimeout
+            Cause.OTHER -> txt.desktopHelpOther
+        }
+        Text(title, color = C.warn, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+        Text(help, color = C.muted, fontSize = 12.sp)
+        f.detail?.let { Text("${txt.desktopPowershellSaid} $it", color = C.dim, fontSize = 11.sp) }
+        Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+            if (f.cause == Cause.SETTINGS) Text(
+                txt.desktopOpenSettings, color = C.clawd, fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.clickable { Hook.show(Hook.settings) },
+            )
+            if (Hook.log.exists()) Text(
+                txt.desktopOpenLog, color = C.clawd, fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.clickable { Hook.show(Hook.log) },
+            )
+        }
+    }
+}
+
+@Composable
+internal fun Connect(port: Int, hint: Boolean = true, onHelp: (() -> Unit)? = null) {
     val scope = rememberCoroutineScope()
     var connected by remember { mutableStateOf(Hook.connected()) }
     var status by remember { mutableStateOf<String?>(null) }
     var busy by remember { mutableStateOf(false) }
+    val failure by Hook.failure.collectAsState()
     fun refresh() {
         status = txt.desktopRefreshing
         val ok = Hook.refresh()
@@ -413,16 +457,19 @@ internal fun Connect(port: Int, hint: Boolean = true) {
     }
     fun connect() {
         busy = true
+        status = null
         scope.launch {
             val ok = withContext(Dispatchers.IO) { Hook.install(port) }
             connected = connected || ok
-            if (ok) withContext(Dispatchers.IO) { refresh() } else status = txt.desktopConnectFailed
+            if (ok) withContext(Dispatchers.IO) { refresh() }
             busy = false
         }
     }
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        val f = failure
         val shown = status ?: if (hint) txt.desktopWaiting else null
-        if (shown != null) Text(shown, color = C.muted, fontSize = 12.sp)
+        if (f != null) Trouble(f, onHelp)
+        else if (shown != null) Text(shown, color = C.muted, fontSize = 12.sp)
         Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
             Button(
                 onClick = {

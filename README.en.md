@@ -125,7 +125,7 @@ The shots below show the classic Racco. The new default looks like this:
 **Only Windows, no phone:**
 
 1. Download `Banditboard-<version>.msi` from [Releases](../../releases/latest) and install it (no admin needed). Prefer not to install? Unzip `Banditboard-<version>-windows.zip` anywhere and run `Banditboard.exe`.
-2. Click "Connect Claude Code" on the widget. Usage shows up right away.
+2. Click "Connect Claude Code" on the widget. Usage shows up right away. If it can't connect, the widget says why and "What to do" opens the dashboard with the next step.
 3. Keep using Claude Code. After a response, the widget updates. To fetch it on the spot, use "Refresh now" on the dashboard or in the tray menu.
 
 Using both? Connect each one once. The hook keeps a list of destinations in `~/.claude/clawdboard-targets.json`
