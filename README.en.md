@@ -16,7 +16,7 @@
   <a href="../../stargazers"><img src="https://img.shields.io/github/stars/suiciniv-dev/banditboard?style=flat" alt="GitHub stars"></a>
 </p>
 
-<p align="center"><b><a href="../../releases/latest">Download the APK or the Windows installer</a></b> · <a href="../../releases">All releases</a></p>
+<p align="center"><b><a href="../../releases/latest">Download the APK or the Windows installer</a></b> · <a href="https://banditboard.pages.dev/?lang=en">Website</a> · <a href="../../releases">All releases</a></p>
 
 ## What is Banditboard?
 

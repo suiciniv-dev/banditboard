@@ -16,7 +16,7 @@
   <a href="../../stargazers"><img src="https://img.shields.io/github/stars/suiciniv-dev/banditboard?style=flat" alt="Estrelas no GitHub"></a>
 </p>
 
-<p align="center"><b><a href="../../releases/latest">Baixe o app para Android ou para Windows</a></b> · <a href="../../releases">Todas as versões</a></p>
+<p align="center"><b><a href="../../releases/latest">Baixe o app para Android ou para Windows</a></b> · <a href="https://banditboard.pages.dev/">Site</a> · <a href="../../releases">Todas as versões</a></p>
 
 ## O que é o Banditboard?
 
