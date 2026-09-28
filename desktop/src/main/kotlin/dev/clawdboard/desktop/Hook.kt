@@ -22,4 +22,16 @@ object Hook {
         if (done) Store.put("hookPort", port)
         done
     }.getOrDefault(false)
+
+    private val usageScript = File(System.getProperty("user.home"), ".claude/clawdboard-usage.ps1")
+
+    fun connected(): Boolean = Store.int("hookPort") != 0 && usageScript.exists()
+
+    fun refresh(): Boolean = runCatching {
+        val before = pushedAt.value
+        val p = ProcessBuilder("powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-WindowStyle", "Hidden", "-File", usageScript.absolutePath, "-Work")
+            .redirectErrorStream(true).redirectOutput(ProcessBuilder.Redirect.DISCARD).start()
+        p.waitFor(90, TimeUnit.SECONDS)
+        pushedAt.value > before
+    }.getOrDefault(false)
 }

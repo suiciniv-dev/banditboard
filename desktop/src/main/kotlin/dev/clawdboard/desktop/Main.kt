@@ -244,6 +244,7 @@ fun main(args: Array<String>) {
             val hooked = Store.int("hookPort")
             if (hooked != 0 && hooked != server.port) withContext(Dispatchers.IO) { Hook.install(server.port) }
         }
+        val trayScope = rememberCoroutineScope()
         Tray(
             icon = RaccoonIcon,
             state = tray,
@@ -252,6 +253,7 @@ fun main(args: Array<String>) {
             menu = {
                 Item(txt.trayPanel) { panel = true }
                 Item(txt.trayShow) { visible = true }
+                Item(txt.desktopRefresh) { trayScope.launch(Dispatchers.IO) { Hook.refresh() } }
                 Menu(txt.trayLayout) {
                     listOf(Layout.FULL to txt.layoutFull, Layout.COMPACT to txt.trayCompact, Layout.MINI to txt.layoutMini).forEach { (l, name) ->
                         CheckboxItem(name, layout == l) { _ -> layout = l; Store.put("layout", l.name) }
@@ -411,21 +413,39 @@ internal fun Meter(label: String, w: UsageWindow?, now: Long, small: Boolean = f
 @Composable
 internal fun Connect(port: Int, hint: Boolean = true) {
     val scope = rememberCoroutineScope()
+    var connected by remember { mutableStateOf(Hook.connected()) }
+    var status by remember { mutableStateOf<String?>(null) }
     var busy by remember { mutableStateOf(false) }
-    var result by remember { mutableStateOf<Boolean?>(null) }
+    fun refresh() {
+        status = txt.desktopRefreshing
+        val ok = Hook.refresh()
+        status = if (ok) null else txt.desktopRefreshFailed
+    }
+    fun connect() {
+        busy = true
+        scope.launch {
+            val ok = withContext(Dispatchers.IO) { Hook.install(port) }
+            connected = connected || ok
+            if (ok) withContext(Dispatchers.IO) { refresh() } else status = txt.desktopConnectFailed
+            busy = false
+        }
+    }
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        if (hint || result != null) Text(
-            when (result) {
-                true -> txt.desktopConnected
-                false -> txt.desktopConnectFailed
-                null -> txt.desktopWaiting
-            },
-            color = C.muted, fontSize = 12.sp,
-        )
-        Button(
-            onClick = { busy = true; scope.launch { result = withContext(Dispatchers.IO) { Hook.install(port) }; busy = false } },
-            enabled = !busy,
-            colors = ButtonDefaults.buttonColors(containerColor = C.clawd, contentColor = Color.Black),
-        ) { Text(txt.desktopConnect, fontFamily = Fredoka) }
+        val shown = status ?: if (hint) txt.desktopWaiting else null
+        if (shown != null) Text(shown, color = C.muted, fontSize = 12.sp)
+        Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            Button(
+                onClick = {
+                    if (!connected) connect()
+                    else { busy = true; scope.launch { withContext(Dispatchers.IO) { refresh() }; busy = false } }
+                },
+                enabled = !busy,
+                colors = ButtonDefaults.buttonColors(containerColor = C.clawd, contentColor = Color.Black),
+            ) { Text(if (connected) txt.desktopRefresh else txt.desktopConnect, fontFamily = Fredoka) }
+            if (connected) Text(
+                txt.desktopReconnect, color = C.dim, fontSize = 12.sp,
+                modifier = Modifier.clickable(enabled = !busy) { connect() },
+            )
+        }
     }
 }

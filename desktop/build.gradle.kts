@@ -41,12 +41,13 @@ compose.desktop {
             targetFormats(TargetFormat.Msi, TargetFormat.Exe)
             modules("java.instrument", "jdk.httpserver", "jdk.unsupported")
             packageName = "Banditboard"
-            packageVersion = "1.12.0"
+            packageVersion = "1.13.0"
             vendor = "suiciniv-dev"
             windows {
                 perUserInstall = true
                 menu = true
                 shortcut = true
+                iconFile.set(project.file("icons/banditboard.ico"))
                 upgradeUuid = "6f1d3c2a-8b4e-4f7a-9c1d-2e5b7a9c0d13"
             }
         }

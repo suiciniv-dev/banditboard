@@ -137,9 +137,12 @@ interface Texts {
     fun alertTitle(week: Boolean, level: Int): String
     fun alertResets(at: String): String
     val desktopConnect: String
-    val desktopConnected: String
     val desktopConnectFailed: String
     val desktopWaiting: String
+    val desktopRefresh: String
+    val desktopRefreshing: String
+    val desktopRefreshFailed: String
+    val desktopReconnect: String
     val trayShow: String
     val trayOnTop: String
     val trayTaskbar: String
@@ -379,9 +382,12 @@ object Pt : Texts {
     }
     override fun alertResets(at: String) = "Libera $at"
     override val desktopConnect = "Conectar Claude Code"
-    override val desktopConnected = "Claude Code conectado. O uso aparece aqui depois da próxima resposta dele."
     override val desktopConnectFailed = "Não deu para conectar o Claude Code. Tente de novo."
     override val desktopWaiting = "Esperando o primeiro envio do Claude Code"
+    override val desktopRefresh = "Atualizar agora"
+    override val desktopRefreshing = "Buscando o uso no Claude Code…"
+    override val desktopRefreshFailed = "Não deu para ler o uso agora. Tente de novo em instantes."
+    override val desktopReconnect = "Reconectar"
     override val trayShow = "Mostrar"
     override val trayOnTop = "Sempre no topo"
     override val trayTaskbar = "Mostrar na barra de tarefas"
@@ -649,9 +655,12 @@ object En : Texts {
     }
     override fun alertResets(at: String) = "Resets $at"
     override val desktopConnect = "Connect Claude Code"
-    override val desktopConnected = "Claude Code connected. Usage shows up here after its next reply."
     override val desktopConnectFailed = "Could not connect Claude Code. Try again."
     override val desktopWaiting = "Waiting for the first update from Claude Code"
+    override val desktopRefresh = "Refresh now"
+    override val desktopRefreshing = "Fetching usage from Claude Code…"
+    override val desktopRefreshFailed = "Could not read usage right now. Try again in a moment."
+    override val desktopReconnect = "Reconnect"
     override val trayShow = "Show"
     override val trayOnTop = "Always on top"
     override val trayTaskbar = "Show in taskbar"

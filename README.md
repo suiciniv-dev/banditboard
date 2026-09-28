@@ -133,8 +133,8 @@ Os prints abaixo são do Racco clássico. O Racco novo, que vem por padrão, é 
 **Só no Windows, sem celular:**
 
 1. Baixe o `Banditboard-<versão>.msi` em [Releases](../../releases/latest) e instale. Não precisa ser administrador. Se preferir não instalar nada, descompacte o `Banditboard-<versão>-windows.zip` onde quiser e abra o `Banditboard.exe`.
-2. Clique em "Conectar Claude Code" no widget.
-3. Use o Claude Code normalmente. A cada resposta, o widget atualiza.
+2. Clique em "Conectar Claude Code" no widget. O uso já aparece em seguida.
+3. Use o Claude Code normalmente. A cada resposta, o widget atualiza. Para buscar na hora, use "Atualizar agora" no painel ou no menu da bandeja.
 
 Vai usar os dois? Conecte cada um uma vez. O hook guarda a lista de destinos em `~/.claude/clawdboard-targets.json` e
 manda o uso para todos. Se o celular já estava conectado, não precisa mexer nele: ao conectar o Windows, o celular entra
