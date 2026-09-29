@@ -8,7 +8,7 @@ Thanks for wanting to help! Bug reports, ideas, translations and pull requests a
 
 - **Bugs** go to [Issues](../../issues). On Windows, attach `%APPDATA%\Banditboard\conectar.log` if the problem is connecting Claude Code (it never contains the pairing key).
 - **Questions and ideas** go to [Discussions](../../discussions).
-- **Bigger changes**: open an issue first so we can agree on the approach before you spend time on it. Issues marked [help wanted](../../issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) are a good place to start.
+- **Bigger changes**: open an issue first so we can agree on the approach before you spend time on it. The issues are written in Portuguese, but English is fine.
 
 ## Where the explanations live
 
@@ -43,7 +43,7 @@ Valeu por querer ajudar! Relatos de bug, ideias, traduções e pull requests sã
 
 - **Problemas** vão para as [Issues](../../issues). No Windows, se o problema for conectar o Claude Code, mande junto o `%APPDATA%\Banditboard\conectar.log` (ele nunca traz a chave de pareamento).
 - **Dúvidas e ideias** vão para as [Discussions](../../discussions).
-- **Mudanças maiores**: abra uma issue antes, para a gente combinar o caminho antes de você gastar tempo. As issues marcadas com [help wanted](../../issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) são um bom começo.
+- **Mudanças maiores**: abra uma issue antes, para a gente combinar o caminho antes de você gastar tempo.
 
 ## Onde ficam as explicações
 

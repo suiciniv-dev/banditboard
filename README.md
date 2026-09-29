@@ -162,10 +162,12 @@ Opus is gray with X eyes in these shots because the sample data includes an open
 
 ## 🧭 Roadmap
 
-- [macOS and Linux: a shell version of the usage hook](../../issues/1) (help wanted)
+- [macOS and Linux: a shell version of the usage hook](../../issues/1)
 - [iPhone app with home screen and StandBy widget](../../issues/2)
 - [macOS app with a desktop widget](../../issues/3)
 - [Android 16: target API 36](../../issues/4)
+
+The issues are written in Portuguese.
 
 ## 📚 Docs
 
@@ -188,6 +190,6 @@ inside the APK in `assets/licenses/`.
 Banditboard is a personal fan project, **not affiliated with, endorsed by or sponsored by Anthropic**. Claude and Claude Code are
 trademarks of Anthropic, PBC.
 
-Built with ❤️ by Vinícius Pires da Silva.
+Built with ❤️ by [Vinícius Pires da Silva](https://www.linkedin.com/in/vin%C3%ADcius-pires-da-silva-094066204/).
 
 **Like it? Leave a ⭐**

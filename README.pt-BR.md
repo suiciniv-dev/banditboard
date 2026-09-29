@@ -166,7 +166,7 @@ status.claude.com.
 
 ## 🧭 Próximos passos
 
-- [macOS e Linux: uma versão do hook em shell](../../issues/1) (procura-se ajuda)
+- [macOS e Linux: uma versão do hook em shell](../../issues/1)
 - [App para iPhone com widget na tela inicial e no StandBy](../../issues/2)
 - [App para Mac com widget na área de trabalho](../../issues/3)
 - [Android 16: passar para a API 36](../../issues/4)
@@ -192,6 +192,6 @@ dentro do APK, em `assets/licenses/`.
 O Banditboard é um projeto pessoal de fã, **sem vínculo, apoio ou patrocínio da Anthropic**. Claude e Claude Code são marcas da
 Anthropic, PBC.
 
-Feito com ❤️ por Vinícius Pires da Silva.
+Feito com ❤️ por [Vinícius Pires da Silva](https://www.linkedin.com/in/vin%C3%ADcius-pires-da-silva-094066204/).
 
 **Gostou? Deixe uma ⭐**
