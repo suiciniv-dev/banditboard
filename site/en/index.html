@@ -1,28 +1,28 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title data-t="title">Banditboard · Monitor de uso do Claude Code no Android e Windows</title>
-<meta name="description" data-tc="desc" content="Painel de mesa grátis para Android e widget para Windows que mostram o uso do Claude Code: sessão de 5 horas, semana, a hora em que cada uma libera e avisos antes de acabar.">
+<title data-t="title">Banditboard · Claude Code usage monitor for Android and Windows</title>
+<meta name="description" data-tc="desc" content="A free desk dashboard for Android and a widget for Windows that show your Claude Code usage: the 5-hour session, the week, when each one resets, and alerts before you run out.">
 <meta name="theme-color" content="#16130f">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Banditboard">
-<meta property="og:locale" data-tc="locale" content="pt_BR">
-<meta property="og:locale:alternate" data-tc="localeAlt" content="en_US">
-<meta property="og:title" data-tc="ogTitle" content="Banditboard · O limite do Claude Code sempre à vista">
-<meta property="og:description" data-tc="ogDesc" content="O limite do Claude Code sempre à vista, num celular Android parado ou no Windows. Grátis e de código aberto.">
-<meta property="og:url" data-tc="url" content="https://banditboard.pages.dev/">
+<meta property="og:locale" data-tc="locale" content="en_US">
+<meta property="og:locale:alternate" data-tc="localeAlt" content="pt_BR">
+<meta property="og:title" data-tc="ogTitle" content="Banditboard · Your Claude Code limits, always in sight">
+<meta property="og:description" data-tc="ogDesc" content="Your Claude Code limits always in sight, on a spare Android phone or on Windows. Free and open source.">
+<meta property="og:url" data-tc="url" content="https://banditboard.pages.dev/en/">
 <meta property="og:image" content="https://banditboard.pages.dev/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" data-tc="ogAlt" content="O Racco, guaxinim do Banditboard, com o uso da sessão e da semana do Claude Code">
+<meta property="og:image:alt" data-tc="ogAlt" content="Racco, the Banditboard raccoon, with the Claude Code session and weekly usage">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" data-tc="ogTitle" content="Banditboard · O limite do Claude Code sempre à vista">
-<meta name="twitter:description" data-tc="ogDesc" content="O limite do Claude Code sempre à vista, num celular Android parado ou no Windows. Grátis e de código aberto.">
+<meta name="twitter:title" data-tc="ogTitle" content="Banditboard · Your Claude Code limits, always in sight">
+<meta name="twitter:description" data-tc="ogDesc" content="Your Claude Code limits always in sight, on a spare Android phone or on Windows. Free and open source.">
 <meta name="twitter:image" content="https://banditboard.pages.dev/og.png">
-<meta name="twitter:image:alt" data-tc="ogAlt" content="O Racco, guaxinim do Banditboard, com o uso da sessão e da semana do Claude Code">
-<link rel="canonical" data-th="url" href="https://banditboard.pages.dev/">
+<meta name="twitter:image:alt" data-tc="ogAlt" content="Racco, the Banditboard raccoon, with the Claude Code session and weekly usage">
+<link rel="canonical" data-th="url" href="https://banditboard.pages.dev/en/">
 <link rel="alternate" hreflang="pt-BR" href="https://banditboard.pages.dev/">
 <link rel="alternate" hreflang="en" href="https://banditboard.pages.dev/en/">
 <link rel="alternate" hreflang="x-default" href="https://banditboard.pages.dev/">
@@ -33,17 +33,25 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "Banditboard",
-  "description": "Painel de mesa grátis para Android e widget para Windows que mostram o uso do Claude Code: sessão de 5 horas, semana, a hora em que cada uma libera e avisos antes de acabar.",
-  "inLanguage": "pt-BR",
-  "url": "https://banditboard.pages.dev/",
+  "description": "A free desk dashboard for Android and a widget for Windows that show your Claude Code usage: the 5-hour session, the week, when each one resets, and alerts before you run out.",
+  "inLanguage": "en",
+  "url": "https://banditboard.pages.dev/en/",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Android, Windows",
-  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "BRL"},
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
   "downloadUrl": "https://github.com/suiciniv-dev/banditboard/releases/latest",
   "image": "https://banditboard.pages.dev/og.png",
-  "screenshot": "https://banditboard.pages.dev/img/pt/01-dashboard.webp",
+  "screenshot": "https://banditboard.pages.dev/img/en/01-dashboard.webp",
   "license": "https://opensource.org/licenses/MIT",
-  "author": {"@type": "Person", "name": "Vinícius Pires da Silva", "url": "https://suiciniv-dev-apps.pages.dev/"}
+  "author": {
+    "@type": "Person",
+    "name": "Vinícius Pires da Silva",
+    "url": "https://suiciniv-dev-apps.pages.dev/"
+  }
 }
 </script>
 <style>
@@ -363,35 +371,35 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
   <div class="wrap">
     <a class="brand" href="#"><i data-racco="logo"></i><span>Banditboard</span></a>
     <nav>
-      <a href="#como" data-t="navHow">Como funciona</a>
-      <a href="#recursos" data-t="navFeat">Recursos</a>
-      <a href="#telas" data-t="navShots">Telas</a>
-      <a href="#perguntas" data-t="navFaq">Perguntas</a>
+      <a href="#como" data-t="navHow">How it works</a>
+      <a href="#recursos" data-t="navFeat">Features</a>
+      <a href="#telas" data-t="navShots">Screens</a>
+      <a href="#perguntas" data-t="navFaq">FAQ</a>
     </nav>
-    <button class="lang" id="lang" type="button" aria-label="English">EN</button>
-    <a class="star" href="https://github.com/suiciniv-dev/banditboard" data-alt="starAlt" aria-label="Deixe uma estrela no GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg><span data-t="star">Estrela</span><b data-stars></b></a>
-    <a class="btn main sm" href="#baixar" data-t="navDl">Baixar</a>
+    <button class="lang" id="lang" type="button" aria-label="Português">PT</button>
+    <a class="star" href="https://github.com/suiciniv-dev/banditboard" data-alt="starAlt" aria-label="Star Banditboard on GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg><span data-t="star">Star</span><b data-stars></b></a>
+    <a class="btn main sm" href="#baixar" data-t="navDl">Download</a>
   </div>
 </header>
 <div class="suggest" id="suggest" hidden>
-  <div class="wrap"><span data-t="sugT">This page is also in English.</span><a id="sugGo" href="/en/" data-t="sugGo">Read in English</a><button type="button" id="sugX" data-alt="sugX" aria-label="Fechar">×</button></div>
+  <div class="wrap"><span data-t="sugT">Esta página também está em português.</span><a id="sugGo" href="/" data-t="sugGo">Ler em português</a><button type="button" id="sugX" data-alt="sugX" aria-label="Fechar">×</button></div>
 </div>
 
 <main>
   <div class="hero">
     <div class="wrap">
-      <div class="screen" id="screen" role="img" data-alt="heroAlt" aria-label="Animação: o Claude Code bate no limite no meio da tarefa; com o Banditboard, o celular e o widget do Windows mostram a sessão subindo, os guaxinins suam, ficam vermelhos e estouram em 100%, e dançam quando a sessão libera.">
+      <div class="screen" id="screen" role="img" data-alt="heroAlt" aria-label="Animation: Claude Code hits the limit in the middle of a task; with Banditboard, the phone and the Windows widget show the session climbing, the raccoons sweat, turn red and burst at 100%, then dance when the session resets.">
         <div class="stage" id="stage">
           <div class="win" id="win"><div class="moon"></div><div class="bar"></div></div>
           <div class="sill"></div>
-          <div class="cap" id="c1" data-t="c1">Cansado de bater no <em>limite</em> do Claude Code no meio da tarefa?</div>
-          <div class="cap" id="c2" data-t="c2">Com o Banditboard, você <em>vê o limite chegando</em>.</div>
-          <div class="cap" id="c3" data-t="c3">Sessão, semana e a hora em que cada uma libera. <em>Sempre à vista.</em></div>
-          <div class="cap" id="c4" data-t="c4">Os Raccos suam, ficam vermelhos e <em>avisam antes</em> de estourar.</div>
-          <div class="cap" id="c6" data-t="c6">Quando libera, eles comemoram. Com música, <em>dançam</em>.</div>
-          <div class="cap" id="c7" data-t="c7">Relógio de mesa e <em>histórico de 7 dias</em>, direto no celular.</div>
-          <div class="cap" id="c8" data-t="c8">No Windows, dois cliques no widget abrem o <em>painel completo</em>.</div>
-          <div class="cap fin" id="c5"><i data-racco="logo"></i><div><b>Banditboard</b><span data-t="c5">Seu celular, até um antigo, vira um painel dos seus limites. Também no Windows.</span></div></div>
+          <div class="cap" id="c1" data-t="c1">Tired of hitting your Claude Code <em>limit</em> in the middle of a task?</div>
+          <div class="cap" id="c2" data-t="c2">With Banditboard, you <em>see the limit coming</em>.</div>
+          <div class="cap" id="c3" data-t="c3">Session, week, and when each one resets. <em>Always in sight.</em></div>
+          <div class="cap" id="c4" data-t="c4">The Raccos sweat, turn red and <em>warn you</em> before they burst.</div>
+          <div class="cap" id="c6" data-t="c6">When it resets, they celebrate. With music on, they <em>dance</em>.</div>
+          <div class="cap" id="c7" data-t="c7">A desk clock and a <em>7-day history</em>, right on your phone.</div>
+          <div class="cap" id="c8" data-t="c8">On Windows, double-click the widget for the <em>full dashboard</em>.</div>
+          <div class="cap fin" id="c5"><i data-racco="logo"></i><div><b>Banditboard</b><span data-t="c5">Your phone, even an old one, becomes a dashboard for your limits. Also on Windows.</span></div></div>
           <div class="desk"></div>
           <div class="gmon"><div class="neck"></div><div class="foot"></div>
           <div class="mon"><div class="scr">
@@ -399,9 +407,9 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
             <div class="side" id="side"></div>
             <div class="code" id="code"></div>
             <div class="term" id="term"></div>
-            <div class="wid" id="wid"><div class="l"><div class="t"><b data-t="pSession">Sessão</b><span id="wReset"></span></div><div class="p" id="wPct"></div><div class="b"><i id="wBar"></i></div></div><div class="r" id="wRacco"></div></div>
+            <div class="wid" id="wid"><div class="l"><div class="t"><b data-t="pSession">Session</b><span id="wReset"></span></div><div class="p" id="wPct"></div><div class="b"><i id="wBar"></i></div></div><div class="r" id="wRacco"></div></div>
             <div class="task"><i></i><i></i><i></i><i></i><div class="tray" id="tray"></div></div>
-            <div class="mdash" id="mDash"><div class="ttl"><i data-racco="logo"></i>Banditboard</div><div class="mv"><img id="mImg" data-img="windows-dashboard" src="/img/pt/windows-dashboard.webp" alt=""></div></div>
+            <div class="mdash" id="mDash"><div class="ttl"><i data-racco="logo"></i>Banditboard</div><div class="mv"><img id="mImg" data-img="windows-dashboard" src="/img/en/windows-dashboard.webp" alt=""></div></div>
             <svg class="cursor" id="cursor" viewBox="0 0 16 22"><path d="M1 1v17l4.5-4.2 3 6.7 2.6-1.2-3-6.6H14z" fill="#f3efea" stroke="#16130f" stroke-width="1.3" stroke-linejoin="round"/></svg>
             <div class="ripple" id="ripple"></div>
             <div class="flash" id="flash"></div>
@@ -413,15 +421,15 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
             <div class="toast" id="toast"><div class="ic"><i data-racco="logo"></i></div><div><b id="toastT"></b><span id="toastS"></span></div></div>
             <div class="scrn" id="sDash">
             <div class="top">
-              <div><div class="lbl"><span class="k" data-t="pSession">Sessão</span><span data-t="p5h">5 horas</span></div><div class="p" id="pPct"></div></div>
+              <div><div class="lbl"><span class="k" data-t="pSession">Session</span><span data-t="p5h">5 hours</span></div><div class="p" id="pPct"></div></div>
               <div class="mid"><div class="b"><i id="pBar"></i></div><div class="wk" id="pWeek"></div></div>
-              <div class="rs"><span data-t="pResets">libera em</span><b id="pLeft"></b><span id="pAt"></span></div>
+              <div class="rs"><span data-t="pResets">resets in</span><b id="pLeft"></b><span id="pAt"></span></div>
             </div>
             <div class="row" id="pRow"></div>
             </div>
-            <div class="scrn" id="sMusic"><div class="cover"><svg viewBox="0 0 12 12" fill="#16130f"><rect x="4" y="2" width="6" height="1.6"/><rect x="4" y="2" width="1.3" height="6.6"/><rect x="8.7" y="2" width="1.3" height="5.6"/><rect x="1.8" y="7.4" width="3.5" height="2.6"/><rect x="6.5" y="6.4" width="3.5" height="2.6"/></svg></div><div class="mi"><div class="app"><i></i><span data-t="mPlaying">Tocando agora</span></div><b>Pixel Groove</b><span class="ar" data-t="mArtist">Racco e os Modelos</span><div class="prog"><i id="mProg"></i></div><div class="tm"><span id="mNow">1:36</span><span>3:34</span></div><div class="ctl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg><span class="pl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></div></div><div class="mr" id="mRow"></div></div>
-            <div class="scrn" id="sClock"><div class="ck"><b>21:48</b><span data-t="ckDate">domingo, 28 de setembro</span></div><div class="ckr" id="ckRow"></div><div class="cks" id="ckS"></div></div>
-            <div class="scrn" id="sChart"><div class="chh"><b data-t="chT">Últimos 7 dias</b><span class="lg"><i style="background:var(--coral)"></i><span data-t="pSession">Sessão</span><i style="background:var(--lav)"></i><span data-t="pWeek">Semana</span></span></div><svg class="chs" id="chSvg" viewBox="0 0 500 180"></svg></div>
+            <div class="scrn" id="sMusic"><div class="cover"><svg viewBox="0 0 12 12" fill="#16130f"><rect x="4" y="2" width="6" height="1.6"/><rect x="4" y="2" width="1.3" height="6.6"/><rect x="8.7" y="2" width="1.3" height="5.6"/><rect x="1.8" y="7.4" width="3.5" height="2.6"/><rect x="6.5" y="6.4" width="3.5" height="2.6"/></svg></div><div class="mi"><div class="app"><i></i><span data-t="mPlaying">Now playing</span></div><b>Pixel Groove</b><span class="ar" data-t="mArtist">Racco and the Models</span><div class="prog"><i id="mProg"></i></div><div class="tm"><span id="mNow">1:36</span><span>3:34</span></div><div class="ctl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg><span class="pl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></div></div><div class="mr" id="mRow"></div></div>
+            <div class="scrn" id="sClock"><div class="ck"><b>21:48</b><span data-t="ckDate">Sunday, September 28</span></div><div class="ckr" id="ckRow"></div><div class="cks" id="ckS"></div></div>
+            <div class="scrn" id="sChart"><div class="chh"><b data-t="chT">Last 7 days</b><span class="lg"><i style="background:var(--coral)"></i><span data-t="pSession">Session</span><i style="background:var(--lav)"></i><span data-t="pWeek">Week</span></span></div><svg class="chs" id="chSvg" viewBox="0 0 500 180"></svg></div>
           </div></div></div>
           <div class="url" id="url"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg><span id="urlT">banditboard.pages.dev</span></div>
         </div>
@@ -433,111 +441,111 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
   <div class="wrap">
     <div class="intro" id="baixar">
       <div>
-        <div class="badge"><i></i><span data-t="badge">Grátis e de código aberto</span></div>
-        <h1 data-t="h1">O limite do Claude Code, <em>sempre à vista</em>.</h1>
-        <p class="lead" data-t="lead">Transforme o seu celular, ou aquele já meio antigo, num painel dos seus limites do Claude Code: quanto você já usou da sessão de 5 horas e da semana, quando cada uma libera e um aviso antes de acabar. Não tem um celular sobrando? Use a versão para Windows.</p>
+        <div class="badge"><i></i><span data-t="badge">Free and open source</span></div>
+        <h1 data-t="h1">Your Claude Code limits, <em>always in sight</em>.</h1>
+        <p class="lead" data-t="lead">Turn your phone, or an old one you no longer use, into a dashboard for your Claude Code limits: how much of the 5-hour session and the week you have used, when each one resets, and a heads-up before you run out. No spare phone? Use the Windows version.</p>
       </div>
       <div class="dl">
         <div class="row">
-          <a class="btn main" data-dl="apk" href="https://github.com/suiciniv-dev/banditboard/releases/latest"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38L16.92 9.1A11.2 11.2 0 0 0 12 8a11.2 11.2 0 0 0-4.92 1.1L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg><span><span data-t="dlAndroid">Baixar para Android</span><small data-t="dlAndroidS">APK · Android 8 ou mais novo</small></span></a>
-          <a class="btn alt" data-dl="msi" href="https://github.com/suiciniv-dev/banditboard/releases/latest"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.1l7.4-1v7.2H3zm0 13.8l7.4 1v-7.1H3zm8.2 1.1L21 21.4v-8.6h-9.8zm0-15.9v7.3H21V2.6z"/></svg><span><span data-t="dlWindows">Baixar para Windows</span><small data-t="dlWindowsS">Instalador · Windows 10 ou mais novo</small></span></a>
+          <a class="btn main" data-dl="apk" href="https://github.com/suiciniv-dev/banditboard/releases/latest"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38L16.92 9.1A11.2 11.2 0 0 0 12 8a11.2 11.2 0 0 0-4.92 1.1L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg><span><span data-t="dlAndroid">Download for Android</span><small data-t="dlAndroidS">APK · Android 8 or newer</small></span></a>
+          <a class="btn alt" data-dl="msi" href="https://github.com/suiciniv-dev/banditboard/releases/latest"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.1l7.4-1v7.2H3zm0 13.8l7.4 1v-7.1H3zm8.2 1.1L21 21.4v-8.6h-9.8zm0-15.9v7.3H21V2.6z"/></svg><span><span data-t="dlWindows">Download for Windows</span><small data-t="dlWindowsS">Installer · Windows 10 or newer</small></span></a>
         </div>
-        <div class="soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span data-t="soon">Em breve também para iPhone (iOS) e Mac.</span></div>
-        <div class="more"><span data-t="dlMore">Prefere não instalar?</span> <a data-dl="zip" href="https://github.com/suiciniv-dev/banditboard/releases/latest" data-t="dlZip">Baixe o ZIP portátil</a> · <a href="https://github.com/suiciniv-dev/banditboard" data-t="dlGit">Código no GitHub</a> <span id="ver"></span></div>
+        <div class="soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span data-t="soon">Coming soon to iPhone (iOS) and Mac.</span></div>
+        <div class="more"><span data-t="dlMore">Rather not install?</span> <a data-dl="zip" href="https://github.com/suiciniv-dev/banditboard/releases/latest" data-t="dlZip">Get the portable ZIP</a> · <a href="https://github.com/suiciniv-dev/banditboard" data-t="dlGit">Code on GitHub</a> <span id="ver"></span></div>
       </div>
     </div>
 
     <section id="como">
-      <h2 data-t="howT">Pronto em <em>dois minutos</em></h2>
-      <p class="sub" data-t="howS">Sem conta, sem token e sem gastar tokens. Quem lê o uso é o próprio Claude Code, no seu PC.</p>
+      <h2 data-t="howT">Ready in <em>two minutes</em></h2>
+      <p class="sub" data-t="howS">No account, no token, no tokens spent. Claude Code itself reads the usage, on your PC.</p>
       <div class="steps">
-        <div class="step"><h3 data-t="s1T">Instale</h3><p data-t="s1">No celular, instale o APK. No Windows, rode o instalador, que não pede administrador.</p></div>
-        <div class="step"><h3 data-t="s2T">Conecte o Claude Code</h3><p data-t="s2">No Windows, é um clique em <b>Conectar Claude Code</b>. No celular, abra no PC o endereço que aparece na tela e cole o comando no PowerShell.</p></div>
-        <div class="step"><h3 data-t="s3T">Trabalhe em paz</h3><p data-t="s3">A cada resposta do Claude Code, o painel atualiza sozinho. Quando o limite chega perto, você fica sabendo antes.</p></div>
+        <div class="step"><h3 data-t="s1T">Install</h3><p data-t="s1">On the phone, install the APK. On Windows, run the installer; it does not need admin rights.</p></div>
+        <div class="step"><h3 data-t="s2T">Connect Claude Code</h3><p data-t="s2">On Windows, one click on <b>Connect Claude Code</b>. On the phone, open the address it shows in your PC browser and paste the command into PowerShell.</p></div>
+        <div class="step"><h3 data-t="s3T">Work in peace</h3><p data-t="s3">After each Claude Code reply, the dashboard updates on its own. When the limit gets close, you know first.</p></div>
       </div>
     </section>
 
     <section id="recursos">
-      <h2 data-t="featT">Tudo o que você precisa <em>de relance</em></h2>
-      <p class="sub" data-t="featS">Um painel feito para ficar ligado na mesa, do lado do monitor.</p>
+      <h2 data-t="featT">Everything you need <em>at a glance</em></h2>
+      <p class="sub" data-t="featS">A dashboard made to stay on your desk, next to the monitor.</p>
       <div class="feats">
-        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19V11M10 19V5M16 19v-6M22 19H2"/></svg></div><h3 data-t="f1T">Uso num piscar de olhos</h3><p data-t="f1">Sessão de 5 horas e semana, com contagem regressiva e a hora em que cada uma libera.</p></div>
-        <div class="feat"><div class="ic r"><i data-racco="Haiku"></i></div><h3 data-t="f2T">Um Racco para cada modelo</h3><p data-t="f2">Haiku, Sonnet, Opus e Fable. Eles dormem com a sessão vazia, suam em 85%, ficam vermelhos em 90% e estouram em 100%.</p></div>
-        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></div><h3 data-t="f3T">Avisos de limite</h3><p data-t="f3">Notificação em 80%, 90% e 100%, e outra quando libera. Mesmo com o app fechado.</p></div>
-        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><rect x="12" y="6" width="7" height="5" rx="1"/></svg></div><h3 data-t="f4T">Widget no Windows</h3><p data-t="f4">Completo, compacto ou só o Racco no canto da tela, sempre por cima das janelas.</p></div>
-        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div><h3 data-t="f5T">Sem token no celular</h3><p data-t="f5">O Claude Code lê o uso no seu PC com o <code>/usage</code>. O Banditboard só recebe as porcentagens, pela sua rede.</p></div>
-        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div><h3 data-t="f6T">Modo música</h3><p data-t="f6">Mostra o que está tocando, com capa e controles, e os guaxinins dançam no ritmo.</p></div>
-        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></div><h3 data-t="f7T">Histórico de 7 dias</h3><p data-t="f7">Um gráfico da sessão e da semana, com uma medição a cada 30 minutos.</p></div>
-        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><h3 data-t="f8T">Status e notícias</h3><p data-t="f8">Problemas em aberto no status.claude.com e as últimas notícias da Anthropic.</p></div>
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19V11M10 19V5M16 19v-6M22 19H2"/></svg></div><h3 data-t="f1T">Usage at a glance</h3><p data-t="f1">The 5-hour session and the week, with a countdown and the time each one resets.</p></div>
+        <div class="feat"><div class="ic r"><i data-racco="Haiku"></i></div><h3 data-t="f2T">A Racco for each model</h3><p data-t="f2">Haiku, Sonnet, Opus and Fable. They sleep when the session is empty, sweat at 85%, turn red at 90% and burst at 100%.</p></div>
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></div><h3 data-t="f3T">Limit alerts</h3><p data-t="f3">A notification at 80%, 90% and 100%, and another when it resets. Even with the app closed.</p></div>
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><rect x="12" y="6" width="7" height="5" rx="1"/></svg></div><h3 data-t="f4T">Windows widget</h3><p data-t="f4">Full, compact or just the Racco in a corner of the screen, always on top.</p></div>
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div><h3 data-t="f5T">No token on the phone</h3><p data-t="f5">Claude Code reads the usage on your PC with <code>/usage</code>. Banditboard only gets the percentages, over your network.</p></div>
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div><h3 data-t="f6T">Music mode</h3><p data-t="f6">Shows what is playing, with cover art and controls, and the raccoons dance along.</p></div>
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></div><h3 data-t="f7T">7-day history</h3><p data-t="f7">A chart of the session and the week, sampled every 30 minutes.</p></div>
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><h3 data-t="f8T">Status and news</h3><p data-t="f8">Open incidents from status.claude.com and the latest Anthropic news.</p></div>
       </div>
       <div class="moods" id="moods">
-        <div><i data-mood="SLEEPY"></i><b>0%</b><span data-t="m1">dormindo</span></div>
-        <div><i data-mood="NORMAL"></i><b>42%</b><span data-t="m2">tranquilo</span></div>
-        <div><i data-mood="SWEATY"></i><b>88%</b><span data-t="m3">suando</span></div>
-        <div><i data-mood="HOT"></i><b>97%</b><span data-t="m4">vermelho</span></div>
-        <div><i data-mood="EXHAUSTED"></i><b>100%</b><span data-t="m5">estourado</span></div>
+        <div><i data-mood="SLEEPY"></i><b>0%</b><span data-t="m1">sleeping</span></div>
+        <div><i data-mood="NORMAL"></i><b>42%</b><span data-t="m2">chill</span></div>
+        <div><i data-mood="SWEATY"></i><b>88%</b><span data-t="m3">sweating</span></div>
+        <div><i data-mood="HOT"></i><b>97%</b><span data-t="m4">red</span></div>
+        <div><i data-mood="EXHAUSTED"></i><b>100%</b><span data-t="m5">burst</span></div>
       </div>
     </section>
 
     <section id="telas">
-      <h2 data-t="shotsT">Como ele é</h2>
-      <p class="sub" data-t="shotsS">No celular deitado na mesa ou no canto da tela do Windows.</p>
+      <h2 data-t="shotsT">What it looks like</h2>
+      <p class="sub" data-t="shotsS">On a phone lying on the desk or in a corner of your Windows screen.</p>
       <div class="tabsw" role="tablist">
         <button type="button" role="tab" aria-selected="true" data-tab="a">Android</button>
         <button type="button" role="tab" aria-selected="false" data-tab="w">Windows</button>
       </div>
       <div class="gal" id="tab-a">
-        <figure><img loading="lazy" data-img="01-dashboard" src="/img/pt/01-dashboard.webp" width="1600" height="720" data-alt="aDash" alt="Painel no celular"><figcaption><b data-t="aDashT">Painel</b><span data-t="aDash">Sessão, semana, relógio e os quatro Raccos.</span></figcaption></figure>
-        <figure><img loading="lazy" data-img="02-mascots" src="/img/pt/02-mascots.webp" width="1600" height="720" data-alt="aMasc" alt="Tela dos mascotes"><figcaption><b data-t="aMascT">Mascotes</b><span data-t="aMasc">Quando um modelo tem problema, o Racco dele fica cinza.</span></figcaption></figure>
-        <figure><img loading="lazy" src="/img/android/03-alerts.webp" width="1080" height="630" data-alt="aAlert" alt="Notificações de limite"><figcaption><b data-t="aAlertT">Avisos</b><span data-t="aAlert">A notificação diz quando o limite libera.</span></figcaption></figure>
-        <figure><img loading="lazy" data-img="11-music" src="/img/pt/11-music.webp" width="1600" height="720" data-alt="aMusic" alt="Tela de música"><figcaption><b data-t="aMusicT">Música</b><span data-t="aMusic">Capa, controles, volume e guaxinins dançando.</span></figcaption></figure>
+        <figure><img loading="lazy" data-img="01-dashboard" src="/img/en/01-dashboard.webp" width="1600" height="720" data-alt="aDash" alt="Session, week, clock and the four Raccos."><figcaption><b data-t="aDashT">Dashboard</b><span data-t="aDash">Session, week, clock and the four Raccos.</span></figcaption></figure>
+        <figure><img loading="lazy" data-img="02-mascots" src="/img/en/02-mascots.webp" width="1600" height="720" data-alt="aMasc" alt="When a model has an incident, its Racco turns gray."><figcaption><b data-t="aMascT">Mascots</b><span data-t="aMasc">When a model has an incident, its Racco turns gray.</span></figcaption></figure>
+        <figure><img loading="lazy" src="/img/android/03-alerts.webp" width="1080" height="630" data-alt="aAlert" alt="The notification tells you when the limit resets."><figcaption><b data-t="aAlertT">Alerts</b><span data-t="aAlert">The notification tells you when the limit resets.</span></figcaption></figure>
+        <figure><img loading="lazy" data-img="11-music" src="/img/en/11-music.webp" width="1600" height="720" data-alt="aMusic" alt="Cover art, controls, volume and dancing raccoons."><figcaption><b data-t="aMusicT">Music</b><span data-t="aMusic">Cover art, controls, volume and dancing raccoons.</span></figcaption></figure>
       </div>
       <div class="gal w" id="tab-w" hidden>
-        <figure><img loading="lazy" data-img="windows-dashboard" src="/img/pt/windows-dashboard.webp" width="1200" height="1220" data-alt="wDash" alt="Painel do Windows"><figcaption><b data-t="wDashT">Painel do Windows</b><span data-t="wDash">Dois cliques no widget abrem o painel completo.</span></figcaption></figure>
+        <figure><img loading="lazy" data-img="windows-dashboard" src="/img/en/windows-dashboard.webp" width="1200" height="1220" data-alt="wDash" alt="Double-click the widget to open the full dashboard."><figcaption><b data-t="wDashT">Windows dashboard</b><span data-t="wDash">Double-click the widget to open the full dashboard.</span></figcaption></figure>
         <div class="col">
-          <figure><img loading="lazy" data-img="windows-widget" src="/img/pt/windows-widget.webp" width="960" height="380" data-alt="wWid" alt="Widget completo"><figcaption><b data-t="wWidT">Widget</b><span data-t="wWid">Sempre por cima das janelas, onde você quiser.</span></figcaption></figure>
+          <figure><img loading="lazy" data-img="windows-widget" src="/img/en/windows-widget.webp" width="960" height="380" data-alt="wWid" alt="Always on top, wherever you want it."><figcaption><b data-t="wWidT">Widget</b><span data-t="wWid">Always on top, wherever you want it.</span></figcaption></figure>
           <div class="pair">
-            <figure><img loading="lazy" data-img="windows-compact" src="/img/pt/windows-compact.webp" data-alt="wComp" alt="Widget compacto"><figcaption><b data-t="wCompT">Compacto</b></figcaption></figure>
-            <figure><img loading="lazy" data-img="windows-mini" src="/img/pt/windows-mini.webp" data-alt="wMini" alt="Só o Racco"><figcaption><b data-t="wMiniT">Só o Racco</b></figcaption></figure>
+            <figure><img loading="lazy" data-img="windows-compact" src="/img/en/windows-compact.webp" data-alt="wComp" alt="Widget compacto"><figcaption><b data-t="wCompT">Compact</b></figcaption></figure>
+            <figure><img loading="lazy" data-img="windows-mini" src="/img/en/windows-mini.webp" data-alt="wMini" alt="Só o Racco"><figcaption><b data-t="wMiniT">Just the Racco</b></figcaption></figure>
           </div>
         </div>
       </div>
-      <p class="note" id="shotNote" data-t="shotNote">O app segue o idioma do seu celular, em português ou inglês.</p>
+      <p class="note" id="shotNote" data-t="shotNote">The app follows your phone language, in English or Portuguese.</p>
     </section>
 
     <section id="privacidade">
-      <h2 data-t="privT">Seus dados <em>ficam em casa</em></h2>
-      <p class="sub" data-t="privS">O Banditboard só precisa dos números do limite. O resto nunca sai do seu PC.</p>
+      <h2 data-t="privT">Your data <em>stays home</em></h2>
+      <p class="sub" data-t="privS">Banditboard only needs the limit numbers. Everything else stays on your PC.</p>
       <div class="privs">
-        <div class="priv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div><h3 data-t="pv1T">Sem token e sem login</h3><p data-t="pv1">O celular e o Windows nunca veem a sua conta. Quem lê o uso é o próprio Claude Code, no seu PC.</p></div>
-        <div class="priv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V11M10 19V5M16 19v-6M22 19H2"/></svg></div><h3 data-t="pv2T">Só os números</h3><p data-t="pv2">Vão só as porcentagens e a hora em que cada limite libera. Nada das suas conversas, dos arquivos ou dos projetos.</p></div>
-        <div class="priv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-7h6v7"/></svg></div><h3 data-t="pv3T">Pela sua rede</h3><p data-t="pv3">Os números vão direto do PC para o celular ou para o Windows, com uma chave de pareamento. Não passam por servidor nenhum.</p></div>
-        <div class="priv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></div><h3 data-t="pv4T">Código aberto</h3><p data-t="pv4">Licença MIT. Os scripts que rodam no seu PC são curtos, e dá para <a href="https://github.com/suiciniv-dev/banditboard/tree/main/app/src/main/assets/pc">ler cada linha no GitHub</a>.</p></div>
+        <div class="priv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div><h3 data-t="pv1T">No token, no login</h3><p data-t="pv1">The phone and the Windows app never see your account. Claude Code itself reads the usage, on your PC.</p></div>
+        <div class="priv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V11M10 19V5M16 19v-6M22 19H2"/></svg></div><h3 data-t="pv2T">Just the numbers</h3><p data-t="pv2">Only the percentages and when each limit resets. Nothing from your chats, files or projects.</p></div>
+        <div class="priv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-7h6v7"/></svg></div><h3 data-t="pv3T">Over your network</h3><p data-t="pv3">The numbers go straight from the PC to the phone or the Windows app, with a pairing key. No server in between.</p></div>
+        <div class="priv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></div><h3 data-t="pv4T">Open source</h3><p data-t="pv4">MIT licensed. The scripts that run on your PC are short, and you can <a href="https://github.com/suiciniv-dev/banditboard/tree/main/app/src/main/assets/pc">read every line on GitHub</a>.</p></div>
       </div>
     </section>
 
     <section id="perguntas">
-      <h2 data-t="faqT">Perguntas frequentes</h2>
+      <h2 data-t="faqT">FAQ</h2>
       <div class="faq">
-        <details><summary data-t="q1">É grátis mesmo?</summary><p data-t="a1">Sim. O Banditboard é gratuito e de código aberto, e todas as versões ficam no GitHub.</p></details>
-        <details><summary data-t="q2">Gasta os meus tokens?</summary><p data-t="a2">Não. Depois das respostas do Claude Code, um hook roda o <code>/usage</code>, que é um comando local e não chama o modelo. Ele roda no máximo a cada 2 minutos.</p></details>
-        <details><summary data-t="q3">Com qual plano funciona?</summary><p data-t="a3">Com os planos em que o <code>/usage</code> do Claude Code mostra os limites de sessão e de semana, como o Pro e o Max. O uso pelo claude.ai e por outros aparelhos também entra na conta.</p></details>
-        <details><summary data-t="q4">Meus dados saem de casa?</summary><p data-t="a4">Não. O PC manda só as porcentagens e a hora em que cada limite libera, direto para o celular ou para o app do Windows, pela sua rede e com uma chave de pareamento. Nada das suas conversas nem dos seus arquivos.</p></details>
-        <details><summary data-t="q5">Preciso deixar o PC ligado?</summary><p data-t="a5">O uso chega enquanto você usa o Claude Code no PC. Com o PC desligado, o painel mostra o último envio e zera a janela sozinho quando passa a hora de liberar.</p></details>
-        <details><summary data-t="q6">Apareceu um aviso ao instalar. É normal?</summary><p data-t="a6">É. O APK vem do GitHub, e não da Play Store, então o Android pede para permitir "instalar apps desconhecidos". No Windows, se aparecer o aviso de editor desconhecido, clique em "Mais informações" e em "Executar assim mesmo": o instalador ainda não tem assinatura digital.</p></details>
-        <details><summary data-t="q7">Tem para iPhone ou Mac?</summary><p data-t="a7">Está a caminho: as versões para iPhone e Mac estão nos planos. Por enquanto são Android e Windows, e o script que lê o uso roda no Windows.</p></details>
+        <details><summary data-t="q1">Is it really free?</summary><p data-t="a1">Yes. Banditboard is free and open source, and every release is on GitHub.</p></details>
+        <details><summary data-t="q2">Does it spend my tokens?</summary><p data-t="a2">No. After Claude Code replies, a hook runs <code>/usage</code>, a local command that does not call the model. It runs at most every 2 minutes.</p></details>
+        <details><summary data-t="q3">Which plans does it work with?</summary><p data-t="a3">Plans where Claude Code's <code>/usage</code> shows session and weekly limits, like Pro and Max. Usage from claude.ai and other devices counts too.</p></details>
+        <details><summary data-t="q4">Does my data leave home?</summary><p data-t="a4">No. The PC sends only the percentages and when each limit resets, straight to the phone or the Windows app, over your network and with a pairing key. Nothing from your chats or your files.</p></details>
+        <details><summary data-t="q5">Does my PC need to stay on?</summary><p data-t="a5">Usage arrives while you use Claude Code on the PC. With the PC off, the dashboard keeps the last update and clears a window on its own once its reset time passes.</p></details>
+        <details><summary data-t="q6">I got a warning when installing. Is that normal?</summary><p data-t="a6">Yes. The APK comes from GitHub, not the Play Store, so Android asks you to allow "install unknown apps". On Windows, if you see the unknown publisher warning, click "More info" and then "Run anyway": the installer is not digitally signed yet.</p></details>
+        <details><summary data-t="q7">Is there an iPhone or Mac version?</summary><p data-t="a7">On the way: iPhone and Mac versions are planned. For now it is Android and Windows, and the script that reads the usage runs on Windows.</p></details>
       </div>
     </section>
 
     <section>
       <div class="cta">
         <div class="logo"><i data-racco="Fable"></i></div>
-        <h2 data-t="ctaT">Chega de surpresa no meio da tarefa.</h2>
-        <p class="sub" style="margin:0 auto" data-t="ctaS">Instale no celular, no Windows ou nos dois. O mesmo hook manda o uso para todos.</p>
+        <h2 data-t="ctaT">No more surprises mid-task.</h2>
+        <p class="sub" style="margin:0 auto" data-t="ctaS">Install it on your phone, on Windows or both. The same hook sends the usage to all of them.</p>
         <div class="row">
-          <a class="btn main" data-dl="apk" href="https://github.com/suiciniv-dev/banditboard/releases/latest" data-t="dlAndroid">Baixar para Android</a>
-          <a class="btn alt" data-dl="msi" href="https://github.com/suiciniv-dev/banditboard/releases/latest" data-t="dlWindows">Baixar para Windows</a>
-          <a class="star" href="https://github.com/suiciniv-dev/banditboard"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg><span data-t="starCta">Deixe uma estrela no GitHub</span><b data-stars></b></a>
+          <a class="btn main" data-dl="apk" href="https://github.com/suiciniv-dev/banditboard/releases/latest" data-t="dlAndroid">Download for Android</a>
+          <a class="btn alt" data-dl="msi" href="https://github.com/suiciniv-dev/banditboard/releases/latest" data-t="dlWindows">Download for Windows</a>
+          <a class="star" href="https://github.com/suiciniv-dev/banditboard"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg><span data-t="starCta">Star it on GitHub</span><b data-stars></b></a>
         </div>
       </div>
     </section>
@@ -546,8 +554,8 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
 
 <footer>
   <div class="wrap">
-    <span><span data-t="by">Feito por</span> <a href="https://suiciniv-dev-apps.pages.dev/">Vinícius Pires da Silva</a> · <a href="https://github.com/suiciniv-dev/banditboard">GitHub</a> · <a href="https://github.com/suiciniv-dev/banditboard/blob/main/LICENSE" data-t="lic">Licença MIT</a></span>
-    <span data-t="legal">Projeto pessoal, sem afiliação com a Anthropic. Claude e Claude Code são marcas da Anthropic.</span>
+    <span><span data-t="by">Made by</span> <a href="https://suiciniv-dev-apps.pages.dev/">Vinícius Pires da Silva</a> · <a href="https://github.com/suiciniv-dev/banditboard">GitHub</a> · <a href="https://github.com/suiciniv-dev/banditboard/blob/main/LICENSE" data-t="lic">MIT License</a></span>
+    <span data-t="legal">Personal project, not affiliated with Anthropic. Claude and Claude Code are trademarks of Anthropic.</span>
   </div>
 </footer>
 
