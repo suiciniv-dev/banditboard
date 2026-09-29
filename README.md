@@ -8,6 +8,13 @@
   <img src="prints/1.8.0/hero.gif" width="760" alt="Raccoons sleeping with an empty session, waking up, turning red near the limit, bursting at 100% and dancing when music plays">
 </p>
 
+<details>
+<summary><b>▶️ Watch the video (31 s)</b></summary>
+
+https://github.com/user-attachments/assets/6b3e17d0-ecb2-49aa-ab76-61863cc9772e
+
+</details>
+
 <p align="center">
   <a href="../../releases/latest"><img src="https://img.shields.io/github/v/release/suiciniv-dev/banditboard?label=download&color=d77757" alt="Latest release"></a>
   <a href="../../releases"><img src="https://img.shields.io/github/downloads/suiciniv-dev/banditboard/total?color=d77757" alt="Total downloads"></a>

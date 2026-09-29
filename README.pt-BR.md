@@ -8,6 +8,13 @@
   <img src="prints/1.8.0/hero.gif" width="760" alt="Guaxinins dormindo com a sessão vazia, acordando, ficando vermelhos perto do limite, estourando em 100% e dançando com música">
 </p>
 
+<details>
+<summary><b>▶️ Veja em vídeo (31 s)</b></summary>
+
+https://github.com/user-attachments/assets/be7d9ca2-20fa-4d44-8a3b-9ddea6b213d0
+
+</details>
+
 <p align="center">
   <a href="../../releases/latest"><img src="https://img.shields.io/github/v/release/suiciniv-dev/banditboard?label=baixar&color=d77757" alt="Última versão"></a>
   <a href="../../releases"><img src="https://img.shields.io/github/downloads/suiciniv-dev/banditboard/total?label=downloads&color=d77757" alt="Total de downloads"></a>
