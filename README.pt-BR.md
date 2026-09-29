@@ -199,6 +199,6 @@ dentro do APK, em `assets/licenses/`.
 O Banditboard é um projeto pessoal de fã, **sem vínculo, apoio ou patrocínio da Anthropic**. Claude e Claude Code são marcas da
 Anthropic, PBC.
 
-Feito com ❤️ por [Vinícius Pires da Silva](https://www.linkedin.com/in/vin%C3%ADcius-pires-da-silva-094066204/).
+Feito com ❤️ por [Vinícius Pires da Silva](https://www.linkedin.com/in/viniciuspiresdasilva/).
 
 **Gostou? Deixe uma ⭐**
