@@ -225,7 +225,7 @@ fun Mascot(
         LaunchedEffect(seed, animate) {
             pose = pose.copy(look = 0, arm = if (seed % 2 == 0) 1 else -1, bang = true)
             while (animate) {
-                delay(450)
+                delay(if (pose.bang) 700 else 350)
                 pose = pose.copy(bang = !pose.bang)
             }
         }

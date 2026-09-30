@@ -37,7 +37,8 @@ sweats, bursts at 100% and dances when music plays.
 
 It started on that old Android phone sitting in a drawer, and now it runs wherever you look: an iPhone with Home Screen
 widgets and StandBy, an Apple Watch with complications, a small always-on-top widget on Windows, and Racco with your session
-percentage in the Mac menu bar. Use one or all of them at once: the same Claude Code hook feeds every device.
+percentage in the Mac menu bar. Use one or all of them at once: the same Claude Code hook feeds every device. Turn on Claude activity and Racco also follows what
+Claude Code is doing right now: working with you, raising a hand when Claude needs you and sleeping when it stops.
 
 ### Why Banditboard?
 
@@ -49,6 +50,7 @@ itself, so there is no token or login to hand over.
 ## ✨ Features
 
 - 📊 **Usage at a glance**: 5-hour session and 7-day week, with a countdown and the local time each one resets
+- 🤖 **Claude activity** (optional): the project, the branch and what Claude Code is doing right now, and each model's Racco reacts. It works along, shows "…" while commands run, raises a hand with "!" when Claude asks for permission or has a question, celebrates when it finishes and sleeps when it stops. If Claude keeps waiting for you, Windows and Android notify you. On Windows and Android since 1.15.0; the Mac, iPhone and Apple Watch get it in the next version
 - 🦝 **Racco, the raccoon**: one per model (Haiku, Sonnet, Opus and Fable). They blink, wave, sleep when the session is empty, sweat from 85%, turn red from 90% and burst at 100%. Skins, tints and the classic Racco are in the settings
 - 🔔 **Limit alerts**: a notification at 80%, 90% and 100% of the session or the week, and another when it resets. On Android they arrive even with the app closed
 - 📱 **iPhone**: dashboard, Home Screen and Lock Screen widgets, StandBy on the charger, and alerts
@@ -71,10 +73,10 @@ itself, so there is no token or login to hand over.
 | Platform | File | |
 |---|---|---|
 | Android 8.0 or newer | `Banditboard-<version>.apk` | [Download](../../releases/latest) |
-| iPhone (iOS 17 or newer) and Apple Watch (watchOS 10 or newer), beta | `Banditboard-<version>-iphone.ipa` | [Download](../../releases/latest) |
+| iPhone (iOS 17 or newer) and Apple Watch (watchOS 10 or newer), beta | `Banditboard-1.14.0-iphone.ipa` | [Download](../../releases/tag/v1.14.0) |
 | Windows 10 or newer, installer | `Banditboard-<version>.msi` | [Download](../../releases/latest) |
 | Windows 10 or newer, portable | `Banditboard-<version>-windows.zip` | [Download](../../releases/latest) |
-| macOS 11 or newer, Intel or Apple silicon | `Banditboard-<version>.dmg` | [Download](../../releases/latest) |
+| macOS 11 or newer, Intel or Apple silicon | `Banditboard-1.14.0.dmg` | [Download](../../releases/tag/v1.14.0) |
 
 ### On your computer
 
@@ -112,6 +114,14 @@ side while locked and add Banditboard to the widget stacks.
 and tap "Install" next to Banditboard. Open Banditboard on the iPhone once: it hands the pairing to the watch, and from then on
 the watch fetches usage by itself. To add a complication, touch and hold the watch face → Edit → Complications → Banditboard.
 
+### Claude activity
+
+On the Windows dashboard, turn on "Show what Claude Code is doing" in the Claude activity card. Banditboard adds a few
+lightweight hooks to Claude Code, and from the next session on the widget shows the state, the project and the branch, like
+"Running the tests · Simix.Ponto.Cloud · feature/facial". The file name is an extra option. Your phone gets it too, and when
+Claude asks for permission or has a question and nobody answers in 6 seconds, the computer and the phone notify you. The hooks
+only talk to the Banditboard app on your own computer; when it is closed, they do nothing.
+
 ### Using several devices
 
 Connect each one once. The hook keeps a list of destinations in `~/.claude/clawdboard-targets.json` and sends to all of them,
@@ -132,6 +142,7 @@ so connecting a new device never disconnects the others.
 - On iPhone and Apple Watch, the pairing lives in the Keychain, shared only with Banditboard's own widgets.
 - The Android web dashboard only runs on the local network, asks for the same PIN and only answers when the Host is an IP address, `localhost` or a `.local` name, which blocks DNS rebinding. Logging in on the dashboard also unlocks the phone screen.
 - The installer keeps a backup of your Claude Code settings in `settings.json.antes-do-clawdboard`, adds two hooks (`Stop` and `SessionStart`) and does not touch your status line.
+- **Claude activity.** The activity hooks send each Claude Code event only to the Banditboard app on the same computer (`127.0.0.1`). The app keeps just the state, the project folder name and the branch (and the file name, if you turn it on) and sends only that to your other devices, the same way it sends usage: over your home network or encrypted end to end through the server. Prompts, code and commands never leave the computer.
 - The Windows and Mac apps receive pushes only on `127.0.0.1`, and they still check the pairing key on every push.
 - Music mode needs notification access because Android only shows the active player to apps with that access. Banditboard uses it to see and control the player; it does not read your notifications.
 
@@ -144,7 +155,7 @@ installer). The server is [`worker/src/index.js`](worker/src/index.js).
 **Check the download.** Every release lists the SHA-256 of each file. Compare it with yours:
 
 ```powershell
-Get-FileHash .\Banditboard-1.14.0.msi -Algorithm SHA256
+Get-FileHash .\Banditboard-1.15.0.msi -Algorithm SHA256
 ```
 
 ```sh
@@ -208,6 +219,18 @@ corner and inline shapes.
 Click Racco in the menu bar for the small panel. From there you can turn the desktop widget on or off, open the dashboard or
 refresh now. The dashboard has every setting, "Open at login" and the code to pair the iPhone.
 
+### Claude activity
+
+<p>
+  <img src="prints/1.15.0/en/windows-activity.webp" width="480" alt="Windows widget showing Editing FacialService.cs · Simix.Ponto.Cloud · feature/facial, with the Opus raccoon working">
+  <img src="prints/1.15.0/en/windows-activity-permission.webp" width="480" alt="Windows widget with the Sonnet raccoon raising a hand and an exclamation mark while Claude asks permission to run a command">
+</p>
+
+<img src="prints/1.15.0/en/racco-activity.webp" width="600" alt="Racco reactions: thinking, running the tests with dots, asking permission with an exclamation mark, an error with a red cross, and idle asleep">
+
+Each model's Racco follows its own session: here Opus is editing while Sonnet waits for permission. The compact widget and Just Racco
+react too, and on the Mac the menu bar gets an orange "!" when Claude needs you.
+
 ### Windows widget
 
 <p>
@@ -248,6 +271,7 @@ Opus is gray with X eyes in these shots because the sample data includes an open
 - **"Restricted setting" when turning on music mode.** On Android 13 and later, an APK installed from a browser or file manager can't get notification access right away. Go to Settings → Apps → Banditboard → ⋮ → Allow restricted settings, and try again.
 - **The phone stopped updating after the router restarted.** With the PIN pairing, the phone probably got a new IP. The screen and the dashboard footer always show the current address: open it on the PC and run the command again. To avoid this, reserve a fixed IP for the phone in the router, or connect from anywhere through the website.
 - **Windows can't connect Claude Code.** The widget shows the reason, and "What to do" opens the dashboard with the next step and the exact PowerShell error. The details go to `%APPDATA%\Banditboard\conectar.log` (without the pairing key), which you can attach to an [issue](../../issues).
+- **Claude activity doesn't show up.** Claude Code loads hooks when a session starts, so open a new session after turning it on. The Windows or Mac app has to be running, because it is what receives the events.
 - **The numbers don't move.** The hook runs after Claude Code responses, at most every 2 minutes. To fetch now, use "Refresh now" on the Windows or Mac dashboard, in the tray menu or in the Mac menu bar panel.
 
 ## 🧭 Roadmap

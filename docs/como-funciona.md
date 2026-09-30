@@ -150,6 +150,41 @@ O app do Apple Watch recebe o pareamento do iPhone uma vez, pelo WatchConnectivi
 casa ou pelo servidor. Ele tem três páginas (sessão, semana e modelos) e complicações em quatro formatos: redonda, retangular,
 de canto e em linha.
 
+## Atividade do Claude
+
+Ligar "Mostrar o que o Claude Code está fazendo" no painel do Windows ou do Mac roda o instalador de novo com os hooks da
+atividade: um hook de comando assíncrono em `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`,
+`PostToolUseFailure`, `PermissionRequest`, `PermissionDenied`, `Notification`, `Stop`, `StopFailure` e `SessionEnd`. Cada um
+passa o evento que o Claude Code entrega para o `curl`, que manda para `http://127.0.0.1:<porta>/api/hook` com a chave de
+pareamento. O `curl` é chamado pelo caminho completo, desiste em meio segundo quando o app está fechado e sempre sai com 0, então
+o Claude Code nunca espera nem mostra erro de hook. Desligar a opção tira só esses hooks.
+
+O app (`core/Activity.kt`) transforma os eventos num estado por sessão:
+
+| Evento | Estado |
+|---|---|
+| Um prompt | Trabalhando ("Pensando") |
+| Edit, Write | Trabalhando ("Editando <arquivo>") |
+| Read, Grep, Glob | Trabalhando ("Lendo") |
+| Bash | Rodando comando: testes, compilação ou outro, deduzido do comando sem guardar ele |
+| Pedido de permissão | Pedindo permissão |
+| AskUserQuestion, aprovação do plano | Pergunta |
+| Ferramenta terminou, permissão respondida | Trabalhando |
+| Stop | Terminou, e Parado depois de 3 minutos |
+| StopFailure | Erro |
+| 10 minutos sem eventos, ou aviso de ocioso | Parado |
+
+O projeto é o nome da pasta que tem o `.git`, e a branch é lida do `.git/HEAD` (worktree incluído), sem rodar o `git`. Com
+várias sessões, vale a mais urgente: pergunta, permissão, erro, comando, trabalhando, terminou, parado. O modelo de cada sessão
+decide qual Racco reage. Quando uma pergunta ou permissão continua esperando depois de 6 segundos, o computador mostra uma
+notificação.
+
+O app manda só `{"activity": {"at", "sessions": [{project, branch, model, state, doing, file, since, seen}]}}` para os outros
+aparelhos, junto com o último uso e o `usage_at`, no máximo a cada 3 segundos: direto para o celular pareado por PIN, na
+resposta do compartilhamento na rede de casa e cifrado para a caixa do servidor. O `file` vai vazio, a menos que você ligue.
+Com a atividade chegando, o celular busca a cada 5 segundos pela rede de casa e a cada 20 segundos pelo servidor, e também avisa
+depois de 6 segundos. Atividade com mais de 15 minutos é ignorada.
+
 ## De onde vêm os dados
 
 - **Uso:** a saída do `claude -p "/usage"`, um comando local do Claude Code que não chama nenhum modelo. Ele lê as linhas "Current session", "Current week (all models)" e "Current week (<modelo>)", com a hora em que cada uma libera.

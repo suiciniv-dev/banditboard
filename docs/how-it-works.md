@@ -146,6 +146,41 @@ The Apple Watch app gets the pairing from the iPhone through WatchConnectivity o
 home network or through the server. It has three pages (session, week and models) and complications in four shapes: circular,
 rectangular, corner and inline.
 
+## Claude activity
+
+Turning on "Show what Claude Code is doing" on the Windows or Mac dashboard reruns the installer with the activity hooks: one
+async command hook on `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `PermissionRequest`,
+`PermissionDenied`, `Notification`, `Stop`, `StopFailure` and `SessionEnd`. Each one pipes the event Claude Code gives it to
+`curl`, which posts it to `http://127.0.0.1:<port>/api/hook` with the pairing key. `curl` is called by its full path, gives up
+after half a second when the app is closed and always exits with 0, so Claude Code never waits or shows a hook error. Turning
+the option off removes only these hooks.
+
+The app (`core/Activity.kt`) turns the events into one state per session:
+
+| Event | State |
+|---|---|
+| A prompt | Working ("Thinking") |
+| Edit, Write | Working ("Editing <file>") |
+| Read, Grep, Glob | Working ("Reading") |
+| Bash | Running command: tests, build or other, guessed from the command without keeping it |
+| Permission request | Waiting for permission |
+| AskUserQuestion, plan approval | Asking question |
+| Tool finished, permission answered | Working |
+| Stop | Finished, and Idle after 3 minutes |
+| StopFailure | Error |
+| No event for 10 minutes, or idle notification | Idle |
+
+The project is the name of the folder that holds `.git`, and the branch is read from `.git/HEAD` (worktrees included), without
+running `git`. With several sessions, the most urgent one wins: question, permission, error, command, working, finished, idle.
+Each session's model decides which Racco reacts. When a question or a permission is still waiting after 6 seconds, the computer
+shows a notification.
+
+The app sends only `{"activity": {"at", "sessions": [{project, branch, model, state, doing, file, since, seen}]}}` to the other
+devices, together with the latest usage and `usage_at`, at most every 3 seconds: straight to the phone paired by PIN, in the
+answer of the home network sharing and encrypted to the server box. `file` is empty unless you turn it on. With the activity
+arriving, the phone fetches every 5 seconds on the home network and every 20 seconds through the server, and it also notifies
+after 6 seconds. Activity older than 15 minutes is ignored.
+
 ## Where the data comes from
 
 - **Usage:** the output of `claude -p "/usage"`, a local Claude Code command that makes no model call: the "Current session", "Current week (all models)" and "Current week (<model>)" lines, with their reset times.

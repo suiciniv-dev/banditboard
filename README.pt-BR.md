@@ -38,7 +38,8 @@ dorme, sua, estoura quando chega em 100% e dança quando toca música.
 Começou naquele celular Android esquecido na gaveta e hoje vai para onde você olha: no iPhone, com widgets na Tela de Início
 e no StandBy; no Apple Watch, com complicações no mostrador; no Windows, num widget pequeno sempre por cima das janelas; e no
 Mac, com o Racco e a porcentagem da sessão na barra de menus. Use um só ou todos juntos: o mesmo hook do Claude Code manda o
-uso para todos os aparelhos.
+uso para todos os aparelhos. Ligando a atividade do Claude, o Racco também acompanha o que o Claude Code está fazendo naquele
+momento: trabalha junto, levanta a mão quando o Claude precisa de você e dorme quando ele para.
 
 ### Por que o Banditboard?
 
@@ -50,6 +51,7 @@ então você não entrega token nem login para ninguém.
 ## ✨ O que ele faz
 
 - 📊 **Uso num piscar de olhos**: sessão de 5 horas e semana, com contagem regressiva e a hora em que cada uma libera
+- 🤖 **Atividade do Claude** (opcional): o projeto, a branch e o que o Claude Code está fazendo agora, e o Racco de cada modelo reage. Ele trabalha junto, mostra "…" enquanto roda comando, levanta a mão com "!" quando o Claude pede permissão ou tem uma pergunta, comemora quando termina e dorme quando ele para. Se o Claude continuar esperando por você, o Windows e o Android avisam. No Windows e no Android desde a 1.15.0; o Mac, o iPhone e o Apple Watch recebem na próxima versão
 - 🦝 **Racco, o guaxinim**: um para cada modelo (Haiku, Sonnet, Opus e Fable). Eles piscam, acenam, dormem quando a sessão está vazia, começam a suar em 85%, ficam vermelhos em 90% e estouram em 100%. Skins, cores e o Racco clássico ficam nas configurações
 - 🔔 **Avisos de limite**: notificação quando a sessão ou a semana chegam em 80%, 90% e 100%, e outra quando liberam. No Android, chegam mesmo com o app fechado
 - 📱 **iPhone**: painel, widgets na Tela de Início e na Tela Bloqueada, StandBy no carregador e avisos
@@ -72,10 +74,10 @@ então você não entrega token nem login para ninguém.
 | Onde | Arquivo | |
 |---|---|---|
 | Android 8.0 ou mais novo | `Banditboard-<versão>.apk` | [Baixar](../../releases/latest) |
-| iPhone (iOS 17 ou mais novo) e Apple Watch (watchOS 10 ou mais novo), beta | `Banditboard-<versão>-iphone.ipa` | [Baixar](../../releases/latest) |
+| iPhone (iOS 17 ou mais novo) e Apple Watch (watchOS 10 ou mais novo), beta | `Banditboard-1.14.0-iphone.ipa` | [Baixar](../../releases/tag/v1.14.0) |
 | Windows 10 ou mais novo, instalador | `Banditboard-<versão>.msi` | [Baixar](../../releases/latest) |
 | Windows 10 ou mais novo, portátil | `Banditboard-<versão>-windows.zip` | [Baixar](../../releases/latest) |
-| macOS 11 ou mais novo, Intel ou Apple Silicon | `Banditboard-<versão>.dmg` | [Baixar](../../releases/latest) |
+| macOS 11 ou mais novo, Intel ou Apple Silicon | `Banditboard-1.14.0.dmg` | [Baixar](../../releases/tag/v1.14.0) |
 
 ### No computador
 
@@ -114,6 +116,14 @@ em "Instalar" do lado do Banditboard. Abra o Banditboard no iPhone uma vez: ele 
 diante o relógio busca o uso sozinho. Para colocar uma complicação, toque e segure o mostrador → Editar → Complicações →
 Banditboard.
 
+### Atividade do Claude
+
+No painel do Windows, ligue "Mostrar o que o Claude Code está fazendo" no cartão Atividade do Claude. O Banditboard
+coloca alguns hooks leves no Claude Code, e a partir da próxima sessão o widget mostra o estado, o projeto e a branch, algo
+como "Rodando os testes · Simix.Ponto.Cloud · feature/facial". O nome do arquivo é uma opção a mais. O celular recebe também, e
+quando o Claude pede permissão ou tem uma pergunta e ninguém responde em 6 segundos, o computador e o celular avisam. Os hooks só
+falam com o app do Banditboard no próprio computador; com ele fechado, não fazem nada.
+
 ### Usando vários aparelhos
 
 Conecte cada um uma vez. O hook guarda a lista de destinos em `~/.claude/clawdboard-targets.json` e manda para todos, então
@@ -134,6 +144,7 @@ conectar um aparelho novo nunca desconecta os outros.
 - No iPhone e no Apple Watch, o pareamento fica no Keychain, compartilhado só com os widgets do próprio Banditboard.
 - O painel web do Android só funciona dentro da sua rede, pede o mesmo PIN e só responde quando o endereço é um IP, `localhost` ou um nome `.local`, o que impede ataques de DNS rebinding. Entrar no painel também desbloqueia a tela do celular.
 - O instalador faz um backup das configurações do Claude Code em `settings.json.antes-do-clawdboard`, adiciona dois hooks (`Stop` e `SessionStart`) e não mexe na sua status line.
+- **Atividade do Claude.** Os hooks da atividade mandam cada evento do Claude Code só para o app do Banditboard no mesmo computador (`127.0.0.1`). O app guarda apenas o estado, o nome da pasta do projeto e a branch (e o nome do arquivo, se você ligar) e manda só isso para os seus outros aparelhos, do mesmo jeito que manda o uso: pela rede de casa ou cifrado de ponta a ponta pelo servidor. Prompt, código e comando nunca saem do computador.
 - Os apps do Windows e do Mac só recebem envios em `127.0.0.1`, e mesmo assim conferem a chave de pareamento a cada envio.
 - O modo música precisa de acesso às notificações porque é só assim que o Android mostra o player que está tocando. O Banditboard usa isso para ver e controlar o player; ele não lê as suas notificações.
 
@@ -146,7 +157,7 @@ instalador). O servidor é o [`worker/src/index.js`](worker/src/index.js).
 **Confira o download.** Cada versão traz o SHA-256 de cada arquivo. Compare com o do arquivo que você baixou:
 
 ```powershell
-Get-FileHash .\Banditboard-1.14.0.msi -Algorithm SHA256
+Get-FileHash .\Banditboard-1.15.0.msi -Algorithm SHA256
 ```
 
 ```sh
@@ -211,6 +222,18 @@ canto e em linha.
 Clique no Racco da barra de menus para abrir o painelzinho. Dali você liga ou desliga o widget na mesa, abre o painel ou
 atualiza na hora. O painel tem todos os ajustes, o "Abrir ao iniciar sessão" e o código para parear o iPhone.
 
+### Atividade do Claude
+
+<p>
+  <img src="prints/1.15.0/pt/windows-activity.webp" width="480" alt="Widget do Windows mostrando Editando FacialService.cs · Simix.Ponto.Cloud · feature/facial, com o Racco do Opus trabalhando">
+  <img src="prints/1.15.0/pt/windows-activity-permission.webp" width="480" alt="Widget do Windows com o Racco do Sonnet de mão levantada e um ponto de exclamação enquanto o Claude pede permissão para rodar um comando">
+</p>
+
+<img src="prints/1.15.0/pt/racco-activity.webp" width="600" alt="Reações do Racco: pensando, rodando os testes com reticências, pedindo permissão com um ponto de exclamação, erro com um X vermelho e parado dormindo">
+
+O Racco de cada modelo acompanha a sessão dele: aqui o Opus está editando enquanto o Sonnet espera uma permissão. O widget
+compacto e o "Só o Racco" também reagem, e no Mac a barra de menus ganha um "!" laranja quando o Claude precisa de você.
+
 ### Widget no Windows
 
 <p>
@@ -253,6 +276,7 @@ status.claude.com.
 - **"Configuração restrita" ao ligar o modo música.** No Android 13 ou mais novo, um APK instalado pelo navegador ou por um gerenciador de arquivos não recebe acesso às notificações de cara. Vá em Configurações → Apps → Banditboard → ⋮ → Permitir configurações restritas e tente de novo.
 - **O celular parou de atualizar depois que o roteador reiniciou.** No pareamento por PIN, provavelmente o celular mudou de IP. A tela e o rodapé do painel sempre mostram o endereço atual: abra esse endereço no PC e rode o comando de novo. Para não ter esse problema, reserve um IP fixo para o celular no roteador, ou conecte de qualquer lugar pelo site.
 - **O Windows não consegue conectar o Claude Code.** O widget mostra o motivo, e o "O que fazer" abre o painel com o próximo passo e o erro exato do PowerShell. Os detalhes ficam em `%APPDATA%\Banditboard\conectar.log` (sem a chave de pareamento), e dá para mandar esse arquivo numa [issue](../../issues).
+- **A atividade do Claude não aparece.** O Claude Code carrega os hooks quando a sessão começa, então abra uma sessão nova depois de ligar. O app do Windows ou do Mac precisa estar aberto, porque é ele que recebe os eventos.
 - **Os números não mudam.** O hook roda depois das respostas do Claude Code, no máximo a cada 2 minutos. Para buscar na hora, use "Atualizar agora" no painel do Windows ou do Mac, no menu da bandeja ou no painelzinho da barra do Mac.
 
 ## 🧭 Próximos passos
