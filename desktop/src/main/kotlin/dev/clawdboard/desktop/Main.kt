@@ -193,7 +193,12 @@ fun main(args: Array<String>) {
     }
     application {
         val tray = rememberTrayState()
-        val server = remember { Server { receive(it, tray) }.also { it.start() } }
+        val server = remember { Server(onHook = Claude::onHook) { receive(it, tray) }.also { it.start() } }
+        LaunchedEffect(Unit) { while (true) { delay(2_000); Claude.tick() } }
+        Claude.notify = { title, body ->
+            val n = Notification(title, body, Notification.Type.Warning)
+            if (onMac) MenuBar.notify(n) else tray.sendNotification(n)
+        }
         var visible by remember { mutableStateOf(!onMac || Store.get("widget") == "true") }
         val showWidget: (Boolean) -> Unit = { visible = it; if (onMac) Store.put("widget", it.toString()) }
         var onTop by remember { mutableStateOf(Store.get("onTop") != "false") }
@@ -346,13 +351,18 @@ fun main(args: Array<String>) {
 internal fun Mini() {
     val snap by usage.collectAsState()
     val p by prefsFlow.collectAsState()
-    val u = snap?.settled(System.currentTimeMillis())
+    val list by Claude.sessions.collectAsState()
+    val on by Claude.watching.collectAsState()
+    var now by remember { mutableLongStateOf(System.currentTimeMillis()) }
+    LaunchedEffect(Unit) { while (true) { now = System.currentTimeMillis(); delay(1000) } }
+    val u = snap?.settled(now)
     val look = Look(skin = p.skin, tint = p.tint, animations = p.animations, species = p.mascot())
     val pct = u?.fiveHour?.percent
     CompositionLocalProvider(LocalLook provides look) {
         Column(Modifier.fillMaxSize().padding(6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            val solo = u?.soloModel(System.currentTimeMillis())
-            Mascot(Modifier.fillMaxWidth(), model = solo, feel = feelOf(u, solo ?: "Opus"), reserveTop = solo != null)
+            val solo = (if (on) Claude.solo(list) else null) ?: u?.soloModel(now)
+            val react = Claude.react(null, list, now, on)
+            Mascot(Modifier.fillMaxWidth(), model = solo, feel = feelOf(u, solo ?: "Opus", react), reserveTop = solo != null || react.bubble())
             Text(
                 fmtPct(pct), color = pct?.let { C.level(it) } ?: C.dim, fontSize = 13.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.background(C.bg.copy(alpha = 0.75f), RoundedCornerShape(8.dp)).padding(horizontal = 6.dp),
@@ -370,31 +380,36 @@ internal fun Dashboard(port: Int, compact: Boolean, onHelp: (() -> Unit)? = null
     val p by prefsFlow.collectAsState()
     val look = Look(skin = p.skin, tint = p.tint, animations = p.animations, species = p.mascot())
     val u = snap?.settled(now)
+    val list by Claude.sessions.collectAsState()
+    val on by Claude.watching.collectAsState()
     CompositionLocalProvider(LocalLook provides look) {
         if (compact) Row(Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Meter(txt.session, u?.fiveHour, now, small = true)
                 Meter(txt.week, u?.sevenDay, now, small = true)
             }
-            val solo = u?.soloModel(now)
-            Mascot(Modifier.width(64.dp), model = solo, feel = feelOf(u, solo ?: "Opus"))
-        } else Row(Modifier.fillMaxSize().padding(horizontal = 18.dp, vertical = 14.dp), horizontalArrangement = Arrangement.spacedBy(18.dp)) {
+            val solo = (if (on) Claude.solo(list) else null) ?: u?.soloModel(now)
+            Mascot(Modifier.width(64.dp), model = solo, feel = feelOf(u, solo ?: "Opus", Claude.react(null, list, now, on)))
+        } else Column(Modifier.fillMaxSize().padding(horizontal = 18.dp, vertical = 14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+          Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(18.dp)) {
             Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.SpaceBetween) {
                 Meter(txt.session, u?.fiveHour, now)
                 if (u == null) Connect(port, onHelp = onHelp)
                 else {
                     Meter(txt.week, u.sevenDay, now)
-                    Text(txt.updatedAgo(fmtAgo(now - at)), color = C.dim, fontSize = 11.sp)
+                    if (!on) Text(txt.updatedAgo(fmtAgo(now - at)), color = C.dim, fontSize = 11.sp)
                 }
             }
             Row(Modifier.width(200.dp).fillMaxHeight(), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                 MODELS.forEachIndexed { i, m ->
                     Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Mascot(Modifier.fillMaxWidth(), model = m, seed = i, feel = feelOf(u, m))
+                        Mascot(Modifier.fillMaxWidth(), model = m, seed = i, feel = feelOf(u, m, Claude.react(m, list, now, on)))
                         Text(m, color = C.muted, fontSize = 12.sp, fontFamily = Fredoka)
                     }
                 }
             }
+          }
+          if (on && u != null) ActivityLine()
         }
     }
 }

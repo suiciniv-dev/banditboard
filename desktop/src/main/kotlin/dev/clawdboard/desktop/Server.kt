@@ -9,7 +9,7 @@ import java.net.InetSocketAddress
 import java.security.MessageDigest
 import java.util.concurrent.Executors
 
-class Server(private val onPush: (JSONObject) -> Boolean) {
+class Server(private val onHook: (JSONObject) -> Unit = {}, private val onPush: (JSONObject) -> Boolean) {
     var port = 0
         private set
 
@@ -18,7 +18,7 @@ class Server(private val onPush: (JSONObject) -> Boolean) {
             try {
                 val s = HttpServer.create(InetSocketAddress(InetAddress.getLoopbackAddress(), p), 0)
                 s.createContext("/") { handle(it) }
-                s.executor = Executors.newFixedThreadPool(2) { r -> Thread(r, "banditboard-http").apply { isDaemon = true } }
+                s.executor = Executors.newFixedThreadPool(4) { r -> Thread(r, "banditboard-http").apply { isDaemon = true } }
                 s.start()
                 port = p
                 return p
@@ -31,6 +31,15 @@ class Server(private val onPush: (JSONObject) -> Boolean) {
     private fun handle(ex: HttpExchange) = ex.use {
         val host = ex.requestHeaders.getFirst("Host").orEmpty().substringBefore(':')
         val ok = host == "127.0.0.1" || host == "localhost"
+        if (ok && ex.requestMethod == "POST" && ex.requestURI.path == "/api/hook") {
+            val allowed = ex.requestHeaders.getFirst("X-Clawdboard") == "1" && same(ex.requestHeaders.getFirst("X-Clawdboard-Key"), Store.key)
+            if (allowed) {
+                val body = ex.requestBody.readNBytes(MAX_HOOK).toString(Charsets.UTF_8)
+                runCatching { onHook(JSONObject(body)) }
+            }
+            ex.sendResponseHeaders(if (allowed) 204 else 401, -1)
+            return@use
+        }
         val status = when {
             !ok -> 403
             ex.requestMethod != "POST" || ex.requestURI.path != "/api/push" -> 404
@@ -52,5 +61,6 @@ class Server(private val onPush: (JSONObject) -> Boolean) {
     companion object {
         val PORTS = 47810..47819
         const val MAX_BODY = 64 * 1024
+        const val MAX_HOOK = 8 * 1024 * 1024
     }
 }

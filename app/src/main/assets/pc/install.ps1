@@ -64,6 +64,25 @@ foreach ($event in 'Stop', 'SessionStart') {
     $groups += New-Object PSObject -Property @{ hooks = @($hook) }
     $settings.hooks | Add-Member -NotePropertyName $event -NotePropertyValue $groups -Force
 }
+$activity = '__ACTIVITY__'
+if ($activity -eq 'on' -or $activity -eq 'off') {
+    $curl = Join-Path $(if ($env:SystemRoot) { $env:SystemRoot } else { 'C:\Windows' }) 'System32\curl.exe'
+    $feed = ($curl -replace '\\', '/') + ' -s -m 2 --connect-timeout 0.5 -H X-Clawdboard:1 -H X-Clawdboard-Key:__KEY__ --data-binary "@-" __URL__/api/hook; exit 0'
+    foreach ($event in 'SessionStart', 'UserPromptSubmit', 'PreToolUse', 'PostToolUse', 'PostToolUseFailure', 'PermissionRequest', 'PermissionDenied', 'Notification', 'Stop', 'StopFailure', 'SessionEnd') {
+        $groups = @()
+        if ($settings.hooks.PSObject.Properties[$event]) { $groups = @($settings.hooks.$event) }
+        $groups = @($groups | Where-Object { -not ((@($_.hooks) | ForEach-Object { $_.command }) -join ' ' -like '*/api/hook*') })
+        if ($activity -eq 'on' -and [System.IO.File]::Exists($curl)) {
+            $hook = New-Object PSObject -Property @{ type = 'command'; command = $feed; timeout = 5; async = $true }
+            $groups += New-Object PSObject -Property @{ hooks = @($hook) }
+        }
+        if ($groups.Count -gt 0) {
+            $settings.hooks | Add-Member -NotePropertyName $event -NotePropertyValue $groups -Force
+        } elseif ($settings.hooks.PSObject.Properties[$event]) {
+            $settings.hooks.PSObject.Properties.Remove($event)
+        }
+    }
+}
 [System.IO.File]::WriteAllText($settingsPath, ($settings | ConvertTo-Json -Depth 64), $utf8)
 
 Write-Host '__T_CONNECTED__' -ForegroundColor Green

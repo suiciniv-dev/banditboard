@@ -34,7 +34,9 @@ fi
 } > "$targets.tmp" && mv "$targets.tmp" "$targets" || exit 4
 
 err="$dir/clawdboard-install.err"
-if ! /usr/bin/osascript -l JavaScript - "$settings" "/bin/sh \"$script\"" > /dev/null 2> "$err" << '__FIM_DO_JS__'
+activity='__ACTIVITY__'
+feed="/usr/bin/curl -s -m 2 --connect-timeout 0.5 -H X-Clawdboard:1 -H X-Clawdboard-Key:__KEY__ --data-binary @- __URL__/api/hook; exit 0"
+if ! /usr/bin/osascript -l JavaScript - "$settings" "/bin/sh \"$script\"" "$activity" "$feed" > /dev/null 2> "$err" << '__FIM_DO_JS__'
 function run(argv) {
     ObjC.import('Foundation')
     const path = argv[0]
@@ -51,6 +53,16 @@ function run(argv) {
         const groups = old.filter(g => !JSON.stringify(g).includes('clawdboard-usage'))
         groups.push({ hooks: [{ type: 'command', command: command, timeout: 30 }] })
         settings.hooks[event] = groups
+    }
+    const activity = argv[2]
+    if (activity === 'on' || activity === 'off') {
+        for (const event of ['SessionStart', 'UserPromptSubmit', 'PreToolUse', 'PostToolUse', 'PostToolUseFailure', 'PermissionRequest', 'PermissionDenied', 'Notification', 'Stop', 'StopFailure', 'SessionEnd']) {
+            const old = Array.isArray(settings.hooks[event]) ? settings.hooks[event] : []
+            const groups = old.filter(g => !JSON.stringify(g).includes('/api/hook'))
+            if (activity === 'on') groups.push({ hooks: [{ type: 'command', command: argv[3], timeout: 5, async: true }] })
+            if (groups.length > 0) settings.hooks[event] = groups
+            else delete settings.hooks[event]
+        }
     }
     const out = $(JSON.stringify(settings, null, 2) + '\n')
     if (!out.writeToFileAtomicallyEncodingError(path, true, $.NSUTF8StringEncoding, null)) throw new Error('write')

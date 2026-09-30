@@ -92,14 +92,15 @@ object MenuBar {
         p.inputStream.bufferedReader().readText().trim().equals("Dark", ignoreCase = true)
     }.getOrDefault(false)
 
-    fun image(text: String?, dark: Boolean): BufferedImage {
+    fun image(text: String?, dark: Boolean, alert: Boolean = false): BufferedImage {
         val rows = BANDIT.drop(3)
         val art = rows.maxOf { it.length } * CELL
         val probe = BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB).createGraphics()
         val metrics = probe.getFontMetrics(font)
         probe.dispose()
         val gap = if (text == null) 0 else 8
-        val width = art + gap + (text?.let { metrics.stringWidth(it) + 2 } ?: 0)
+        val bang = if (alert) metrics.stringWidth("!") + 6 else 0
+        val width = art + gap + (text?.let { metrics.stringWidth(it) + 2 } ?: 0) + bang
         val img = BufferedImage(width, HEIGHT, BufferedImage.TYPE_INT_ARGB)
         val g = img.createGraphics()
         val top = (HEIGHT - rows.size * CELL) / 2
@@ -123,6 +124,10 @@ object MenuBar {
             g.color = if (dark) Color(255, 255, 255, 235) else Color(0, 0, 0, 215)
             val baseline = (HEIGHT - metrics.ascent - metrics.descent) / 2 + metrics.ascent
             g.drawString(text, art + gap, baseline)
+            if (alert) {
+                g.color = Color(0xF0, 0xA8, 0x3C)
+                g.drawString("!", art + gap + metrics.stringWidth(text) + 6, baseline)
+            }
         }
         g.dispose()
         return img
@@ -179,7 +184,10 @@ fun ApplicationScope.MacBar(port: Int, widget: Boolean, onWidget: (Boolean) -> U
     }
     val snap by usage.collectAsState()
     val text = snap?.settled(now)?.fiveHour?.percent?.let { fmtPct(it) }
-    val img = remember(text, isDark) { MenuBar.image(text, isDark) }
+    val on by Claude.watching.collectAsState()
+    val list by Claude.sessions.collectAsState()
+    val alert = on && list.any { it.attention }
+    val img = remember(text, isDark, alert) { MenuBar.image(text, isDark, alert) }
     SideEffect { if (tray.image !== img) tray.image = img }
     anchor?.let { at ->
         Popover(at, port, widget, onWidget, onPanel, onQuit) {
@@ -194,7 +202,7 @@ private fun ApplicationScope.Popover(
     at: Point, port: Int, widget: Boolean, onWidget: (Boolean) -> Unit, onPanel: () -> Unit, onQuit: () -> Unit, onClose: () -> Unit,
 ) {
     val width = 340
-    val height = if (usage.value == null) 392 else 348
+    val height = (if (usage.value == null) 392 else 348) + if (Claude.watching.value) 24 else 0
     val spot = remember(at) {
         val screen = GraphicsEnvironment.getLocalGraphicsEnvironment().screenDevices.map { it.defaultConfiguration }
             .firstOrNull { it.bounds.contains(at) } ?: GraphicsEnvironment.getLocalGraphicsEnvironment().defaultScreenDevice.defaultConfiguration
@@ -236,6 +244,8 @@ private fun Card(port: Int, widget: Boolean, onWidget: (Boolean) -> Unit, onPane
     val p by prefsFlow.collectAsState()
     val look = Look(skin = p.skin, tint = p.tint, animations = p.animations, species = p.mascot())
     val u = snap?.settled(now)
+    val list by Claude.sessions.collectAsState()
+    val on by Claude.watching.collectAsState()
     val scope = rememberCoroutineScope()
     var busy by remember { mutableStateOf(false) }
     CompositionLocalProvider(LocalLook provides look) {
@@ -245,6 +255,7 @@ private fun Card(port: Int, widget: Boolean, onWidget: (Boolean) -> Unit, onPane
                 Spacer(Modifier.weight(1f))
                 if (u != null) Text(txt.updatedAgo(fmtAgo(now - at)), color = C.dim, fontSize = 11.sp)
             }
+            ActivityLine(12.sp)
             Meter(txt.session, u?.fiveHour, now, small = true)
             Meter(txt.week, u?.sevenDay, now, small = true)
             if (u == null) Connect(port, onHelp = onPanel)
@@ -253,7 +264,7 @@ private fun Card(port: Int, widget: Boolean, onWidget: (Boolean) -> Unit, onPane
                     val own = u.scoped.firstOrNull { it.label.contains(m, ignoreCase = true) }
                     val pct = own?.percent ?: u.sevenDay?.percent
                     Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Mascot(Modifier.fillMaxWidth(0.8f), model = m, seed = i, feel = feelOf(u, m))
+                        Mascot(Modifier.fillMaxWidth(0.8f), model = m, seed = i, feel = feelOf(u, m, Claude.react(m, list, now, on)))
                         Text(m, color = C.muted, fontSize = 11.sp, fontFamily = Fredoka)
                         Text(
                             fmtPct(pct), color = if (own != null && pct != null) C.level(pct) else C.dim,

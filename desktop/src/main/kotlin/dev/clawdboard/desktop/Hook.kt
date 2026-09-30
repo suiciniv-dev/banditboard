@@ -18,11 +18,11 @@ object Hook {
 
     private fun sh(s: String) = if (onMac) s.replace("'", "'\\''") else s
 
-    fun installer(url: String, key: String): String {
+    fun installer(url: String, key: String, activity: String = ""): String {
         val kind = if (onMac) "sh" else "ps1"
         return resource("pc/install.$kind").replace("__USAGE__", resource("pc/usage.$kind").trimEnd())
             .replace("__T_CONNECTED__", sh(txt.installConnected)).replace("__T_BACKUP__", sh(txt.installBackup("")))
-            .replace("__T_EVERY__", sh(txt.installEvery(url))).replace("__URL__", url).replace("__KEY__", key).replace("__ENC__", "").replace("__ID__", "pc")
+            .replace("__T_EVERY__", sh(txt.installEvery(url))).replace("__URL__", url).replace("__KEY__", key).replace("__ENC__", "").replace("__ACTIVITY__", activity).replace("__ID__", "pc")
     }
 
     val claudeDir = File(System.getProperty("user.home"), ".claude")
@@ -43,19 +43,21 @@ object Hook {
             .getOrDefault(Charset.defaultCharset())
     }
 
-    fun install(port: Int): Boolean {
+    val watching: Boolean get() = Store.get("activity") == "on"
+
+    fun install(port: Int, activity: String = if (watching) "on" else ""): Boolean {
         failure.value = null
-        val result = attempt(port)
+        val result = attempt(port, activity)
         if (result == null) runCatching { Store.put("hookPort", port) }
         failure.value = result
         return result == null
     }
 
-    private fun attempt(port: Int): Failure? {
+    private fun attempt(port: Int, activity: String): Failure? {
         val script = File(Store.dir, if (onMac) "install.sh" else "install.ps1")
         log.delete()
         return try {
-            val install = installer("http://127.0.0.1:$port", Store.key)
+            val install = installer("http://127.0.0.1:$port", Store.key, activity)
             val command = if (onMac) {
                 script.writeText(install)
                 listOf("/bin/sh", script.absolutePath)

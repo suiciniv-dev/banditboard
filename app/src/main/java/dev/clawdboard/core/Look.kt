@@ -62,7 +62,32 @@ enum class Accessory { TOP_HAT, GLASSES, HEADPHONES, SPROUT, CROWN, SANTA }
 
 enum class Mood { NORMAL, SLEEPY, SWEATY, EXHAUSTED }
 
-data class Feel(val mood: Mood = Mood.NORMAL, val heat: Float = 0f)
+enum class React { NONE, WORK, RUN, ALERT, OOPS, CHEER, SLEEP }
+
+data class Feel(val mood: Mood = Mood.NORMAL, val heat: Float = 0f, val react: React = React.NONE)
+
+fun reactOf(session: ClaudeSession?, now: Long, watching: Boolean): React = when {
+    !watching -> React.NONE
+    session == null -> React.SLEEP
+    else -> when (session.act) {
+        Act.WORKING -> React.WORK
+        Act.RUNNING -> React.RUN
+        Act.PERMISSION, Act.QUESTION -> React.ALERT
+        Act.ERROR -> React.OOPS
+        Act.FINISHED -> if (now - session.since < CHEER_MS) React.CHEER else React.NONE
+        Act.IDLE -> React.SLEEP
+    }
+}
+
+fun feelOf(usage: UsageSnapshot?, model: String, react: React): Feel {
+    val base = feelOf(usage, model)
+    val mood = when {
+        base.mood == Mood.NORMAL && react == React.SLEEP -> Mood.SLEEPY
+        base.mood == Mood.SLEEPY && react != React.NONE && react != React.SLEEP -> Mood.NORMAL
+        else -> base.mood
+    }
+    return base.copy(mood = mood, react = if (mood == Mood.SLEEPY || mood == Mood.EXHAUSTED) React.NONE else react)
+}
 
 fun feelOf(usage: UsageSnapshot?, model: String): Feel {
     val session = usage?.fiveHour?.percent

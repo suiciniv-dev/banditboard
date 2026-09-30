@@ -164,6 +164,14 @@ interface Texts {
     val macAutostart: String
     val macPanelSubtitle: String
     val macWidget: String
+    val activityTitle: String
+    val activityToggle: String
+    val activityHint: String
+    val activityFile: String
+    val activityNone: String
+    val activityNotify: String
+    val activityNeedsYou: String
+    fun activityState(act: Act, doing: Doing?, file: String?): String
     val shareTitle: String
     val shareToggle: String
     val shareHint: String
@@ -442,6 +450,37 @@ object Pt : Texts {
     override val macAutostart = "Abrir ao iniciar sessão"
     override val macPanelSubtitle = "painel do Mac · uso do Claude"
     override val macWidget = "Widget na mesa"
+    override val activityTitle = "Atividade do Claude"
+    override val activityToggle = "Mostrar o que o Claude Code está fazendo"
+    override val activityHint = "O Racco reage ao Claude Code: trabalha junto, levanta a mão quando ele precisa de você e dorme quando ele para. O Banditboard só vê o estado, o projeto e a branch, nunca a conversa nem o código."
+    override val activityFile = "Mostrar o nome do arquivo"
+    override val activityNone = "Nenhuma sessão do Claude Code aberta"
+    override val activityNotify = "Avisar quando o Claude precisar de você"
+    override val activityNeedsYou = "O Claude precisa de você"
+    override fun activityState(act: Act, doing: Doing?, file: String?) = when (act) {
+        Act.QUESTION -> if (doing == Doing.PLAN) "Esperando você aprovar o plano" else "Tem uma pergunta para você"
+        Act.PERMISSION -> when (doing) {
+            Doing.EDITING -> "Pedindo permissão para editar"
+            Doing.COMMAND, Doing.TESTS, Doing.BUILDING -> "Pedindo permissão para rodar um comando"
+            else -> "Pedindo permissão"
+        }
+        Act.RUNNING -> when (doing) {
+            Doing.TESTS -> "Rodando os testes"
+            Doing.BUILDING -> "Compilando"
+            else -> "Rodando um comando"
+        }
+        Act.WORKING -> when (doing) {
+            Doing.EDITING -> file?.let { "Editando $it" } ?: "Editando arquivos"
+            Doing.READING -> file?.let { "Lendo $it" } ?: "Lendo o código"
+            Doing.SEARCHING -> "Pesquisando na web"
+            Doing.DELEGATING -> "Com um subagente"
+            Doing.PLAN -> "Planejando"
+            else -> "Pensando"
+        }
+        Act.FINISHED -> "Terminou"
+        Act.ERROR -> "Deu erro"
+        Act.IDLE -> "Parado"
+    }
     override val shareTitle = "iPhone"
     override val shareToggle = "Compartilhar o uso com o iPhone na rede de casa"
     override val shareHint = "Aponte a câmera do iPhone para o código e toque no aviso para abrir o Banditboard. O app e os widgets passam a buscar o uso aqui."
@@ -748,6 +787,37 @@ object En : Texts {
     override val macAutostart = "Open at login"
     override val macPanelSubtitle = "Mac dashboard · Claude usage"
     override val macWidget = "Desktop widget"
+    override val activityTitle = "Claude activity"
+    override val activityToggle = "Show what Claude Code is doing"
+    override val activityHint = "Racco reacts to Claude Code: works along, raises a hand when it needs you and sleeps when it stops. Banditboard only sees the state, the project and the branch, never the conversation or the code."
+    override val activityFile = "Show the file name"
+    override val activityNone = "No Claude Code session open"
+    override val activityNotify = "Notify me when Claude needs me"
+    override val activityNeedsYou = "Claude needs you"
+    override fun activityState(act: Act, doing: Doing?, file: String?) = when (act) {
+        Act.QUESTION -> if (doing == Doing.PLAN) "Waiting for you to approve the plan" else "Has a question for you"
+        Act.PERMISSION -> when (doing) {
+            Doing.EDITING -> "Asking permission to edit"
+            Doing.COMMAND, Doing.TESTS, Doing.BUILDING -> "Asking permission to run a command"
+            else -> "Asking permission"
+        }
+        Act.RUNNING -> when (doing) {
+            Doing.TESTS -> "Running the tests"
+            Doing.BUILDING -> "Building"
+            else -> "Running a command"
+        }
+        Act.WORKING -> when (doing) {
+            Doing.EDITING -> file?.let { "Editing $it" } ?: "Editing files"
+            Doing.READING -> file?.let { "Reading $it" } ?: "Reading the code"
+            Doing.SEARCHING -> "Searching the web"
+            Doing.DELEGATING -> "With a subagent"
+            Doing.PLAN -> "Planning"
+            else -> "Thinking"
+        }
+        Act.FINISHED -> "Finished"
+        Act.ERROR -> "Hit an error"
+        Act.IDLE -> "Idle"
+    }
     override val shareTitle = "iPhone"
     override val shareToggle = "Share usage with the iPhone on your home network"
     override val shareHint = "Point the iPhone camera at the code and tap the banner to open Banditboard. The app and widgets start fetching usage from here."

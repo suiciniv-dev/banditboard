@@ -2,6 +2,8 @@
 
 package dev.clawdboard.desktop
 
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -207,6 +209,25 @@ internal fun Panel(port: Int, status: StatusSnapshot?, controls: WidgetControls)
                             Share.addresses().forEach { Text("http://$it:${Share.port}", color = C.dim, fontSize = 12.sp) }
                         }
                     } else Text(txt.shareOff, color = C.dim, fontSize = 12.sp)
+                }
+                val watching by Claude.watching.collectAsState()
+                val showFile by Claude.showFile.collectAsState()
+                val notifying by Claude.notifying.collectAsState()
+                val installing = remember { mutableStateOf(false) }
+                val scope = rememberCoroutineScope()
+                Card(Modifier.fillMaxWidth(), txt.activityTitle) {
+                    Toggle(txt.activityToggle, watching) { v ->
+                        if (!installing.value) {
+                            installing.value = true
+                            scope.launch { withContext(Dispatchers.IO) { Claude.setWatching(v, port) }; installing.value = false }
+                        }
+                    }
+                    Text(if (installing.value) txt.desktopRefreshing else txt.activityHint, color = C.muted, fontSize = 13.sp)
+                    if (watching) {
+                        Toggle(txt.activityNotify, notifying, Claude::setNotifying)
+                        Toggle(txt.activityFile, showFile, Claude::setShowFile)
+                        ActivityLine(13.sp)
+                    }
                 }
                 Card(Modifier.fillMaxWidth(), txt.credits) {
                     Row(horizontalArrangement = Arrangement.spacedBy(22.dp), verticalAlignment = Alignment.CenterVertically) {

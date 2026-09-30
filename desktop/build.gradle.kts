@@ -7,7 +7,7 @@ plugins {
 }
 
 val shared = listOf(
-    "core/Alerts.kt", "core/Http.kt", "core/Look.kt", "core/StatusApi.kt", "core/Models.kt", "core/Push.kt", "core/Settings.kt", "core/Texts.kt",
+    "core/Activity.kt", "core/Alerts.kt", "core/Http.kt", "core/Look.kt", "core/StatusApi.kt", "core/Models.kt", "core/Push.kt", "core/Settings.kt", "core/Texts.kt",
     "ui/Colors.kt", "ui/Format.kt", "ui/Mascot.kt",
 )
 

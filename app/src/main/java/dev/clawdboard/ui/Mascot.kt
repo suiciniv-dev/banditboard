@@ -36,6 +36,7 @@ import dev.clawdboard.core.LOOK_TOP
 import dev.clawdboard.core.MASK
 import dev.clawdboard.core.Mood
 import dev.clawdboard.core.NOSE
+import dev.clawdboard.core.React
 import dev.clawdboard.core.RIGHT_EAR
 import dev.clawdboard.core.SPRITE
 import dev.clawdboard.core.SPRITE_TOP
@@ -65,6 +66,7 @@ private val FLASH = Color(0xFFFFE9A8)
 private val SPARK = Color(0xFFF5B83C)
 private val SMOKE = Color(0xFF8A8078)
 private val NOTE = Color(0xFFB9A6F2)
+private val BANG = Color(0xFFF0A83C)
 private const val BEAT = 500L
 
 private val CLAWD_BODY = arrayOf(
@@ -107,6 +109,8 @@ private data class Pose(
     val foot: Int = -1,
     val note: Int = 0,
     val noteDy: Int = 0,
+    val bang: Boolean = false,
+    val dots: Int = 0,
 )
 
 @Composable
@@ -121,7 +125,10 @@ fun Mascot(
     val look = LocalLook.current
     val acc = accessoryFor(look.skin, model)
     val animate = look.animations && alive
-    val dancing = LocalDance.current && animate
+    val react = feel.react
+    val music = LocalDance.current && animate
+    val dancing = (music || react == React.CHEER) && animate
+    val busy = react == React.ALERT || react == React.RUN
     val mood = when {
         !alive -> Mood.NORMAL
         dancing && feel.mood == Mood.SLEEPY -> Mood.NORMAL
@@ -134,7 +141,7 @@ fun Mascot(
     var pose by remember { mutableStateOf(Pose()) }
     var wasOut by remember { mutableStateOf(out) }
 
-    LaunchedEffect(mood, animate, dancing) { pose = Pose() }
+    LaunchedEffect(mood, animate, dancing, react) { pose = Pose() }
 
     if (alive && !sleepy && !out) {
         LaunchedEffect(seed) {
@@ -153,12 +160,12 @@ fun Mascot(
         }
     }
 
-    if (animate && !sleepy && !out && !dancing) {
-        LaunchedEffect(seed, mood, acc) {
+    if (animate && !sleepy && !out && !dancing && !busy) {
+        LaunchedEffect(seed, mood, acc, react) {
             val rnd = Random(seed * 131 + (System.nanoTime() % 100_000).toInt())
             delay(rnd.nextLong(1_500, 6_000))
             while (true) {
-                when (rnd.nextInt(4)) {
+                when (rnd.nextInt(if (react == React.WORK) 6 else 4)) {
                     0 -> if (acc != Accessory.GLASSES) {
                         pose = pose.copy(look = if (rnd.nextBoolean()) 1 else -1)
                         delay(1_100)
@@ -174,13 +181,23 @@ fun Mascot(
                             pose = pose.copy(arm = 0); delay(160)
                         }
                     }
-                    else -> repeat(2) {
+                    3 -> repeat(2) {
                         pose = pose.copy(dy = 1); delay(140)
                         pose = pose.copy(dy = 0); delay(160)
                     }
+                    else -> repeat(5) {
+                        pose = pose.copy(arm = 1); delay(110)
+                        pose = pose.copy(arm = -1); delay(110)
+                    }
                 }
                 pose = pose.copy(dy = 0, look = 0, legs = 0, arm = 0)
-                delay(if (mood == Mood.SWEATY) 1_200L + rnd.nextLong(2_000) else 4_000L + rnd.nextLong(7_000))
+                delay(
+                    when {
+                        react == React.WORK -> 500L + rnd.nextLong(900)
+                        mood == Mood.SWEATY -> 1_200L + rnd.nextLong(2_000)
+                        else -> 4_000L + rnd.nextLong(7_000)
+                    }
+                )
             }
         }
     }
@@ -193,13 +210,35 @@ fun Mascot(
                     delay(BEAT - System.currentTimeMillis() % BEAT)
                     val beat = System.currentTimeMillis() / BEAT
                     val arm = if (beat % 2 == 0L) side else -side
-                    val note = if ((beat / 2 + seed) % 2 == 0L) 1 else -1
+                    val note = if (!music) 0 else if ((beat / 2 + seed) % 2 == 0L) 1 else -1
                     pose = pose.copy(dy = 1, legs = 0, arm = arm, look = if (acc == Accessory.GLASSES) 0 else arm, note = note, noteDy = 1)
                     delay(BEAT / 2)
                     pose = pose.copy(dy = 0, legs = if (beat % 2 == 0L) 1 else 2, noteDy = 0)
                 }
             } finally {
                 pose = pose.copy(dy = 0, legs = 0, arm = 0, look = 0, note = 0, noteDy = 0)
+            }
+        }
+    }
+
+    if (react == React.ALERT && !out) {
+        LaunchedEffect(seed, animate) {
+            pose = pose.copy(look = 0, arm = if (seed % 2 == 0) 1 else -1, bang = true)
+            while (animate) {
+                delay(450)
+                pose = pose.copy(bang = !pose.bang)
+            }
+        }
+    }
+
+    if (react == React.RUN && !out) {
+        LaunchedEffect(seed, animate) {
+            pose = pose.copy(dots = 3)
+            var k = 0
+            while (animate) {
+                delay(360)
+                k++
+                pose = pose.copy(dots = k % 4, look = if (acc != Accessory.GLASSES && k % 8 == 4) (if (seed % 2 == 0) 1 else -1) else 0)
             }
         }
     }
@@ -460,6 +499,14 @@ fun Mascot(
         if (p.z) {
             rect(13, 0, 3, 1, C.muted); rect(15, 1, 1, 1, C.muted)
             rect(14, 2, 1, 1, C.muted); rect(13, 3, 3, 1, C.muted)
+        }
+        if (p.bang) {
+            rect(14, 0, 1, 2, BANG); rect(14, 3, 1, 1, BANG)
+        }
+        repeat(p.dots) { rect(11 + it * 2, 3, 1, 1, C.muted) }
+        if (react == React.OOPS && !out) {
+            rect(13, 0, 1, 1, HOT); rect(15, 0, 1, 1, HOT); rect(14, 1, 1, 1, HOT)
+            rect(13, 2, 1, 1, HOT); rect(15, 2, 1, 1, HOT)
         }
         when (p.boom) {
             2 -> SPARKS_NEAR.forEach { (x, y) -> rect(x, y, 1, 1, SPARK) }
