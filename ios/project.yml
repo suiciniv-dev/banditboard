@@ -1,0 +1,68 @@
+name: Banditboard
+options:
+  deploymentTarget:
+    iOS: "17.0"
+settings:
+  base:
+    CODE_SIGN_STYLE: Automatic
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "5.0"
+    TARGETED_DEVICE_FAMILY: "1"
+targets:
+  Banditboard:
+    type: application
+    platform: iOS
+    sources: [Banditboard, Shared]
+    entitlements:
+      path: Banditboard/Banditboard.entitlements
+      properties:
+        keychain-access-groups: [$(AppIdentifierPrefix)dev.clawdboard.banditboard.shared]
+    info:
+      path: Banditboard/Info.plist
+      properties:
+        CFBundleDisplayName: Banditboard
+        AppIdentifierPrefix: $(AppIdentifierPrefix)
+        CFBundleLocalizations: [pt-BR, en]
+        CFBundleAllowMixedLocalizations: true
+        UILaunchScreen:
+          UIColorName: ""
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        UIUserInterfaceStyle: Dark
+        CFBundleURLTypes:
+          - CFBundleURLName: dev.clawdboard.banditboard
+            CFBundleURLSchemes: [banditboard]
+        NSLocalNetworkUsageDescription: O Banditboard busca o uso do Claude Code no seu PC ou Mac pela rede de casa.
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        UIBackgroundModes: [fetch]
+        BGTaskSchedulerPermittedIdentifiers: [dev.clawdboard.banditboard.refresh]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.clawdboard.banditboard.preview
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    dependencies:
+      - target: BanditboardWidget
+  BanditboardWidget:
+    type: app-extension
+    platform: iOS
+    sources: [Widget, Shared]
+    entitlements:
+      path: Widget/BanditboardWidget.entitlements
+      properties:
+        keychain-access-groups: [$(AppIdentifierPrefix)dev.clawdboard.banditboard.shared]
+    info:
+      path: Widget/Info.plist
+      properties:
+        CFBundleDisplayName: Banditboard
+        AppIdentifierPrefix: $(AppIdentifierPrefix)
+        CFBundleLocalizations: [pt-BR, en]
+        CFBundleAllowMixedLocalizations: true
+        NSLocalNetworkUsageDescription: O Banditboard busca o uso do Claude Code no seu PC ou Mac pela rede de casa.
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.clawdboard.banditboard.preview.widget
