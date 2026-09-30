@@ -4,12 +4,6 @@ import android.content.Context
 import org.json.JSONObject
 import java.net.URI
 import java.net.URLDecoder
-import java.security.MessageDigest
-import java.util.Base64
-import javax.crypto.Cipher
-import javax.crypto.Mac
-import javax.crypto.spec.IvParameterSpec
-import javax.crypto.spec.SecretKeySpec
 
 class Remote(app: Context) {
     data class Source(val urls: List<String>, val key: String, val seal: String?)
@@ -94,22 +88,6 @@ class Remote(app: Context) {
             }
         }
 
-        fun open(blob: String, master: String): String? = runCatching {
-            val all = Base64.getDecoder().decode(blob)
-            if (all.size <= 48) return null
-            val root = ByteArray(master.length / 2) { i -> master.substring(i * 2, i * 2 + 2).toInt(16).toByte() }
-            fun hmac(key: ByteArray, data: ByteArray): ByteArray = Mac.getInstance("HmacSHA256").run {
-                init(SecretKeySpec(key, "HmacSHA256"))
-                doFinal(data)
-            }
-            val enc = hmac(root, "banditboard-enc".toByteArray())
-            val mac = hmac(root, "banditboard-mac".toByteArray())
-            val body = all.copyOfRange(0, all.size - 32)
-            val tag = all.copyOfRange(all.size - 32, all.size)
-            if (!MessageDigest.isEqual(hmac(mac, body), tag)) return null
-            val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
-            cipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(enc, "AES"), IvParameterSpec(body, 0, 16))
-            String(cipher.doFinal(body, 16, body.size - 16), Charsets.UTF_8)
-        }.getOrNull()
+        fun open(blob: String, master: String): String? = Seal.open(blob, master)
     }
 }

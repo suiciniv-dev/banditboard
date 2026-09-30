@@ -210,16 +210,16 @@ fun lookJson(p: Prefs): JSONObject {
     return JSONObject().put("top", LOOK_TOP).put("rows", LOOK_ROWS).put("species", species.name).put("models", models).put("animations", p.animations)
 }
 
-fun mascotsJson(usage: UsageSnapshot?, status: StatusSnapshot?): JSONArray {
+fun mascotsJson(usage: UsageSnapshot?, status: StatusSnapshot?, claude: List<ClaudeSession>? = null, now: Long = System.currentTimeMillis()): JSONArray {
     val arr = JSONArray()
     MODELS.forEach { m ->
         val own = usage?.scoped?.firstOrNull { it.label.contains(m, ignoreCase = true) }
-        val feel = feelOf(usage, m)
+        val feel = feelOf(usage, m, reactFor(m, claude, now))
         arr.put(
             JSONObject().put("name", m)
                 .put("percent", own?.percent ?: usage?.sevenDay?.percent ?: JSONObject.NULL)
                 .put("own", own != null)
-                .put("mood", feel.mood.name).put("heat", feel.heat.toDouble())
+                .put("mood", feel.mood.name).put("heat", feel.heat.toDouble()).put("react", feel.react.name)
                 .put("down", status?.down?.contains(m) == true)
         )
     }

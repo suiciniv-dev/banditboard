@@ -1,5 +1,9 @@
 package dev.clawdboard.ui
 
+import dev.clawdboard.core.reactFor
+import dev.clawdboard.core.Act
+import dev.clawdboard.core.describe
+import dev.clawdboard.core.primary
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -140,7 +144,7 @@ fun MascotRow(
             MODELS.forEachIndexed { i, m ->
                 val down = status?.down?.contains(m) == true
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    val feel = feelOf(usage, m)
+                    val feel = feelOf(usage, m, reactFor(m, LocalClaude.current, LocalNow.current))
                     val bad = down || feel.mood == Mood.EXHAUSTED
                     Mascot(Modifier.width(w), model = m, alive = !down, seed = i + 1, feel = feel)
                     if (labels) {
@@ -168,6 +172,27 @@ fun StatusLine(status: StatusSnapshot?, modifier: Modifier = Modifier) {
         Box(Modifier.width(8.dp).height(8.dp).clip(RoundedCornerShape(50)).background(dot))
         Spacer(Modifier.width(8.dp))
         Text(text, color = if (dot == C.warn) C.text else C.muted, fontSize = 14.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
+    }
+}
+
+@Composable
+fun ClaudeLine(modifier: Modifier = Modifier) {
+    val list = LocalClaude.current ?: return
+    val s = list.primary()
+    val dot = when {
+        s == null || s.act == Act.IDLE -> C.dim
+        s.attention -> C.warn
+        s.act == Act.ERROR -> C.bad
+        s.act == Act.FINISHED -> C.ok
+        else -> C.clawd
+    }
+    Row(modifier, verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.width(8.dp).height(8.dp).clip(RoundedCornerShape(50)).background(dot))
+        Spacer(Modifier.width(8.dp))
+        Text(
+            s?.describe(true) ?: txt.activityNone, color = if (s?.attention == true) C.warn else C.muted,
+            fontSize = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
+        )
     }
 }
 

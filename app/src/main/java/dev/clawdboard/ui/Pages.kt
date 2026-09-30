@@ -1,5 +1,6 @@
 package dev.clawdboard.ui
 
+import dev.clawdboard.core.reactFor
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -70,6 +71,7 @@ fun DashboardPage(st: Repository.State, landscape: Boolean, compact: Boolean = f
                 SmallClock()
                 MascotRow(st.status, usage = usage)
                 StatusLine(st.status)
+                ClaudeLine()
                 Footer(st, compact)
             }
         }
@@ -81,6 +83,7 @@ fun DashboardPage(st: Repository.State, landscape: Boolean, compact: Boolean = f
             UsageBlock(txt.week, txt.weekWindow, usage?.sevenDay, scoped = usage?.scoped.orEmpty(), big = big, compact = compact)
             MascotRow(st.status, usage = usage, mascotWidth = 64.dp)
             StatusLine(st.status)
+            ClaudeLine()
             Footer(st, compact)
         }
     }
@@ -439,7 +442,7 @@ private fun WideUsageRow(title: String, window: String, w: UsageWindow?, compact
 @Composable
 private fun BigMascot(model: String, index: Int, st: Repository.State, mu: ModelUsage, modifier: Modifier, maxMascot: Dp, compact: Boolean) {
     val down = st.status?.down?.contains(model) == true
-    val feel = feelOf(st.usage, model)
+    val feel = feelOf(st.usage, model, reactFor(model, LocalClaude.current, LocalNow.current))
     val out = feel.mood == Mood.EXHAUSTED
     BoxWithConstraints(modifier.fillMaxHeight()) {
         val barW = minOf(maxMascot * 0.8f, maxWidth * 0.7f)

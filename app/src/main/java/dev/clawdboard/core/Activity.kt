@@ -22,6 +22,8 @@ data class ClaudeSession(
 ) {
     val attention: Boolean get() = act == Act.PERMISSION || act == Act.QUESTION
 
+    val key: String get() = "$project|$model|$since"
+
     fun toJson(withFile: Boolean): JSONObject = JSONObject()
         .put("project", project ?: JSONObject.NULL)
         .put("branch", branch ?: JSONObject.NULL)
@@ -46,11 +48,32 @@ fun List<ClaudeSession>.primary(): ClaudeSession? =
 fun List<ClaudeSession>.forModel(model: String): ClaudeSession? =
     filter { it.model.equals(model, ignoreCase = true) }.primary()
 
+const val ACTIVITY_FRESH_MS = 15 * 60_000L
+
+fun reactFor(model: String?, list: List<ClaudeSession>?, now: Long): React {
+    if (list == null) return React.NONE
+    val known = list.any { it.model != null }
+    val mine = if (model == null || !known) list.primary() else list.forModel(model)
+    if (mine == null && model != null && known && list.any { it.act != Act.IDLE }) return React.NONE
+    return reactOf(mine, now, true)
+}
+
+fun List<ClaudeSession>.soloModel(): String? =
+    filter { it.act != Act.IDLE }.mapNotNull { it.model }.distinct().singleOrNull()
+        ?.let { m -> MODELS.firstOrNull { it.equals(m, ignoreCase = true) } }
+
+fun ClaudeSession.describe(withFile: Boolean): String {
+    val state = txt.activityState(act, doing, if (withFile) file else null)
+    val where = listOfNotNull(project, branch).joinToString(" · ")
+    return if (where.isEmpty()) state else "$state · $where"
+}
+
 fun activityJson(sessions: List<ClaudeSession>, now: Long, withFile: Boolean): JSONObject =
     JSONObject().put("at", now).put("sessions", JSONArray().also { a -> sessions.forEach { a.put(it.toJson(withFile)) } })
 
 fun parseActivity(o: JSONObject?): List<ClaudeSession>? {
-    val arr = o?.optJSONArray("sessions") ?: return null
+    if (o == null || o.optBoolean("off", false)) return null
+    val arr = o.optJSONArray("sessions") ?: return null
     return (0 until arr.length()).mapNotNull { i ->
         val s = arr.optJSONObject(i) ?: return@mapNotNull null
         val act = s.str("state")?.let { v -> Act.entries.firstOrNull { it.name.equals(v, ignoreCase = true) } } ?: return@mapNotNull null

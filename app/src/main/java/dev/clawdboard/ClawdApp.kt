@@ -8,6 +8,7 @@ import dev.clawdboard.core.nextAlert
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class ClawdApp : Application() {
@@ -28,6 +29,12 @@ class ClawdApp : Application() {
                     marks.edit().putInt(kind.name, level).apply()
                     alert?.let { Notifier.alert(this, it) }
                 }
+            }
+        }
+        repo.onAttention = { s ->
+            scope.launch {
+                delay(6_000)
+                if (repo.settings.value.alerts) repo.stillWaiting(s.key)?.let { Notifier.claude(this@ClawdApp, it) }
             }
         }
         scope.launch { repo.pollRemote() }

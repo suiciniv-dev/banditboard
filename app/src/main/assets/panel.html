@@ -123,6 +123,8 @@ code{background:var(--card2);padding:2px 7px;border-radius:6px;color:var(--clawd
 @keyframes crouch{0%{transform:none}20%{transform:translateY(1px)}21.5%{transform:none}23%{transform:translateY(1px)}24.5%{transform:none}}
 @keyframes breathe{0%{transform:none}45%{transform:translateY(1px)}70%{transform:none}}
 @keyframes zz{0%{opacity:1}70%{opacity:0}}
+.cl .bang{animation:zz .9s step-end infinite}
+.cl .dots{animation:zz 1.4s step-end infinite}
 @keyframes drip{0%{transform:none;opacity:1}15%{transform:translateY(1px)}30%{transform:translateY(2px)}45%{transform:translateY(3px)}60%{opacity:0}}
 @keyframes puff{0%{transform:none;opacity:.8}25%{transform:translateY(-1px)}50%{transform:translateY(-2px);opacity:.6}75%{transform:translateY(-3px);opacity:.4}90%{opacity:0}}
 @keyframes throb{50%{filter:brightness(1.22)}}
@@ -190,6 +192,7 @@ code{background:var(--card2);padding:2px 7px;border-radius:6px;color:var(--clawd
       <div class="card">
         <h2>Status <small>status.claude.com</small></h2>
         <div id="status"></div>
+        <div id="claude"></div>
       </div>
       <div class="card">
         <h2>Anthropic News <small><a href="https://www.anthropic.com/news" target="_blank" rel="noopener">anthropic.com/news</a></small></h2>
@@ -404,11 +407,24 @@ function mix(a, b, t){
   const x = p(a), y = p(b);
   return "#" + x.map((v, i) => Math.round(v + (y[i] - v) * t).toString(16).padStart(2, "0")).join("");
 }
+function bubble(m){
+  const r = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w + .04}" height="${h + .04}"/>`;
+  const k = m && !m.down && m.mood !== "EXHAUSTED" ? m.react : "";
+  if (k === "ALERT") return `<g class="bang" fill="#f0a83c">${r(14, 0, 1, 2)}${r(14, 3, 1, 1)}</g>`;
+  if (k === "RUN") return `<g class="dots" fill="#a89a86">${r(11, 1, 1, 1)}${r(13, 1, 1, 1)}${r(15, 1, 1, 1)}</g>`;
+  if (k === "OOPS") return `<g fill="#ff3b2f">${r(13, 0, 1, 1)}${r(15, 0, 1, 1)}${r(14, 1, 1, 1)}${r(13, 2, 1, 1)}${r(15, 2, 1, 1)}</g>`;
+  return "";
+}
+function renderClaude(c){
+  if (!c) return "";
+  const color = c.attention ? "#f0a83c" : c.state === "error" ? "#e5604d" : c.state === "idle" || !c.state ? "#7d715f" : c.state === "finished" ? "#8fb573" : "#d77757";
+  return `<div class="allok" style="margin-top:10px;color:${c.attention ? "#f0a83c" : "inherit"}"><span class="dot" style="background:${color}"></span>${esc(c.text)}</div>`;
+}
 function clawdSprite(model, m, i){
   const lk = state && state.look, def = model && lk ? lk.models[model] : null;
   const T = def ? lk.top : 0;
   const down = !!(m && m.down), out = !!(m && !down && m.mood === "EXHAUSTED");
-  const dancing = !!(m && !down && state && state.music && state.music.playing);
+  const dancing = !!(m && !down && ((state && state.music && state.music.playing) || m.react === "CHEER"));
   const sleepy = !!(m && !down && !out && !dancing && m.mood === "SLEEPY");
   const sweaty = !!(m && !down && !out && m.mood === "SWEATY");
   const heat = m && !down && !out ? m.heat : 0;
@@ -427,6 +443,7 @@ function clawdSprite(model, m, i){
   let extra = "";
   if (sweaty) extra += r(14, 3, 1, 2, ` class="drop" fill="#8fd3f4"`);
   if (sleepy) extra += `<g class="z" fill="#a89a86">${r(13, 0, 3, 1)}${r(15, 1, 1, 1)}${r(14, 2, 1, 1)}${r(13, 3, 3, 1)}</g>`;
+  extra += bubble(m);
   if (out) extra += `<g class="smoke" fill="#8a8078">${r(7, 3, 1, 1)}${r(8, 2, 1, 1, ` opacity=".6"`)}</g>`;
   if (dancing && !out) {
     const note = x => `${r(x + 1, 0, 2, 1)}${r(x + 1, 1, 1, 1)}${r(x, 2, 2, 1)}`;
@@ -455,7 +472,7 @@ const BANDIT = [
 function banditSprite(model, m, i){
   const lk = state && state.look, def = model && lk ? lk.models[model] : null;
   const down = !!(m && m.down), out = !!(m && !down && m.mood === "EXHAUSTED");
-  const dancing = !!(m && !down && state && state.music && state.music.playing);
+  const dancing = !!(m && !down && ((state && state.music && state.music.playing) || m.react === "CHEER"));
   const sleepy = !!(m && !down && !out && !dancing && m.mood === "SLEEPY");
   const sweaty = !!(m && !down && !out && m.mood === "SWEATY");
   const heat = m && !down && !out ? m.heat : 0;
@@ -484,6 +501,7 @@ function banditSprite(model, m, i){
   let extra = "";
   if (sweaty) extra += r(15, 3, 1, 2, ` class="drop" fill="#8fd3f4"`);
   if (sleepy) extra += `<g class="z" fill="#a89a86">${r(13, 0, 3, 1)}${r(15, 1, 1, 1)}${r(14, 2, 1, 1)}${r(13, 3, 3, 1)}</g>`;
+  extra += bubble(m);
   if (out) extra += `<g class="smoke" fill="#8a8078">${r(7, 3, 1, 1)}${r(8, 2, 1, 1, ` opacity=".6"`)}</g>`;
   if (dancing && !out) {
     const note = x => `${r(x + 1, 0, 2, 1)}${r(x + 1, 1, 1, 1)}${r(x, 2, 2, 1)}`;
@@ -498,7 +516,7 @@ function sprite(model, m, i){
   if (lk && lk.species === "CLAWD") return clawdSprite(model, m, i);
   if (!lk || lk.species !== "RACCOON_CLASSIC") return banditSprite(model, m, i);
   const down = !!(m && m.down), out = !!(m && !down && m.mood === "EXHAUSTED");
-  const dancing = !!(m && !down && state && state.music && state.music.playing);
+  const dancing = !!(m && !down && ((state && state.music && state.music.playing) || m.react === "CHEER"));
   const sleepy = !!(m && !down && !out && !dancing && m.mood === "SLEEPY");
   const sweaty = !!(m && !down && !out && m.mood === "SWEATY");
   const heat = m && !down && !out ? m.heat : 0;
@@ -530,6 +548,7 @@ function sprite(model, m, i){
   let extra = "";
   if (sweaty) extra += r(15, 3, 1, 2, ` class="drop" fill="#8fd3f4"`);
   if (sleepy) extra += `<g class="z" fill="#a89a86">${r(13, 0, 3, 1)}${r(15, 1, 1, 1)}${r(14, 2, 1, 1)}${r(13, 3, 3, 1)}</g>`;
+  extra += bubble(m);
   if (out) extra += `<g class="smoke" fill="#8a8078">${r(7, 3, 1, 1)}${r(8, 2, 1, 1, ` opacity=".6"`)}</g>`;
   if (dancing && !out) {
     const note = x => `${r(x + 1, 0, 2, 1)}${r(x + 1, 1, 1, 1)}${r(x, 2, 2, 1)}`;
@@ -679,6 +698,7 @@ function render(){
   renderWindow($("c7"), tr("week7"), tr("weekSub"), u && u.sevenDay, u && u.scoped);
   renderMascots(s.mascots || []);
   $("status").innerHTML = renderStatus(s.status, now);
+  $("claude").innerHTML = renderClaude(s.claude);
   setHTML($("news"), renderNews(s.news));
 
   $("collect").innerHTML = s.lastPushAt

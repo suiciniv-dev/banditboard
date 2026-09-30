@@ -1,5 +1,6 @@
 package dev.clawdboard.ui
 
+import dev.clawdboard.core.ClaudeSession
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
@@ -24,6 +25,8 @@ val Fredoka = FontFamily(
 )
 
 val LocalNow = compositionLocalOf { System.currentTimeMillis() }
+
+val LocalClaude = compositionLocalOf<List<ClaudeSession>?> { null }
 
 @Composable
 fun ClawdTheme(content: @Composable () -> Unit) {

@@ -139,4 +139,34 @@ class ActivityTest {
         assertEquals(Act.WORKING, back.act)
         assertEquals(Doing.EDITING, back.doing)
     }
+
+    @Test
+    fun sealOpensWithTheSameKeyOnly() {
+        val key = "ab".repeat(32)
+        val blob = Seal.close("""{"five_hour":{"used_percentage":91}}""", key)
+        assertEquals("""{"five_hour":{"used_percentage":91}}""", Remote.open(blob, key))
+        assertNull(Seal.open(blob, "cd".repeat(32)))
+        assertEquals("90,0", Seal.level(JSONObject("""{"five_hour":{"used_percentage":91}}""")))
+        assertEquals("100,80", Seal.level(JSONObject("""{"five_hour":{"used_percentage":99.6},"seven_day":{"used_percentage":80}}""")))
+    }
+
+    @Test
+    fun offMeansNotWatching() {
+        assertNull(parseActivity(JSONObject("""{"off":true}""")))
+        assertEquals(emptyList<ClaudeSession>(), parseActivity(JSONObject("""{"at":1,"sessions":[]}""")))
+    }
+
+    @Test
+    fun eachRaccoFollowsItsModel() {
+        val opus = ClaudeSession("a", null, null, "opus", Act.RUNNING, Doing.TESTS, null, 0, 0)
+        val sonnet = opus.copy(id = "b", model = "sonnet", act = Act.QUESTION)
+        val list = listOf(opus, sonnet)
+        assertEquals(React.RUN, reactFor("Opus", list, 0))
+        assertEquals(React.ALERT, reactFor("Sonnet", list, 0))
+        assertEquals(React.NONE, reactFor("Haiku", list, 0))
+        assertEquals(React.ALERT, reactFor(null, list, 0))
+        assertEquals(React.SLEEP, reactFor("Haiku", emptyList(), 0))
+        assertEquals(React.NONE, reactFor("Haiku", null, 0))
+        assertEquals("Opus", listOf(opus).soloModel())
+    }
 }

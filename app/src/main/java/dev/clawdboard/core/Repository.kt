@@ -42,7 +42,11 @@ class Repository(private val app: Context) {
         val panelUrl: String? = null,
         val wiped: Boolean = false,
         val remote: Remote.Source? = null,
-    )
+        val activity: List<ClaudeSession>? = null,
+        val activityAt: Long = 0L,
+    ) {
+        fun claude(now: Long): List<ClaudeSession>? = activity?.takeIf { now - activityAt < ACTIVITY_FRESH_MS }
+    }
 
     sealed interface Outcome {
         data object Ok : Outcome
@@ -205,12 +209,26 @@ class Repository(private val app: Context) {
 
     var onPush: ((UsageSnapshot) -> Unit)? = null
 
+    var onAttention: ((ClaudeSession) -> Unit)? = null
+
+    fun stillWaiting(key: String): ClaudeSession? =
+        _state.value.claude(System.currentTimeMillis())?.firstOrNull { it.attention && it.key == key }
+
     fun receivePush(body: JSONObject, at: Long = System.currentTimeMillis()): Boolean {
         val now = System.currentTimeMillis()
-        val snap = parsePush(body, at) ?: return false
-        pairing.save(body, at)
+        val carried = body.has("activity")
+        if (carried) {
+            val before = _state.value.activity.orEmpty().filter { it.attention }.map { it.key }.toSet()
+            val list = parseActivity(body.optJSONObject("activity"))
+            _state.update { it.copy(activity = list, activityAt = now) }
+            list.orEmpty().filter { it.attention && it.key !in before }.forEach { s -> onAttention?.invoke(s) }
+        }
+        val usageAt = body.optLong("usage_at", 0L).takeIf { it > 0 } ?: at
+        val snap = parsePush(body, usageAt) ?: return carried
+        if (carried && _state.value.lastPushAt == usageAt) return true
+        pairing.save(body, usageAt)
         history.record(snap)
-        _state.update { it.copy(usage = snap.settled(now), lastPushAt = at) }
+        _state.update { it.copy(usage = snap.settled(now), lastPushAt = usageAt) }
         onPush?.invoke(snap)
         return true
     }
@@ -267,7 +285,13 @@ class Repository(private val app: Context) {
                     if (stamp > remote.lastAt && receivePush(usage, stamp)) remote.lastAt = stamp
                 }
             }
-            withTimeoutOrNull(60_000L) { poke.receive() }
+            val live = _state.value.claude(System.currentTimeMillis()) != null
+            val wait = when {
+                !live -> 60_000L
+                remote.source?.seal == null -> 5_000L
+                else -> 20_000L
+            }
+            withTimeoutOrNull(wait) { poke.receive() }
         }
     }
 
@@ -371,9 +395,16 @@ class Repository(private val app: Context) {
             .put("settings", settings.value.toJson())
             .put("options", Prefs.optionsJson())
             .put("look", lookJson(settings.value))
-            .put("mascots", mascotsJson(s.usage, s.status))
+            .put("mascots", mascotsJson(s.usage, s.status, s.claude(System.currentTimeMillis())))
+            .put("claude", claudeJson(s.claude(System.currentTimeMillis())))
             .put("music", musicJson())
             .put("panelUrl", s.panelUrl ?: JSONObject.NULL)
+    }
+
+    private fun claudeJson(list: List<ClaudeSession>?): Any {
+        list ?: return JSONObject.NULL
+        val p = list.primary() ?: return JSONObject().put("text", txt.activityNone).put("state", "idle").put("attention", false)
+        return JSONObject().put("text", p.describe(true)).put("state", p.act.name.lowercase()).put("attention", p.attention)
     }
 
     private fun musicJson(): Any {

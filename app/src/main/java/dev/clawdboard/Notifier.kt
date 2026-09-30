@@ -13,6 +13,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import dev.clawdboard.core.Alert
 import dev.clawdboard.core.AlertKind
+import dev.clawdboard.core.ClaudeSession
+import dev.clawdboard.core.describe
 import dev.clawdboard.core.txt
 import dev.clawdboard.ui.fmtAt
 
@@ -46,6 +48,19 @@ object Notifier {
         .setPriority(NotificationCompat.PRIORITY_MIN)
         .setContentIntent(open(context))
         .build()
+
+    fun claude(context: Context, s: ClaudeSession) {
+        if (!canNotify(context)) return
+        val n = NotificationCompat.Builder(context, ALERTS)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(txt.activityNeedsYou)
+            .setContentText(s.describe(true))
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(open(context))
+            .build()
+        runCatching { NotificationManagerCompat.from(context).notify(20, n) }
+    }
 
     fun alert(context: Context, a: Alert) {
         if (!canNotify(context)) return

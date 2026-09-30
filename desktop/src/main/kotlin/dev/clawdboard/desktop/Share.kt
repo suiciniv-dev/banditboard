@@ -61,10 +61,14 @@ object Share {
         val (status, body) = when {
             ex.requestMethod != "GET" || ex.requestURI.path != "/api/usage" -> 404 to JSONObject()
             !same(ex.requestHeaders.getFirst("X-Banditboard-Key")) -> 401 to JSONObject()
-            else -> 200 to JSONObject()
-                .put("at", Store.get("lastAt")?.toLongOrNull() ?: 0L)
-                .put("now", System.currentTimeMillis())
-                .put("usage", Store.get("last")?.let { runCatching { JSONObject(it) }.getOrNull() } ?: JSONObject.NULL)
+            else -> {
+                val now = System.currentTimeMillis()
+                val usage = Forward.envelope(now)
+                200 to JSONObject()
+                    .put("at", maxOf(Store.get("lastAt")?.toLongOrNull() ?: 0L, Claude.changedAt))
+                    .put("now", now)
+                    .put("usage", if (usage.has("five_hour") || usage.has("seven_day")) usage else JSONObject.NULL)
+            }
         }
         val out = body.toString().toByteArray()
         ex.responseHeaders.add("Content-Type", "application/json")

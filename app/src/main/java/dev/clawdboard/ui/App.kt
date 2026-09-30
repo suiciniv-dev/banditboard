@@ -87,7 +87,7 @@ fun ClawdboardApp(repo: Repository) {
     }
 
     val look = remember(prefs.skin, prefs.tint, prefs.animations, prefs.mascot()) { Look(prefs.skin, prefs.tint, prefs.animations, prefs.mascot()) }
-    CompositionLocalProvider(LocalNow provides now, LocalLook provides look, LocalDance provides dancing) {
+    CompositionLocalProvider(LocalNow provides now, LocalClaude provides st.claude(now), LocalLook provides look, LocalDance provides dancing) {
         ClawdTheme {
             Box(
                 Modifier

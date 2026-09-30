@@ -19,11 +19,11 @@ import androidx.compose.ui.unit.sp
 import dev.clawdboard.core.Act
 import dev.clawdboard.core.ActivityTracker
 import dev.clawdboard.core.ClaudeSession
-import dev.clawdboard.core.MODELS
 import dev.clawdboard.core.React
-import dev.clawdboard.core.forModel
 import dev.clawdboard.core.primary
-import dev.clawdboard.core.reactOf
+import dev.clawdboard.core.reactFor
+import dev.clawdboard.core.soloModel
+import dev.clawdboard.core.describe
 import dev.clawdboard.core.txt
 import dev.clawdboard.ui.C
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,7 +46,7 @@ object Claude {
         val before = sessions.value.filter { it.attention }.map { it.id to it.since }.toSet()
         if (!tracker.onHook(o, now)) return
         val list = tracker.sessions(now)
-        sessions.value = list
+        publish(list)
         list.filter { it.attention && (it.id to it.since) !in before }.forEach { s -> later(s.id, s.since) }
     }
 
@@ -61,8 +61,19 @@ object Claude {
         notifying.value = on
     }
 
+    @Volatile
+    var changedAt = 0L
+        private set
+
+    private fun publish(list: List<ClaudeSession>) {
+        if (list == sessions.value) return
+        sessions.value = list
+        changedAt = System.currentTimeMillis()
+        Forward.changed()
+    }
+
     fun tick() {
-        if (watching.value) sessions.value = tracker.sessions(System.currentTimeMillis())
+        if (watching.value) publish(tracker.sessions(System.currentTimeMillis()))
     }
 
     fun setWatching(on: Boolean, port: Int): Boolean {
@@ -71,6 +82,8 @@ object Claude {
             Store.put("activity", if (on) "on" else "off")
             watching.value = on
             if (!on) sessions.value = emptyList()
+            changedAt = System.currentTimeMillis()
+            Forward.changed()
         }
         return ok
     }
@@ -80,24 +93,11 @@ object Claude {
         showFile.value = on
     }
 
-    fun react(model: String?, list: List<ClaudeSession>, now: Long, on: Boolean): React {
-        if (!on) return React.NONE
-        val known = list.any { it.model != null }
-        val mine = if (model == null || !known) list.primary() else list.forModel(model)
-        if (mine == null && model != null && known && list.any { it.act != Act.IDLE }) return React.NONE
-        return reactOf(mine, now, true)
-    }
+    fun react(model: String?, list: List<ClaudeSession>, now: Long, on: Boolean): React = reactFor(model, if (on) list else null, now)
 
-    fun solo(list: List<ClaudeSession>): String? {
-        val models = list.filter { it.act != Act.IDLE }.mapNotNull { it.model }.distinct()
-        return models.singleOrNull()?.let { m -> MODELS.firstOrNull { it.equals(m, ignoreCase = true) } }
-    }
+    fun solo(list: List<ClaudeSession>): String? = list.soloModel()
 
-    fun line(s: ClaudeSession, file: Boolean): String {
-        val state = txt.activityState(s.act, s.doing, if (file) s.file else null)
-        val where = listOfNotNull(s.project, s.branch).joinToString(" · ")
-        return if (where.isEmpty()) state else "$state · $where"
-    }
+    fun line(s: ClaudeSession, file: Boolean): String = s.describe(file)
 }
 
 fun React.bubble() = this == React.ALERT || this == React.RUN || this == React.OOPS
