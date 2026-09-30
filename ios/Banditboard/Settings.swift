@@ -63,6 +63,7 @@ struct SettingsView: View {
         .onChange(of: prefs) { _, new in
             Vault.prefs = new
             WidgetCenter.shared.reloadAllTimelines()
+            WatchSync.shared.send()
             model.objectWillChange.send()
         }
     }

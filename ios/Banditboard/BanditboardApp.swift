@@ -22,6 +22,7 @@ struct BanditboardApp: App {
                     }
                     if url.scheme == "banditboard", url.host == "demo" {
                         Vault.demo = url.query != "off=1"
+                        WatchSync.shared.send()
                         model.objectWillChange.send()
                         Task { await model.refresh() }
                         return
@@ -29,9 +30,11 @@ struct BanditboardApp: App {
                     guard let pairing = Pairing(url: url) else { return }
                     Vault.pairing = pairing
                     Vault.demo = false
+                    WatchSync.shared.send()
                     Task { await model.refresh() }
                 }
                 .task { if !ProcessInfo.processInfo.arguments.contains("--demo") { await Notifier.ask() } }
+                .onAppear { WatchSync.shared.start() }
         }
         .onChange(of: phase) { _, now in
             if now == .active { Task { await model.refresh() } }
@@ -98,6 +101,7 @@ final class DashboardModel: ObservableObject {
 
     func unpair() {
         Vault.pairing = nil
+        WatchSync.shared.send()
         problem = nil
         objectWillChange.send()
     }

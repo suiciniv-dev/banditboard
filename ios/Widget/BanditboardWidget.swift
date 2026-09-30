@@ -32,7 +32,7 @@ struct UsageProvider: TimelineProvider {
             if let reset = snap?.fiveHour?.resetsAt, reset > now, reset < now.addingTimeInterval(6 * 3600) {
                 entries.append(UsageEntry(date: reset, snapshot: snap, paired: paired))
             }
-            completion(Timeline(entries: entries, policy: .after(now.addingTimeInterval(15 * 60))))
+            completion(Timeline(entries: entries, policy: .after(snap?.nextRefresh(now) ?? now.addingTimeInterval(30 * 60))))
         }
     }
 }

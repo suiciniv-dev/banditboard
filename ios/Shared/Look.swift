@@ -355,6 +355,10 @@ enum L {
     static var news: String { pt ? "Notícias da Anthropic" : "Anthropic news" }
     static var loadingNews: String { pt ? "Buscando as notícias..." : "Loading news..." }
     static var settings: String { pt ? "Ajustes" : "Settings" }
+    static var watchPair: String {
+        pt ? "Abra o Banditboard no iPhone e pareie pela página banditboard.pages.dev/conectar. O relógio recebe o pareamento sozinho."
+            : "Open Banditboard on the iPhone and pair through banditboard.pages.dev/conectar. The watch gets the pairing on its own."
+    }
     static var close: String { pt ? "Fechar" : "Close" }
     static var mascot: String { pt ? "Mascote" : "Mascot" }
     static var accessories: String { pt ? "Acessórios" : "Accessories" }

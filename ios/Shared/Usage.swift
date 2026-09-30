@@ -42,6 +42,10 @@ struct Snapshot: Codable, Equatable {
         )
     }
 
+    func nextRefresh(_ now: Date = .now) -> Date {
+        now.addingTimeInterval(now.timeIntervalSince(fetchedAt) < 600 ? 5 * 60 : 30 * 60)
+    }
+
     func own(_ model: String) -> ScopedLimit? {
         scoped.first { $0.label.localizedCaseInsensitiveContains(model) }
     }
