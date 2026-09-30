@@ -218,6 +218,7 @@ class Repository(private val app: Context) {
     fun pairRemote(link: String): Boolean {
         if (!remote.pair(link)) return false
         remote.lastAt = 0L
+        onPaired?.invoke()
         _state.update {
             it.copy(
                 remote = remote.source,
@@ -228,6 +229,27 @@ class Repository(private val app: Context) {
         }
         poke.trySend(Unit)
         return true
+    }
+
+    var onPaired: (() -> Unit)? = null
+
+    fun receiveSealed(blob: String, at: Long): Boolean {
+        val seal = remote.source?.seal ?: return false
+        val usage = Remote.open(blob, seal)?.let { runCatching { JSONObject(it) }.getOrNull() } ?: return false
+        val stamp = if (at > 0) at else System.currentTimeMillis()
+        if (stamp <= remote.lastAt || !receivePush(usage, stamp)) return false
+        remote.lastAt = stamp
+        return true
+    }
+
+    fun registerPush(token: String) {
+        val s = remote.source ?: return
+        if (s.seal == null || remote.pushed == "$token@${s.urls.first()}") return
+        val body = JSONObject().put("token", token).put("platform", "android").toString()
+        val r = runCatching {
+            httpRequest("${s.urls.first()}/device", "POST", mapOf("X-Clawdboard-Key" to s.key, "Content-Type" to "application/json"), body, 10_000)
+        }.getOrNull()
+        if (r?.code == 200) remote.pushed = "$token@${s.urls.first()}"
     }
 
     fun unpairRemote() {

@@ -6,6 +6,8 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+if (file("google-services.json").exists()) apply(plugin = "com.google.gms.google-services")
+
 android {
     namespace = "dev.clawdboard"
     compileSdk = 35
@@ -65,6 +67,8 @@ dependencies {
     implementation("androidx.compose.material:material-icons-core")
     implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
     implementation("androidx.fragment:fragment-ktx:1.8.5")
+    implementation(platform("com.google.firebase:firebase-bom:34.19.0"))
+    implementation("com.google.firebase:firebase-messaging")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20240303")

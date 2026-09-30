@@ -8,9 +8,11 @@ local.properties
 dist/
 *.code-workspace
 promo/
-worker/.wrangler/
+.wrangler/
 ios/*.xcodeproj/
 ios/build/
 ios/Banditboard/Info.plist
 ios/Widget/Info.plist
 ios/**/*.entitlements
+app/google-services.json
+worker/fcm.json

@@ -31,6 +31,8 @@ class ClawdApp : Application() {
             }
         }
         scope.launch { repo.pollRemote() }
+        repo.onPaired = { PushService.sync(this) }
+        PushService.sync(this)
     }
 }
 

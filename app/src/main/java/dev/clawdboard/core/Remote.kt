@@ -31,6 +31,12 @@ class Remote(app: Context) {
             sp.edit().putLong("at", v).apply()
         }
 
+    var pushed: String?
+        get() = sp.getString("pushed", null)
+        set(v) {
+            sp.edit().putString("pushed", v).apply()
+        }
+
     fun pair(link: String): Boolean {
         val s = parse(link) ?: return false
         sp.edit().clear().putString("urls", s.urls.joinToString(",")).putString("key", s.key).putString("seal", s.seal).commit()
