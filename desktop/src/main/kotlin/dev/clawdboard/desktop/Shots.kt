@@ -1,5 +1,11 @@
 package dev.clawdboard.desktop
 
+import androidx.compose.ui.unit.sp
+import dev.clawdboard.core.txt
+import dev.clawdboard.core.React
+import dev.clawdboard.core.ClaudeSession
+import dev.clawdboard.core.Doing
+import dev.clawdboard.core.Act
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -77,6 +83,34 @@ fun main(args: Array<String>) {
     shot(File(out, "windows-dashboard.png"), DpSize(1200.dp, 2180.dp)) {
         Panel(0, StatusSnapshot(emptySet(), emptyList(), now), controls)
     }
+    Claude.watching.value = true
+    Claude.showFile.value = true
+    fun claude(model: String, act: Act, doing: Doing?, file: String? = null, seen: Long = now) =
+        ClaudeSession(model, "Simix.Ponto.Cloud", "feature/facial", model, act, doing, file, now - 40_000L, seen)
+    Claude.sessions.value = listOf(claude("opus", Act.WORKING, Doing.EDITING, "FacialService.cs"))
+    shot(File(out, "windows-activity.png"), SIZE) { Card(false) }
+    Claude.sessions.value = listOf(claude("opus", Act.WORKING, Doing.EDITING, "FacialService.cs", now - 5_000L), claude("sonnet", Act.PERMISSION, Doing.COMMAND))
+    shot(File(out, "windows-activity-permission.png"), SIZE) { Card(false) }
+    Claude.sessions.value = listOf(claude("opus", Act.RUNNING, Doing.TESTS))
+    shot(File(out, "windows-activity-compact.png"), COMPACT) { Card(true) }
+    val reactions = listOf(
+        React.WORK to txt.activityState(Act.WORKING, Doing.THINKING, null),
+        React.RUN to txt.activityState(Act.RUNNING, Doing.TESTS, null),
+        React.ALERT to txt.activityState(Act.PERMISSION, null, null),
+        React.OOPS to txt.activityState(Act.ERROR, null, null),
+        React.SLEEP to txt.activityState(Act.IDLE, null, null),
+    )
+    shot(File(out, "racco-activity.png"), DpSize(760.dp, 150.dp)) {
+        Row(Modifier.fillMaxSize().background(C.bg).padding(16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            reactions.forEachIndexed { i, (react, label) ->
+                androidx.compose.foundation.layout.Column(Modifier.weight(1f), horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+                    Mascot(Modifier.width(110.dp), model = "Opus", seed = i, feel = feelOf(usage.value, "Opus", react))
+                    androidx.compose.material3.Text(label, color = C.muted, fontSize = 13.sp, fontFamily = Fredoka, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                }
+            }
+        }
+    }
+    Claude.watching.value = false
     shot(File(out, "racco.png"), DpSize(520.dp, 130.dp)) {
         Row(Modifier.fillMaxSize().background(C.bg).padding(16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             MODELS.forEachIndexed { i, m -> Mascot(Modifier.width(110.dp), model = m, seed = i, feel = feelOf(usage.value, m)) }

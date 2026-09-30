@@ -503,7 +503,7 @@ fun Mascot(
         if (p.bang) {
             rect(14, 0, 1, 2, BANG); rect(14, 3, 1, 1, BANG)
         }
-        repeat(p.dots) { rect(11 + it * 2, 3, 1, 1, C.muted) }
+        repeat(p.dots) { rect(11 + it * 2, 1, 1, 1, C.muted) }
         if (react == React.OOPS && !out) {
             rect(13, 0, 1, 1, HOT); rect(15, 0, 1, 1, HOT); rect(14, 1, 1, 1, HOT)
             rect(13, 2, 1, 1, HOT); rect(15, 2, 1, 1, HOT)
