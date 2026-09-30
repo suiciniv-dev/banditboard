@@ -67,6 +67,14 @@ class ActivityTest {
     }
 
     @Test
+    fun forgottenQuestionStopsAskingForAttention() {
+        val t = tracker()
+        t.onHook(event("PreToolUse", extra = ""","tool_name":"AskUserQuestion","tool_input":{}"""), 0)
+        assertEquals(Act.QUESTION, t.sessions(WAITING_MS - 1).single().act)
+        assertEquals(Act.IDLE, t.sessions(WAITING_MS + 1).single().act)
+    }
+
+    @Test
     fun mostUrgentSessionWins() {
         val t = tracker()
         t.onHook(event("UserPromptSubmit", "a", ""","model":"claude-opus-4""""), 1_000)

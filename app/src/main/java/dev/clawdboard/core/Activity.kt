@@ -37,6 +37,7 @@ data class ClaudeSession(
 
 const val FINISHED_MS = 3 * 60_000L
 const val STALE_MS = 10 * 60_000L
+const val WAITING_MS = 30 * 60_000L
 const val FORGET_MS = 60 * 60_000L
 const val CHEER_MS = 6_000L
 
@@ -149,6 +150,7 @@ class ActivityTracker(private val repo: (String) -> Pair<String?, String?> = Rep
             when {
                 s.act == Act.FINISHED && now - s.since > FINISHED_MS -> s.copy(act = Act.IDLE, doing = null, since = s.since + FINISHED_MS)
                 (s.act == Act.WORKING || s.act == Act.RUNNING) && now - s.seen > STALE_MS -> s.copy(act = Act.IDLE, doing = null, since = s.seen + STALE_MS)
+                s.attention && now - s.seen > WAITING_MS -> s.copy(act = Act.IDLE, doing = null, since = s.seen + WAITING_MS)
                 else -> s
             }
         }
