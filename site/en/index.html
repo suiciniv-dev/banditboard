@@ -119,18 +119,64 @@ nav a:hover{color:var(--text)}
 .show{position:absolute;inset:0;pointer-events:none}
 .dmac{position:absolute;left:110px;top:300px;width:680px;opacity:0}
 .dmac .ms{height:430px;border:12px solid #1c1a18;border-bottom-width:18px;border-radius:18px 18px 6px 6px;overflow:hidden;background:#000;box-shadow:0 30px 60px -20px rgba(0,0,0,.8)}
-.dmac .ms img{width:100%;height:100%;object-fit:cover;object-position:top}
+.mscr{position:relative;width:100%;height:100%;overflow:hidden;background:radial-gradient(ellipse 80% 70% at 75% 110%,rgba(215,119,87,.28),transparent 70%),linear-gradient(160deg,#1c2231,#2a2130 60%,#322634)}
+.mbar{position:absolute;left:0;right:0;top:0;height:26px;background:rgba(18,16,14,.86);display:flex;align-items:center;gap:14px;padding:0 14px;font:600 13px var(--f);color:#ece3d6}
+.mbar em{width:26px;height:6px;border-radius:3px;background:#5b5249}
+.mbar .sp{flex:1}
+.mbar .rb{display:flex;align-items:center;gap:6px;padding:2px 7px;border-radius:6px}
+.mbar .rb svg{width:22px;height:auto}
+.mbar .rb.on{background:rgba(255,255,255,.18)}
+.mpop{position:absolute;right:58px;top:32px;width:280px;background:#16130f;border:1px solid #3a3126;border-radius:14px;box-shadow:0 18px 40px rgba(0,0,0,.6);padding:14px 16px;opacity:0;transform-origin:78% 0;color:var(--text)}
+.mpop .h{display:flex;justify-content:space-between;align-items:baseline;font:600 16px var(--f)}
+.mpop .h span{font:400 10px system-ui,sans-serif;color:var(--dim)}
+.mpop .m{margin-top:9px;font:500 12px var(--f);color:var(--muted)}
+.mpop .m b{display:block;font:600 21px/1.1 var(--f)}
+.mpop .bar,.ios .bar,.wos .bar{height:6px;border-radius:4px;background:var(--track);overflow:hidden;margin-top:4px}
+.mpop .bar i,.ios .bar i,.wos .bar i{display:block;height:100%}
+.mpop .rs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px;text-align:center;font:500 10px var(--f);color:var(--muted)}
+.mpop .rs svg,.ios .ir svg,.wog svg{display:block;height:auto;margin:0 auto 2px}
+.mpop .rs svg{width:46px}
+.mpop .tg{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font:500 13px var(--f)}
+.mpop .tg i{width:36px;height:20px;border-radius:10px;background:var(--coral);position:relative}
+.mpop .tg i::after{content:"";position:absolute;right:3px;top:3px;width:14px;height:14px;border-radius:50%;background:#fff}
+.mpop .ln{display:flex;justify-content:space-between;margin-top:10px;padding-top:8px;border-top:1px solid #3a3126;font:600 12px var(--f);color:var(--coral)}
+.mcur{position:absolute;left:0;top:0;width:18px;height:25px;opacity:0;z-index:3}
+.ios{position:relative;width:100%;height:100%;background:#16130f;padding:44px 12px 12px;color:var(--text);font-family:var(--f)}
+.ios .isl{position:absolute;left:50%;top:10px;width:80px;height:22px;margin-left:-40px;border-radius:12px;background:#000}
+.ios .isb{position:absolute;left:24px;right:22px;top:13px;display:flex;justify-content:space-between;align-items:center;font:600 12px var(--f)}
+.ios .isb .bt i{display:inline-block;width:20px;height:10px;border:1.5px solid #ece3d6;border-radius:3px;position:relative}
+.ios .isb .bt i::after{content:"";position:absolute;left:1px;top:1px;bottom:1px;width:70%;background:var(--ok);border-radius:1px}
+.ios .ih{display:flex;align-items:center;gap:8px;font:600 16px var(--f);margin:2px 2px 10px}
+.ios .ih svg{width:28px;height:auto}
+.ios .ic{background:#1f1a14;border:1px solid #2e271f;border-radius:14px;padding:10px 12px;margin-bottom:8px}
+.ios .ic .t{display:flex;justify-content:space-between;align-items:baseline;font:600 12px var(--f)}
+.ios .ic .t span+span{font:400 10px system-ui,sans-serif;color:var(--muted)}
+.ios .ic b{display:block;font:700 30px/1.15 var(--f);margin-top:2px}
+.ios .ir{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;font:500 9px var(--f);color:var(--muted);gap:4px;margin-top:6px}
+.ios .ir svg{width:42px}
+.ios .ic.ok{display:flex;align-items:center;gap:8px;font:500 11px var(--f);color:var(--ok)}
+.ios .ic.ok .d{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.ios .ic.nw em{display:block;height:6px;border-radius:3px;background:#2e271f;margin-top:9px;width:92%}
+.wos{position:absolute;inset:0;padding:16px 16px;color:var(--text);font-family:var(--f)}
+.wos .wt{text-align:right;font:600 13px var(--f)}
+.wos .wl{display:flex;justify-content:space-between;align-items:center;font:600 15px var(--f);margin-top:12px}
+.wos .wl svg{width:34px;height:auto}
+.wos b{display:block;font:700 42px/1 var(--f);color:var(--ok);margin-top:8px}
+.wos .bar{height:8px}
+.wos .bar i{width:37%;background:var(--ok)}
+.wos .wr{font:400 11px system-ui,sans-serif;color:var(--muted);margin-top:9px}
+.wog{display:grid;grid-template-columns:1fr 1fr;gap:8px 4px;margin-top:8px;text-align:center;font:500 10px var(--f);color:var(--muted)}
+.wog svg{width:46px}
+body:not(.rec) .fin .links{display:none}
 .dmac .mb{height:22px;margin:0 -46px;background:linear-gradient(#3a3631,#24211e);border-radius:0 0 18px 18px}
 .diph{position:absolute;left:880px;top:252px;width:262px;height:560px;border-radius:44px;background:#0b0a09;border:3px solid #3a342d;padding:9px;opacity:0;box-shadow:0 30px 60px -20px rgba(0,0,0,.85)}
 .diph .is{width:100%;height:100%;border-radius:34px;overflow:hidden;background:#000}
-.diph img{width:100%;height:100%;object-fit:cover;object-position:top}
 .dwat{position:absolute;left:1250px;top:390px;width:220px;height:262px;opacity:0}
 .dwat .band{position:absolute;left:40px;width:140px;height:150px;background:linear-gradient(90deg,#2b2622,#3a332d,#2b2622)}
 .dwat .band.t{top:-120px;border-radius:30px 30px 0 0}
 .dwat .band.b{bottom:-120px;border-radius:0 0 30px 30px}
 .dwat .wc{position:absolute;inset:0;border-radius:56px;background:#0b0a09;border:4px solid #4a433b;padding:14px;box-shadow:0 30px 60px -20px rgba(0,0,0,.85)}
 .dwat .ws{position:relative;width:100%;height:100%;border-radius:40px;overflow:hidden;background:#000}
-.dwat img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .dwat #dWm{opacity:0}
 .dwat .crown{position:absolute;right:-12px;top:70px;width:14px;height:44px;border-radius:6px;background:#4a433b}
 .desk{position:absolute;left:0;right:0;top:782px;bottom:0;background:linear-gradient(#2a2118,#1d1712)}
@@ -475,9 +521,31 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
             <div class="scrn" id="sChart"><div class="chh"><b data-t="chT">Last 7 days</b><span class="lg"><i style="background:var(--coral)"></i><span data-t="pSession">Session</span><i style="background:var(--lav)"></i><span data-t="pWeek">Week</span></span></div><svg class="chs" id="chSvg" viewBox="0 0 500 180"></svg></div>
           </div></div></div>
           <div class="show">
-            <div class="dmac" id="dMac"><div class="ms"><img data-img="mac-menubar" src="/img/en/mac-menubar.webp" alt=""></div><div class="mb"></div></div>
-            <div class="diph" id="dIph"><div class="is"><img data-img="ios-dashboard" src="/img/en/ios-dashboard.webp" alt=""></div></div>
-            <div class="dwat" id="dWat"><div class="band t"></div><div class="band b"></div><div class="wc"><div class="ws"><img data-img="watch-session" src="/img/en/watch-session.webp" alt=""><img id="dWm" data-img="watch-models" src="/img/en/watch-models.webp" alt=""></div></div><div class="crown"></div></div>
+            <div class="dmac" id="dMac"><div class="ms"><div class="mscr">
+              <div class="mbar"><em></em><em style="width:42px"></em><em></em><em style="width:30px"></em><span class="sp"></span><span class="rb" id="mRb"><i data-racco="logo"></i>37%</span><span>21:48</span></div>
+              <div class="mpop" id="mPop">
+                <div class="h">Banditboard<span data-t="mpAgo">updated 6s ago</span></div>
+                <div class="m"><span data-t="pSession">Session</span><b style="color:var(--ok)">37%</b><div class="bar"><i style="width:37%;background:var(--ok)"></i></div></div>
+                <div class="m"><span data-t="pWeek">Week</span><b style="color:var(--warn)">64%</b><div class="bar"><i style="width:64%;background:var(--warn)"></i></div></div>
+                <div class="rs" id="mpRs"></div>
+                <div class="tg"><span data-t="mpWid">Desktop widget</span><i></i></div>
+                <div class="ln"><span data-t="mpPanel">Dashboard and settings</span><span data-t="mpRef">Refresh now</span></div>
+              </div>
+              <svg class="mcur" id="mCur" viewBox="0 0 16 22"><path d="M1 1v17l4.5-4.2 3 6.7 2.6-1.2-3-6.6H14z" fill="#f3efea" stroke="#16130f" stroke-width="1.3" stroke-linejoin="round"/></svg>
+            </div></div><div class="mb"></div></div>
+            <div class="diph" id="dIph"><div class="is"><div class="ios">
+              <div class="isl"></div><div class="isb"><span>21:48</span><span class="bt"><i></i></span></div>
+              <div class="ih"><i data-racco="logo"></i>Banditboard</div>
+              <div class="ic"><div class="t"><span data-t="pSession">Session</span><span data-t="iLeft5">resets in 2h 12m</span></div><b style="color:var(--ok)">37%</b><div class="bar"><i style="width:37%;background:var(--ok)"></i></div></div>
+              <div class="ic"><div class="t"><span data-t="pWeek">Week</span><span data-t="iLeft7">resets in 3d 4h</span></div><b style="color:var(--warn)">64%</b><div class="bar"><i style="width:64%;background:var(--warn)"></i></div></div>
+              <div class="ic"><div class="t"><span data-t="iModels">Models</span></div><div class="ir" id="iRow"></div></div>
+              <div class="ic ok"><span class="d"></span><span data-t="iOk">All systems operational</span></div>
+              <div class="ic nw"><div class="t" style="color:var(--coral)"><span data-t="iNews">Anthropic news</span></div><em></em><em style="width:72%"></em><em style="width:84%"></em><em style="width:60%"></em></div>
+            </div></div></div>
+            <div class="dwat" id="dWat"><div class="band t"></div><div class="band b"></div><div class="wc"><div class="ws">
+              <div class="wos" id="wSes"><div class="wt">21:48</div><div class="wl"><span data-t="pSession">Session</span><i data-racco="Opus"></i></div><b>37%</b><div class="bar"><i></i></div><div class="wr" data-t="iLeft5">resets in 2h 12m</div></div>
+              <div class="wos" id="dWm"><div class="wt">21:48</div><div class="wog" id="wRow"></div></div>
+            </div></div><div class="crown"></div></div>
           </div>
           <div class="url" id="url"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg><span id="urlT">banditboard.pages.dev</span></div>
         </div>
@@ -672,6 +740,9 @@ const T = {
     c9: "No Mac, o Racco mora na <em>barra de menus</em>.",
     c10: "No iPhone, painel, <em>widgets</em> e StandBy.",
     c11: "E no pulso, com o <em>Apple Watch</em>.",
+    mpAgo: "atualizado há 6s", mpWid: "Widget na mesa", mpPanel: "Painel e ajustes", mpRef: "Atualizar agora",
+    iNews: "Notícias da Anthropic",
+    iLeft5: "libera em 2h 12m", iLeft7: "libera em 3d 4h", iModels: "Modelos", iOk: "Todos os sistemas operacionais",
     mPlaying: "Tocando agora", mArtist: "Racco e os Modelos", ckDate: "domingo, 28 de setembro", chT: "Últimos 7 dias", days: ["seg", "ter", "qua", "qui", "sex", "sáb", "dom"],
     c5: "Disponível para",
     pSession: "Sessão", p5h: "5 horas", pResets: "libera em", pToday: "hoje às 18:07", pWeek: "Semana", pOut: "esgotado",
@@ -770,6 +841,9 @@ const T = {
     c9: "On Mac, Racco lives in the <em>menu bar</em>.",
     c10: "On iPhone, a dashboard, <em>widgets</em> and StandBy.",
     c11: "And on your wrist, with <em>Apple Watch</em>.",
+    mpAgo: "updated 6s ago", mpWid: "Desktop widget", mpPanel: "Dashboard and settings", mpRef: "Refresh now",
+    iNews: "Anthropic news",
+    iLeft5: "resets in 2h 12m", iLeft7: "resets in 3d 4h", iModels: "Models", iOk: "All systems operational",
     mPlaying: "Now playing", mArtist: "Racco and the Models", ckDate: "Sunday, September 28", chT: "Last 7 days", days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     c5: "Available on",
     pSession: "Session", p5h: "5 hours", pResets: "resets in", pToday: "today at 6:07 PM", pWeek: "Week", pOut: "maxed out",
@@ -978,6 +1052,10 @@ const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
   for (let k = 0; k < 9; k++) side += `<i style="width:${50 + Math.round(rnd() * 60)}px;margin-left:${k % 3 ? 14 : 0}px"></i>`;
   $("side").innerHTML = side;
   $("tray").innerHTML = racco(null, {}, 3);
+  const row = (w, lab) => MODELS.map((m, k) => `<div>${racco(m, {}, k + w)}${lab ? m : ""}</div>`).join("");
+  $("mpRs").innerHTML = row(20, true);
+  $("iRow").innerHTML = row(30, true);
+  $("wRow").innerHTML = row(40, true);
 })();
 
 const ease = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
@@ -1106,7 +1184,18 @@ function render(tt){
     set(id + "o", $(id), "opacity", (k * (1 - fz)).toFixed(3));
     set(id + "t", $(id), "transform", `translateY(${((1 - k) * 60 - fz * 30).toFixed(1)}px)`);
   }
-  set("dWm", $("dWm"), "opacity", ease((tt - 35.6) / .4).toFixed(3));
+  const wm = ease((tt - 35.6) / .4);
+  set("dWm", $("dWm"), "opacity", wm.toFixed(3));
+  set("wSes", $("wSes"), "opacity", (1 - wm).toFixed(3));
+  const cIn2 = ease((tt - 27.3) / .8), rb = $("mRb"), tx = rb.offsetLeft + 16, ty = rb.offsetTop + 6;
+  const cx = tx - 260 + 260 * cIn2, cy = 260 + (ty - 260) * cIn2;
+  set("mCur", $("mCur"), "opacity", (tt >= 27.2 && tt < 29.8 ? Math.min(ease((tt - 27.2) / .2), 1 - ease((tt - 29.4) / .4)) : 0).toFixed(3));
+  set("mCurT", $("mCur"), "transform", `translate(${cx.toFixed(1)}px,${cy.toFixed(1)}px)`);
+  const clicked = tt >= 28.15 && tt < 37.6;
+  if (cache.mRb !== clicked) { cache.mRb = clicked; rb.classList.toggle("on", clicked); }
+  const po = ease((tt - 28.2) / .3);
+  set("mPop", $("mPop"), "opacity", (tt < 28.2 ? 0 : po).toFixed(3));
+  set("mPopS", $("mPop"), "transform", `scale(${(.94 + .06 * po).toFixed(3)})`);
 }
 function syncAnims(t){ document.getAnimations().forEach(a => { a.pause(); a.currentTime = t * 1000; }); }
 
