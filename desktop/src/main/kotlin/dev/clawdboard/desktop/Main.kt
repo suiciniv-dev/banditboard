@@ -175,7 +175,7 @@ internal fun savePrefs(f: (Prefs) -> Prefs) {
 }
 
 fun main(args: Array<String>) {
-    if (!onMac && System.getenv("SKIKO_RENDER_API") == null) System.setProperty("skiko.renderApi", "OPENGL")
+    if (!onMac && System.getenv("SKIKO_RENDER_API") == null) System.setProperty("skiko.renderApi", "SOFTWARE")
     val lock = runCatching {
         FileChannel.open(File(Store.dir, "lock").toPath(), StandardOpenOption.CREATE, StandardOpenOption.WRITE).tryLock()
     }.getOrNull() ?: return
@@ -313,6 +313,7 @@ fun main(args: Array<String>) {
             update = { it.isAlwaysOnTop = onTop },
         ) {
             LaunchedEffect(Unit) { WidgetSpot.place(shown, window) }
+            if (onTop && !onMac) LaunchedEffect(Unit) { while (true) { WinTop.raise(window); delay(2_000) } }
             CompositionLocalProvider(LocalDance provides dance) {
                 val drag = Modifier.dragWindow(window, onDoubleClick = { panel = true }, onMoved = { WidgetSpot.save(shown, window) })
                 if (shown == Layout.MINI) Box(Modifier.fillMaxSize().then(drag)) { Mini() }
