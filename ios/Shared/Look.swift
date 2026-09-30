@@ -224,6 +224,36 @@ private func pixels(_ a: Accessory, _ species: Species) -> [Px] {
     }
 }
 
+struct RaccoRing: View {
+    let percent: Double?
+    var feel = Feel()
+    var tint = Color.white
+
+    var body: some View {
+        GeometryReader { g in
+            let side = min(g.size.width, g.size.height)
+            let line = side * 0.08
+            ZStack {
+                Circle().stroke(tint.opacity(0.28), lineWidth: line)
+                Circle()
+                    .trim(from: 0, to: min(max((percent ?? 0) / 100, 0), 1))
+                    .stroke(tint, style: StrokeStyle(lineWidth: line, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+                VStack(spacing: side * 0.03) {
+                    MascotView(feel: feel, reserveTop: false).frame(width: side * 0.5)
+                    Text(formatPct(percent))
+                        .font(.system(size: side * 0.19, weight: .semibold, design: .rounded))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                }
+            }
+            .padding(line / 2)
+            .frame(width: side, height: side)
+            .position(x: g.size.width / 2, y: g.size.height / 2)
+        }
+    }
+}
+
 struct MascotView: View {
     var model: String? = nil
     var feel = Feel()

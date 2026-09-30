@@ -91,12 +91,7 @@ struct UsageWidgetView: View {
     }
 
     private var circular: some View {
-        Gauge(value: min(u?.fiveHour?.percent ?? 0, 100), in: 0...100) {
-            Text("5h")
-        } currentValueLabel: {
-            Text(formatPct(u?.fiveHour?.percent))
-        }
-        .gaugeStyle(.accessoryCircular)
+        RaccoRing(percent: u?.fiveHour?.percent, feel: feelOf(u, "Opus"))
     }
 
     private func resetLine(_ label: String, _ reset: Date?) -> some View {

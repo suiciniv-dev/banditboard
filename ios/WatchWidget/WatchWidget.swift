@@ -59,13 +59,7 @@ struct WatchWidgetView: View {
                         .tint(session.map { Palette.level($0) } ?? Palette.dim)
                 }
         default:
-            Gauge(value: min(session ?? 0, 100), in: 0...100) {
-                Text("5h")
-            } currentValueLabel: {
-                Text(formatPct(session))
-            }
-            .gaugeStyle(.accessoryCircular)
-            .tint(session.map { Palette.level($0) } ?? Palette.dim)
+            RaccoRing(percent: session, feel: feelOf(u, "Opus"), tint: session.map { Palette.level($0) } ?? Palette.dim)
         }
     }
 }
