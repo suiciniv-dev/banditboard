@@ -16,6 +16,7 @@ enum Notifier {
     }
 
     static func process(_ snap: Snapshot) {
+        guard Vault.prefs.alerts else { return }
         let now = Date.now
         let s = snap.settled(now)
         for (kind, week, w) in [("SESSION", false, s.fiveHour), ("WEEK", true, s.sevenDay)] {
@@ -42,6 +43,12 @@ enum Notifier {
                 }
             }
         }
+    }
+
+    static func sample() {
+        let now = Date.now
+        post("sample.session", L.alertTitle(week: false, level: 90), L.resets(formatAt(now.addingTimeInterval(2 * 3600 + 13 * 60), now: now)), at: now.addingTimeInterval(6))
+        post("sample.week", L.alertTitle(week: true, level: 80), L.resets(formatAt(now.addingTimeInterval(3 * 86_400 + 5 * 3600), now: now)), at: now.addingTimeInterval(9))
     }
 
     private static func cancel(_ id: String) {

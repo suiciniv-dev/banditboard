@@ -13,11 +13,25 @@ struct BanditboardApp: App {
                 .preferredColorScheme(.dark)
                 .environment(\.locale, L.locale)
                 .onOpenURL { url in
+                    if url.scheme == "banditboard", url.host == "test-alert" {
+                        Task {
+                            await Notifier.ask()
+                            Notifier.sample()
+                        }
+                        return
+                    }
+                    if url.scheme == "banditboard", url.host == "demo" {
+                        Vault.demo = url.query != "off=1"
+                        model.objectWillChange.send()
+                        Task { await model.refresh() }
+                        return
+                    }
                     guard let pairing = Pairing(url: url) else { return }
                     Vault.pairing = pairing
+                    Vault.demo = false
                     Task { await model.refresh() }
                 }
-                .task { await Notifier.ask() }
+                .task { if !ProcessInfo.processInfo.arguments.contains("--demo") { await Notifier.ask() } }
         }
         .onChange(of: phase) { _, now in
             if now == .active { Task { await model.refresh() } }
@@ -63,7 +77,7 @@ final class DashboardModel: ObservableObject {
         }
     }
 
-    var paired: Bool { Vault.pairing != nil }
+    var paired: Bool { Vault.pairing != nil || Vault.demo }
 
     func refresh() async {
         guard paired, !busy else { return }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct DashboardView: View {
     @ObservedObject var model: DashboardModel
+    @State private var settings = false
 
     var body: some View {
         ZStack {
@@ -20,6 +21,8 @@ struct DashboardView: View {
                 try? await Task.sleep(for: .seconds(60))
             }
         }
+        .sheet(isPresented: $settings) { SettingsView(model: model) }
+        .onAppear { if ProcessInfo.processInfo.arguments.contains("--settings") { settings = true } }
         .task {
             while !Task.isCancelled {
                 await model.feeds()
@@ -30,7 +33,7 @@ struct DashboardView: View {
 
     private func content(now: Date) -> some View {
         let u = model.snapshot?.settled(now)
-        return ScrollView {
+        return ScrollViewReader { proxy in ScrollView {
             VStack(spacing: 16) {
                 header(now: now)
                 if let problem = model.problem, problem != .noData {
@@ -44,11 +47,16 @@ struct DashboardView: View {
                 ModelsCard(snapshot: u)
                 StatusCard(incidents: model.incidents)
                 NewsCard(news: model.news)
-                footer(u: u, now: now)
+                footer(u: u, now: now).id("fim")
             }
             .padding(18)
         }
         .refreshable { await model.refresh() }
+        .task {
+            guard ProcessInfo.processInfo.arguments.contains("--scroll-end") else { return }
+            try? await Task.sleep(for: .seconds(3))
+            proxy.scrollTo("fim", anchor: .bottom)
+        } }
     }
 
     private func header(now: Date) -> some View {
@@ -76,7 +84,7 @@ struct DashboardView: View {
             }
             HStack(spacing: 24) {
                 Button(model.busy ? "…" : L.refresh) { Task { await model.refresh() } }
-                Button(L.repair) { model.unpair() }
+                Button(L.settings) { settings = true }
             }
             .font(.footnote.weight(.semibold))
             .foregroundStyle(Palette.clawd)

@@ -5,7 +5,7 @@ options:
 settings:
   base:
     CODE_SIGN_STYLE: Automatic
-    MARKETING_VERSION: "0.1.0"
+    MARKETING_VERSION: "1.14.0"
     CURRENT_PROJECT_VERSION: "1"
     SWIFT_VERSION: "5.0"
     TARGETED_DEVICE_FAMILY: "1"
@@ -23,6 +23,8 @@ targets:
       properties:
         CFBundleDisplayName: Banditboard
         AppIdentifierPrefix: $(AppIdentifierPrefix)
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         CFBundleLocalizations: [pt-BR, en]
         CFBundleAllowMixedLocalizations: true
         UILaunchScreen:
@@ -56,6 +58,8 @@ targets:
       properties:
         CFBundleDisplayName: Banditboard
         AppIdentifierPrefix: $(AppIdentifierPrefix)
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         CFBundleLocalizations: [pt-BR, en]
         CFBundleAllowMixedLocalizations: true
         NSLocalNetworkUsageDescription: O Banditboard busca o uso do Claude Code no seu PC ou Mac pela rede de casa.

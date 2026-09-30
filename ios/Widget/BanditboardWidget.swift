@@ -25,7 +25,7 @@ struct UsageProvider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<UsageEntry>) -> Void) {
         Task {
-            let paired = Vault.pairing != nil
+            let paired = Vault.pairing != nil || Vault.demo
             let snap = paired ? ((try? await Client.fetch()) ?? Vault.snapshot) : nil
             let now = Date.now
             var entries = [UsageEntry(date: now, snapshot: snap, paired: paired)]

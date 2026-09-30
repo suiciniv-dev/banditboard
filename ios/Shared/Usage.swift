@@ -32,6 +32,16 @@ struct Snapshot: Codable, Equatable {
         return s
     }
 
+    static func demo(_ now: Date = .now) -> Snapshot {
+        Snapshot(
+            fiveHour: UsageWindow(percent: 37, resetsAt: now.addingTimeInterval(2 * 3600 + 13 * 60)),
+            sevenDay: UsageWindow(percent: 64, resetsAt: now.addingTimeInterval(3 * 86_400 + 5 * 3600)),
+            scoped: [ScopedLimit(label: "Fable", percent: 22, resetsAt: now.addingTimeInterval(3 * 86_400 + 5 * 3600))],
+            fetchedAt: now.addingTimeInterval(-12),
+            sessions: ["opus"]
+        )
+    }
+
     func own(_ model: String) -> ScopedLimit? {
         scoped.first { $0.label.localizedCaseInsensitiveContains(model) }
     }
@@ -163,6 +173,26 @@ enum Vault {
         set { write("snapshot", newValue) }
     }
 
+    static var demo: Bool {
+        get { ProcessInfo.processInfo.arguments.contains("--demo") || (read("demo") ?? false) }
+        set { write("demo", newValue ? true : nil) }
+    }
+
+    private static var cachedPrefs: Prefs?
+
+    static var prefs: Prefs {
+        get {
+            if let p = cachedPrefs { return p }
+            let p: Prefs = read("prefs") ?? Prefs()
+            cachedPrefs = p
+            return p
+        }
+        set {
+            cachedPrefs = newValue
+            write("prefs", newValue)
+        }
+    }
+
     static func mark(_ kind: String) -> Int { defaults.integer(forKey: "mark.\(kind)") }
     static func setMark(_ kind: String, _ level: Int) { defaults.set(level, forKey: "mark.\(kind)") }
     static func freeAt(_ kind: String) -> Date? { defaults.object(forKey: "free.\(kind)") as? Date }
@@ -175,6 +205,7 @@ enum FetchError: Error {
 
 enum Client {
     static func fetch() async throws -> Snapshot {
+        if Vault.demo { return Snapshot.demo() }
         guard var pairing = Vault.pairing else { throw FetchError.notPaired }
         if let master = pairing.seal { return try await fromBox(pairing, master) }
         for (i, base) in pairing.urls.enumerated() {
