@@ -183,6 +183,7 @@ fun main(args: Array<String>) {
     Autostart.repair()
     Share.restore()
     if ("--clawd" in args) savePrefs { it.copy(clawdUnlocked = true) }
+    MenuBar.openAt = args.firstOrNull { it.startsWith("--popover=") }?.substringAfter('=')?.toIntOrNull()
     if (!onMac) WinMusic.start()
     Store.get("last")?.let { raw ->
         val at = Store.get("lastAt")?.toLongOrNull() ?: 0L

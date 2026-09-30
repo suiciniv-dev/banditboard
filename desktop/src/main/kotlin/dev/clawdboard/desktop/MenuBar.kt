@@ -75,6 +75,7 @@ import java.awt.event.WindowEvent
 import java.awt.image.BufferedImage
 
 object MenuBar {
+    internal var openAt: Int? = null
     private const val HEIGHT = 44
     private const val CELL = 3
     internal val dark = MutableStateFlow(false)
@@ -161,6 +162,12 @@ fun ApplicationScope.MacBar(port: Int, widget: Boolean, onWidget: (Boolean) -> U
             runCatching { SystemTray.getSystemTray().remove(tray) }
         }
     }
+    LaunchedEffect(Unit) {
+        MenuBar.openAt?.let {
+            delay(2_000L)
+            anchor = Point(it, 0)
+        }
+    }
     var now by remember { mutableLongStateOf(System.currentTimeMillis()) }
     val isDark by MenuBar.dark.collectAsState()
     LaunchedEffect(Unit) {
@@ -187,7 +194,7 @@ private fun ApplicationScope.Popover(
     at: Point, port: Int, widget: Boolean, onWidget: (Boolean) -> Unit, onPanel: () -> Unit, onQuit: () -> Unit, onClose: () -> Unit,
 ) {
     val width = 340
-    val height = 392
+    val height = if (usage.value == null) 392 else 348
     val spot = remember(at) {
         val screen = GraphicsEnvironment.getLocalGraphicsEnvironment().screenDevices.map { it.defaultConfiguration }
             .firstOrNull { it.bounds.contains(at) } ?: GraphicsEnvironment.getLocalGraphicsEnvironment().defaultScreenDevice.defaultConfiguration
