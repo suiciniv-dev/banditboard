@@ -26,7 +26,7 @@ if not, write it in one of them and I'll translate). Please don't add code comme
 ## Making a change
 
 1. Build and run the tests: `.\gradlew.bat testReleaseUnitTest assembleDebug` (see [docs/development.md](docs/development.md)).
-2. Try it on a phone or on Windows. The preview build (`dev.clawdboard.preview`) installs next to the real app and accepts sample data, so you don't need a real Claude Code session to test the screens.
+2. Try it on a phone, on Windows or on a Mac. The Android preview build (`dev.clawdboard.preview`) installs next to the real app and accepts sample data, so you don't need a real Claude Code session to test the screens. The iPhone and Apple Watch apps take `--demo` in the simulator for the same purpose.
 3. The app's text lives in `core/Texts.kt`, in English and Brazilian Portuguese. Add both when you add a string.
 4. Keep the existing internal names (`dev.clawdboard`, `clawdboard-usage.ps1`, `X-Clawdboard`): changing them would break existing installs.
 5. Don't add Anthropic logos or artwork. The mascot is Racco, Banditboard's own raccoon.
@@ -61,7 +61,7 @@ puder; se não, escreva num deles que eu traduzo). Por favor, não coloque comen
 ## Fazendo uma mudança
 
 1. Compile e rode os testes: `.\gradlew.bat testReleaseUnitTest assembleDebug` (veja [docs/desenvolvimento.md](docs/desenvolvimento.md)).
-2. Teste no celular ou no Windows. A versão de teste (`dev.clawdboard.preview`) fica ao lado do app de verdade e aceita dados de exemplo, então não precisa de uma sessão real do Claude Code para testar as telas.
+2. Teste no celular, no Windows ou no Mac. A versão de teste do Android (`dev.clawdboard.preview`) fica ao lado do app de verdade e aceita dados de exemplo, então não precisa de uma sessão real do Claude Code para testar as telas. Os apps do iPhone e do Apple Watch aceitam o `--demo` no simulador para a mesma coisa.
 3. Os textos do app ficam em `core/Texts.kt`, em português e em inglês. Ao criar um texto, coloque os dois.
 4. Mantenha os nomes internos (`dev.clawdboard`, `clawdboard-usage.ps1`, `X-Clawdboard`): mudar quebraria a instalação de quem já usa.
 5. Não use logos nem artes da Anthropic. O mascote é o Racco, o guaxinim do próprio Banditboard.

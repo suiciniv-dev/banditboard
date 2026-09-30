@@ -137,16 +137,56 @@ enum Sealed {
 }
 
 enum Vault {
-    private static let group = (Bundle.main.object(forInfoDictionaryKey: "AppIdentifierPrefix") as? String ?? "") + "dev.clawdboard.banditboard.shared"
     private static let defaults = UserDefaults.standard
 
+    private static let group: String? = {
+        guard let team = keychainTeam() ?? profileTeam() else { return nil }
+        let group = "\(team).dev.clawdboard.banditboard.shared"
+        return probe(group) != nil ? group : nil
+    }()
+
+    private static func probe(_ group: String?) -> String? {
+        var q: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: "banditboard.team",
+            kSecAttrAccount as String: "team",
+            kSecReturnAttributes as String: true,
+        ]
+        if let group { q[kSecAttrAccessGroup as String] = group }
+        var out: AnyObject?
+        var status = SecItemCopyMatching(q as CFDictionary, &out)
+        if status == errSecItemNotFound {
+            q[kSecValueData as String] = Data()
+            q[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
+            status = SecItemAdd(q as CFDictionary, &out)
+        }
+        guard status == errSecSuccess else { return nil }
+        return (out as? [String: Any])?[kSecAttrAccessGroup as String] as? String ?? group
+    }
+
+    private static func keychainTeam() -> String? {
+        guard let team = probe(nil)?.split(separator: ".").first, team.count == 10 else { return nil }
+        return String(team)
+    }
+
+    private static func profileTeam() -> String? {
+        guard let url = Bundle.main.url(forResource: "embedded", withExtension: "mobileprovision"),
+              let raw = try? Data(contentsOf: url),
+              let start = raw.range(of: Data("<?xml".utf8)),
+              let end = raw.range(of: Data("</plist>".utf8), in: start.lowerBound..<raw.endIndex),
+              let plist = try? PropertyListSerialization.propertyList(from: raw[start.lowerBound..<end.upperBound], format: nil) as? [String: Any],
+              let team = (plist["TeamIdentifier"] as? [String])?.first else { return nil }
+        return team
+    }
+
     private static func query(_ account: String) -> [String: Any] {
-        [
+        var q: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: "banditboard",
             kSecAttrAccount as String: account,
-            kSecAttrAccessGroup as String: group,
         ]
+        if let group { q[kSecAttrAccessGroup as String] = group }
+        return q
     }
 
     private static func read<T: Decodable>(_ account: String) -> T? {

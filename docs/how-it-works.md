@@ -7,21 +7,29 @@
 ## Data flow
 
 ```
- Claude Code on your PC (VS Code or terminal)
+ Claude Code on your PC or Mac (VS Code or terminal)
           │  Stop / SessionStart hook, at most every 2 minutes
           ▼
- clawdboard-usage.ps1 ──► claude -p "/usage"   (local command, no tokens, hooks off)
+ clawdboard-usage.ps1 (Windows) or clawdboard-usage.sh (macOS)
+          │  claude -p "/usage"   (local command, no tokens, hooks off)
           │
           └──► POST to each destination in clawdboard-targets.json   (pairing key, only the numbers)
-                 ├──► http://PHONE-IP:8080/api/push
-                 └──► http://127.0.0.1:47810/api/push   (Windows app)
+                 ├──► http://PHONE-IP:8080/api/push                  (Android, PIN pairing)
+                 ├──► http://127.0.0.1:47810/api/push                (Windows or Mac app)
+                 └──► https://banditboard-api.vinips00.workers.dev/v1/box/ID/push
+                        (encrypted end to end; Firebase wakes the Android app)
 
- ┌──────────────────┐
- │  Android phone   │ ──► status.claude.com    open incidents
- │   Banditboard    │ ──► public RSS feed      Anthropic news
- └──────────────────┘
-          ├──► 🦝 raccoons on the phone screen
-          └──► web dashboard on your local network (http://PHONE-IP:8080)
+ Windows or Mac app ──► shares read-only on your home network, when you turn it on (ports 47830-47839)
+
+ Readers:
+   Android phone   ── PIN pairing, QR code from the Windows/Mac app, or QR code from /conectar
+   iPhone          ── QR code from the Windows/Mac app, or QR code from /conectar
+   Apple Watch     ── gets the pairing from the iPhone, then fetches by itself
+   Windows / Mac   ── receive the hook directly
+
+ Every app also reads:
+   status.claude.com     open incidents
+   public RSS feed       Anthropic news
 
  Music mode reads and controls the phone's own media session. No account involved.
 ```
@@ -92,6 +100,51 @@ adb shell appops set dev.clawdboard SYSTEM_ALERT_WINDOW allow
 **Updating.** Installing a new APK over the old one keeps the PIN, settings and history, as long as it is signed with the same
 key. The app asks for the PIN once after the update. Coming from 1.4 or older, the first unlock replaces the stored Claude token
 with a pairing key; then connect Claude Code from the dashboard.
+
+## Mac
+
+The Mac app lives in the menu bar: Racco and the session percentage next to the clock, drawn in white or black to follow the
+bar. A click opens a small panel with the session, the week, the four Raccos, the "Desktop widget" switch and the links to the
+dashboard, "Refresh now" and "Quit". The widget on the desk and the dashboard are the same as on Windows, without the "Just Racco"
+layout, since the menu bar already does that job. "Open at login" in the dashboard writes a LaunchAgent at
+`~/Library/LaunchAgents/dev.clawdboard.banditboard.plist`. The data lives in `~/Library/Application Support/Banditboard`, and the
+alerts are macOS notifications (allow them in System Settings → Notifications → Banditboard). "Connect Claude Code" installs
+`~/.claude/clawdboard-usage.sh`, the POSIX sh version of the hook, which only uses tools that come with macOS (`openssl`,
+`plutil`, `osascript`).
+
+## Connecting from anywhere
+
+[banditboard.pages.dev/conectar](https://banditboard.pages.dev/conectar/) creates a "box" on the Banditboard server, a Cloudflare
+Worker with a D1 database. The browser generates four random values: the box ID, a write key, a read key and a 256-bit master
+key. Only the ID and the SHA-256 hashes of the two keys go to the server.
+
+- The **QR code** (`banditboard://box?...`) carries the server address, the ID, the read key and the master key. The phone uses it to read.
+- The **command** for Windows or macOS carries the ID, the write key and the master key. It installs the hook with a new destination, or adds that destination if the hook is already there.
+
+Each push is encrypted on the computer: AES-256-CBC with a random IV, then HMAC-SHA256 over the IV and the ciphertext, with the
+encryption and MAC keys derived from the master key with HMAC ("banditboard-enc" and "banditboard-mac"). Along with it goes a
+coarse level, the bucket (0, 80, 90 or 100) of the session and of the week, which is the only thing the server can read. When that
+level changes, the server sends the ciphertext to the registered Android phones through Firebase Cloud Messaging; the phone
+decrypts it and shows the alert, even with the app closed. A box that receives nothing for 45 days is deleted, along with its
+phones.
+
+## QR code on the home network
+
+On the Windows or Mac dashboard, "Share usage with the iPhone on your home network" starts a small read-only server on the first
+free port between 47830 and 47839. It answers `GET /api/usage` only with the key from the QR code (`banditboard://pair?...`), which
+also lists the computer's local addresses. Both the iPhone and Android can scan it. Turning the switch off stops the server.
+
+## iPhone and Apple Watch
+
+The iPhone app has the dashboard (session, week, the four Raccos, status and news), the settings (raccoon, skin, tint, language,
+alerts and pairing) and widgets: small and medium on the Home Screen, circular and rectangular on the Lock Screen, and the small
+one in StandBy. Pairing happens by scanning a QR code with the Camera. The app asks iOS to refresh in the background about
+every 15 minutes and sends the alerts as local notifications, so the timing depends on iOS. The widgets fetch the usage
+themselves and schedule their next refresh around the next reset.
+
+The Apple Watch app gets the pairing from the iPhone through WatchConnectivity once, and from then on fetches by itself, over the
+home network or through the server. It has three pages (session, week and models) and complications in four shapes: circular,
+rectangular, corner and inline.
 
 ## Where the data comes from
 
