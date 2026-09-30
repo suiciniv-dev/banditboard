@@ -157,7 +157,7 @@ instalador). O servidor é o [`worker/src/index.js`](worker/src/index.js).
 **Confira o download.** Cada versão traz o SHA-256 de cada arquivo. Compare com o do arquivo que você baixou:
 
 ```powershell
-Get-FileHash .\Banditboard-1.15.0.msi -Algorithm SHA256
+Get-FileHash .\Banditboard-1.15.1.msi -Algorithm SHA256
 ```
 
 ```sh
