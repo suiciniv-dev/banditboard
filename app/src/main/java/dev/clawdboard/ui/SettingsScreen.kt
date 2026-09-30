@@ -86,17 +86,25 @@ fun SettingsScreen(repo: Repository, st: Repository.State, prefs: Prefs, onClose
                 if (at != null) txt.lastPush(fmtAgo(now - at)) else txt.noPushYet,
                 color = if (at != null) C.ok else C.warn, fontSize = 15.sp,
             )
-            Hint(txt.usageExplain(st.panelUrl))
+            st.remote?.let { Text(if (it.seal != null) txt.remoteBox else txt.remoteLan, color = C.muted, fontSize = 14.sp) }
+            if (repo.vault.isProvisioned) Hint(txt.usageExplain(st.panelUrl))
+            Hint(txt.scanQrHint)
             Spacer(Modifier.height(8.dp))
-            OutlinedButton(onClick = {
-                scope.launch {
-                    pairMsg = when (val r = repo.newPairKey()) {
-                        Repository.Outcome.Ok -> true to txt.newKeyDone
-                        is Repository.Outcome.Error -> false to r.message
-                        else -> false to txt.newKeyFailed
-                    }
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                ScanButton(repo) { ok, m -> pairMsg = ok to m }
+                if (st.remote != null) OutlinedButton(onClick = { repo.unpairRemote(); if (!repo.vault.isProvisioned) onClose() }) {
+                    Text(txt.remoteUnpair, color = C.text)
                 }
-            }) { Text(txt.newKey, color = C.text) }
+                if (repo.vault.isProvisioned) OutlinedButton(onClick = {
+                    scope.launch {
+                        pairMsg = when (val r = repo.newPairKey()) {
+                            Repository.Outcome.Ok -> true to txt.newKeyDone
+                            is Repository.Outcome.Error -> false to r.message
+                            else -> false to txt.newKeyFailed
+                        }
+                    }
+                }) { Text(txt.newKey, color = C.text) }
+            }
             pairMsg?.let { (ok, m) -> Text(m, color = if (ok) C.ok else C.bad, fontSize = 14.sp) }
 
             Section(txt.screen)
@@ -182,11 +190,11 @@ fun SettingsScreen(repo: Repository, st: Repository.State, prefs: Prefs, onClose
                 }
             }
 
-            Section(txt.changePin)
-            SecretField(curPin, { curPin = it.filter(Char::isDigit).take(8) }, txt.currentPin, numeric = true)
-            SecretField(newPin, { newPin = it.filter(Char::isDigit).take(8) }, txt.newPin, numeric = true)
-            SecretField(newPin2, { newPin2 = it.filter(Char::isDigit).take(8) }, txt.repeatNewPin, numeric = true)
-            Button(
+            if (repo.vault.isProvisioned) Section(txt.changePin)
+            if (repo.vault.isProvisioned) SecretField(curPin, { curPin = it.filter(Char::isDigit).take(8) }, txt.currentPin, numeric = true)
+            if (repo.vault.isProvisioned) SecretField(newPin, { newPin = it.filter(Char::isDigit).take(8) }, txt.newPin, numeric = true)
+            if (repo.vault.isProvisioned) SecretField(newPin2, { newPin2 = it.filter(Char::isDigit).take(8) }, txt.repeatNewPin, numeric = true)
+            if (repo.vault.isProvisioned) Button(
                 colors = ButtonDefaults.buttonColors(containerColor = C.card2, contentColor = C.text),
                 onClick = {
                     if (newPin != newPin2) {
@@ -207,7 +215,7 @@ fun SettingsScreen(repo: Repository, st: Repository.State, prefs: Prefs, onClose
 
             Section(txt.security)
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedButton(onClick = { repo.lock(); onClose() }) { Text(txt.lockNow, color = C.text) }
+                if (repo.vault.isProvisioned) OutlinedButton(onClick = { repo.lock(); onClose() }) { Text(txt.lockNow, color = C.text) }
                 Button(
                     colors = ButtonDefaults.buttonColors(containerColor = if (confirmReset) C.bad else C.card2, contentColor = C.text),
                     onClick = {

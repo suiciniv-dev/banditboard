@@ -168,6 +168,14 @@ interface Texts {
     val shareToggle: String
     val shareHint: String
     val shareOff: String
+    val scanQr: String
+    val scanQrHint: String
+    val scanOk: String
+    val scanBad: String
+    val scanUnavailable: String
+    val remoteBox: String
+    val remoteLan: String
+    val remoteUnpair: String
     val trayShow: String
     val trayOnTop: String
     val trayTaskbar: String
@@ -438,6 +446,14 @@ object Pt : Texts {
     override val shareToggle = "Compartilhar o uso com o iPhone na rede de casa"
     override val shareHint = "Aponte a câmera do iPhone para o código e toque no aviso para abrir o Banditboard. O app e os widgets passam a buscar o uso aqui."
     override val shareOff = "Ligue para aparecer o código de pareamento. O iPhone precisa estar no mesmo Wi-Fi."
+    override val scanQr = "Ler QR code"
+    override val scanQrHint = "Ou leia o código de banditboard.pages.dev/conectar, ou do painel do Banditboard no Windows ou no Mac. Por esse caminho não precisa de PIN."
+    override val scanOk = "Pareado. O uso chega em instantes."
+    override val scanBad = "Esse código não é do Banditboard."
+    override val scanUnavailable = "Não deu para abrir o leitor de QR code deste aparelho."
+    override val remoteBox = "Recebendo pelo servidor do Banditboard, cifrado de ponta a ponta."
+    override val remoteLan = "Recebendo do Banditboard do PC pela rede de casa."
+    override val remoteUnpair = "Desparear o QR code"
     override val trayShow = "Mostrar"
     override val trayOnTop = "Sempre no topo"
     override val trayTaskbar = "Mostrar na barra de tarefas"
@@ -445,16 +461,16 @@ object Pt : Texts {
     override val trayLayout = "Formato"
     override val layoutFull = "Completo"
     override val layoutMini = "Só o Racco"
-    override val trayPanel = "Abrir painel"
+    override val trayPanel = "Painel e ajustes"
     override val trayMusic = "Dançar com a música"
-    override val panelWidget = "Widget"
+    override val panelWidget = "Ajustes"
     override val panelSubtitle = "painel do Windows · uso do Claude"
     override val panelModels = "Modelos"
     override val panelModelsHint = "Barra colorida é o limite próprio do modelo. Cinza é o limite semanal geral, que vale para todos."
     override val panelNews = "Notícias da Anthropic"
     override val panelClaude = "Claude Code neste PC"
     override val promoTitle = "Quer a experiência completa?"
-    override val promoBody = "Instale o Banditboard num celular Android: o painel fica sempre à vista na mesa e os avisos de limite chegam no celular."
+    override val promoBody = "Use o Banditboard em qualquer dispositivo: celular, tablet ou computador. O painel fica sempre à vista e os avisos de limite chegam onde você estiver."
     override val promoScan = "Aponte a câmera do celular para baixar"
     override val promoOpen = "Abrir o link"
     override val promoLater = "Agora não"
@@ -736,6 +752,14 @@ object En : Texts {
     override val shareToggle = "Share usage with the iPhone on your home network"
     override val shareHint = "Point the iPhone camera at the code and tap the banner to open Banditboard. The app and widgets start fetching usage from here."
     override val shareOff = "Turn it on to show the pairing code. The iPhone must be on the same Wi-Fi."
+    override val scanQr = "Scan QR code"
+    override val scanQrHint = "Or scan the code from banditboard.pages.dev/conectar, or from the Banditboard dashboard on Windows or Mac. No PIN needed that way."
+    override val scanOk = "Paired. Usage arrives in a moment."
+    override val scanBad = "That code is not from Banditboard."
+    override val scanUnavailable = "Could not open the QR code scanner on this device."
+    override val remoteBox = "Receiving through the Banditboard server, encrypted end to end."
+    override val remoteLan = "Receiving from Banditboard on your PC over your home network."
+    override val remoteUnpair = "Unpair the QR code"
     override val trayShow = "Show"
     override val trayOnTop = "Always on top"
     override val trayTaskbar = "Show in taskbar"
@@ -743,16 +767,16 @@ object En : Texts {
     override val trayLayout = "Layout"
     override val layoutFull = "Full"
     override val layoutMini = "Just Racco"
-    override val trayPanel = "Open dashboard"
+    override val trayPanel = "Dashboard and settings"
     override val trayMusic = "Dance to music"
-    override val panelWidget = "Widget"
+    override val panelWidget = "Settings"
     override val panelSubtitle = "Windows dashboard · Claude usage"
     override val panelModels = "Models"
     override val panelModelsHint = "A colored bar is the model's own limit. Gray is the general weekly limit, shared by all."
     override val panelNews = "Anthropic News"
     override val panelClaude = "Claude Code on this PC"
     override val promoTitle = "Want the full experience?"
-    override val promoBody = "Install Banditboard on an Android phone: the dashboard stays in sight on your desk and the limit alerts reach your phone."
+    override val promoBody = "Use Banditboard on any device: phone, tablet or computer. The dashboard stays in sight and the limit alerts reach you wherever you are."
     override val promoScan = "Point the phone camera here to download"
     override val promoOpen = "Open the link"
     override val promoLater = "Not now"

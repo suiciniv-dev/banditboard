@@ -5,10 +5,15 @@ import android.content.Context
 import dev.clawdboard.core.AlertKind
 import dev.clawdboard.core.Repository
 import dev.clawdboard.core.nextAlert
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class ClawdApp : Application() {
     lateinit var repo: Repository
         private set
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     override fun onCreate() {
         super.onCreate()
@@ -25,6 +30,7 @@ class ClawdApp : Application() {
                 }
             }
         }
+        scope.launch { repo.pollRemote() }
     }
 }
 

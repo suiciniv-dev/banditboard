@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,6 +21,7 @@ import dev.clawdboard.core.Orientation
 import dev.clawdboard.core.SelfTest
 import dev.clawdboard.core.Species
 import dev.clawdboard.core.enumOr
+import dev.clawdboard.core.txt
 import dev.clawdboard.ui.ClawdboardApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -88,6 +90,11 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleDevIntent(i: Intent) {
+        i.data?.takeIf { it.scheme == "banditboard" }?.let { link ->
+            val ok = repo.pairRemote(link.toString())
+            Toast.makeText(this, if (ok) txt.scanOk else txt.scanBad, Toast.LENGTH_LONG).show()
+            return
+        }
         if (i.hasExtra("clawd")) {
             val on = i.getBooleanExtra("clawd", false)
             repo.updateSettings { it.copy(clawdUnlocked = on, species = if (on || it.species != Species.CLAWD) it.species else Species.RACCOON) }

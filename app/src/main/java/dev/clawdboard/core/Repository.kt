@@ -13,7 +13,9 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import org.json.JSONArray
 import org.json.JSONObject
 import javax.crypto.SecretKey
@@ -26,6 +28,8 @@ class Repository(private val app: Context) {
     val panel = PanelServer(app, this)
     val nudge = Nudge(app)
     val music = Music(app)
+    val remote = Remote(app)
+    private val poke = Channel<Unit>(Channel.CONFLATED)
 
     data class State(
         val provisioned: Boolean = false,
@@ -37,6 +41,7 @@ class Repository(private val app: Context) {
         val news: List<NewsItem> = emptyList(),
         val panelUrl: String? = null,
         val wiped: Boolean = false,
+        val remote: Remote.Source? = null,
     )
 
     sealed interface Outcome {
@@ -48,10 +53,12 @@ class Repository(private val app: Context) {
 
     private val _state = MutableStateFlow(
         State(
-            provisioned = vault.isProvisioned,
+            provisioned = vault.isProvisioned || remote.paired,
+            unlocked = !vault.isProvisioned && remote.paired,
             failures = vault.failures,
             usage = pairing.restore(System.currentTimeMillis()),
             lastPushAt = pairing.lastPushAt,
+            remote = remote.source,
         )
     )
     val state: StateFlow<State> = _state.asStateFlow()
@@ -161,6 +168,7 @@ class Repository(private val app: Context) {
     }
 
     fun lock() {
+        if (!vault.isProvisioned) return
         pairKey = null
         sessionKey = null
         panel.invalidateSessions()
@@ -174,6 +182,7 @@ class Repository(private val app: Context) {
         sessionKey = null
         vault.wipe()
         pairing.clear()
+        remote.clear()
         history.clear()
         settings.clear()
         panel.invalidateSessions()
@@ -196,14 +205,48 @@ class Repository(private val app: Context) {
 
     var onPush: ((UsageSnapshot) -> Unit)? = null
 
-    fun receivePush(body: JSONObject): Boolean {
+    fun receivePush(body: JSONObject, at: Long = System.currentTimeMillis()): Boolean {
         val now = System.currentTimeMillis()
-        val snap = parsePush(body, now) ?: return false
-        pairing.save(body, now)
+        val snap = parsePush(body, at) ?: return false
+        pairing.save(body, at)
         history.record(snap)
-        _state.update { it.copy(usage = snap.settled(now), lastPushAt = now) }
+        _state.update { it.copy(usage = snap.settled(now), lastPushAt = at) }
         onPush?.invoke(snap)
         return true
+    }
+
+    fun pairRemote(link: String): Boolean {
+        if (!remote.pair(link)) return false
+        remote.lastAt = 0L
+        _state.update {
+            it.copy(
+                remote = remote.source,
+                provisioned = true,
+                unlocked = it.unlocked || !vault.isProvisioned,
+                wiped = false,
+            )
+        }
+        poke.trySend(Unit)
+        return true
+    }
+
+    fun unpairRemote() {
+        remote.clear()
+        _state.update { it.copy(remote = null, provisioned = vault.isProvisioned, unlocked = it.unlocked && vault.isProvisioned) }
+    }
+
+    suspend fun pollRemote() {
+        while (true) {
+            if (remote.paired && !demo) {
+                val got = withContext(Dispatchers.IO) { remote.fetch() }
+                if (got != null) {
+                    val (usage, at) = got
+                    val stamp = if (at > 0) at else System.currentTimeMillis()
+                    if (stamp > remote.lastAt && receivePush(usage, stamp)) remote.lastAt = stamp
+                }
+            }
+            withTimeoutOrNull(60_000L) { poke.receive() }
+        }
     }
 
     fun pairCommand(host: String): String? = pairKey?.let { Pairing.command("http://$host", it) }

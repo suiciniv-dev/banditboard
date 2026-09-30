@@ -220,6 +220,7 @@ fun PinGate(repo: Repository, st: Repository.State, onOk: () -> Unit, onCancel: 
 @Composable
 fun SetupScreen(repo: Repository, st: Repository.State) {
     var local by remember { mutableStateOf(false) }
+    var scanMsg by remember { mutableStateOf<Pair<Boolean, String>?>(null) }
     if (local) {
         SetupForm(repo, onBack = { local = false })
         return
@@ -250,6 +251,11 @@ fun SetupScreen(repo: Repository, st: Repository.State) {
                 TextButton(onClick = { local = true }) {
                     Text(txt.pinHere, color = C.clawd, fontSize = 15.sp)
                 }
+                Spacer(Modifier.height(14.dp))
+                Text(txt.scanQrHint, color = C.muted, fontSize = 14.sp)
+                Spacer(Modifier.height(8.dp))
+                ScanButton(repo) { ok, m -> scanMsg = ok to m }
+                scanMsg?.let { (ok, m) -> Text(m, color = if (ok) C.ok else C.bad, fontSize = 14.sp) }
             }
         }
         if (landscape) {

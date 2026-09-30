@@ -118,7 +118,7 @@ fun ClawdboardApp(repo: Repository) {
                         else -> Zoomed(prefs.zoom) {
                             Box(Modifier.fillMaxSize()) {
                                 Shifted(prefs.pixelShift) {
-                                    Screens(st, prefs.mode, prefs.dwellSec, history, repo.music.takeIf { prefs.music }, dancing, onSettings = { overlay = Overlay.PIN })
+                                    Screens(st, prefs.mode, prefs.dwellSec, history, repo.music.takeIf { prefs.music }, dancing, onSettings = { overlay = if (repo.vault.isProvisioned) Overlay.PIN else Overlay.SETTINGS })
                                 }
                                 FeedbackCard(repo, Modifier.align(Alignment.BottomCenter))
                             }
