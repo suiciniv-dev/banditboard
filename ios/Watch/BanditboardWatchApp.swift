@@ -5,11 +5,15 @@ import WidgetKit
 @main
 struct BanditboardWatchApp: App {
     @StateObject private var model = WatchModel()
+    @Environment(\.scenePhase) private var phase
 
     var body: some Scene {
         WindowGroup {
             WatchDashboard(model: model)
                 .environment(\.locale, L.locale)
+        }
+        .onChange(of: phase) { _, now in
+            if now == .active { Task { await model.refresh() } }
         }
     }
 }
@@ -54,6 +58,7 @@ final class WatchModel: NSObject, ObservableObject, WCSessionDelegate {
     private func apply(_ context: [String: Any]) {
         guard !context.isEmpty else { return }
         let decoder = JSONDecoder()
+        let before = Vault.pairing
         if let data = context["pairing"] as? Data {
             Vault.pairing = try? decoder.decode(Pairing.self, from: data)
         } else if context["pairing"] != nil {
@@ -61,9 +66,14 @@ final class WatchModel: NSObject, ObservableObject, WCSessionDelegate {
         }
         if let data = context["prefs"] as? Data, let prefs = try? decoder.decode(Prefs.self, from: data) { Vault.prefs = prefs }
         if let demo = context["demo"] as? Bool { Vault.demo = demo }
+        if let data = context["snapshot"] as? Data, let snap = try? decoder.decode(Snapshot.self, from: data),
+           snap.fetchedAt > (snapshot?.fetchedAt ?? .distantPast) {
+            snapshot = snap
+            Vault.snapshot = snap
+        }
         objectWillChange.send()
         WidgetCenter.shared.reloadAllTimelines()
-        Task { await refresh() }
+        if Vault.pairing != before { Task { await refresh() } }
     }
 }
 

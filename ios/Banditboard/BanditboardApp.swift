@@ -60,6 +60,7 @@ enum Refresher {
         guard let snap = try? await Client.fetch() else { return }
         Notifier.process(snap)
         WidgetCenter.shared.reloadAllTimelines()
+        WatchSync.shared.send()
     }
 }
 
@@ -92,6 +93,7 @@ final class DashboardModel: ObservableObject {
             problem = nil
             Notifier.process(snap)
             WidgetCenter.shared.reloadAllTimelines()
+            WatchSync.shared.send()
         } catch let e as FetchError {
             problem = e
         } catch {

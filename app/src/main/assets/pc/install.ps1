@@ -50,7 +50,9 @@ __USAGE__
 '@
 [System.IO.File]::WriteAllText($script, $usage, $utf8)
 
-$command = 'powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + ($script -replace '\\', '/') + '"'
+$ps = Join-Path $(if ($env:SystemRoot) { $env:SystemRoot } else { 'C:\Windows' }) 'System32\WindowsPowerShell\v1.0\powershell.exe'
+if (-not [System.IO.File]::Exists($ps)) { $ps = 'powershell' }
+$command = ($ps -replace '\\', '/') + ' -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + ($script -replace '\\', '/') + '"'
 if (-not $settings.PSObject.Properties['hooks']) {
     $settings | Add-Member -NotePropertyName hooks -NotePropertyValue (New-Object PSObject)
 }

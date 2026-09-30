@@ -16,6 +16,7 @@ final class WatchSync: NSObject, WCSessionDelegate {
         var context: [String: Any] = ["demo": Vault.demo, "at": Date.now.timeIntervalSince1970]
         if let pairing = Vault.pairing, let data = try? encoder.encode(pairing) { context["pairing"] = data } else { context["pairing"] = "" }
         if let data = try? encoder.encode(Vault.prefs) { context["prefs"] = data }
+        if let snap = Vault.snapshot, let data = try? encoder.encode(snap) { context["snapshot"] = data }
         try? WCSession.default.updateApplicationContext(context)
     }
 

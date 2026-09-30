@@ -33,7 +33,8 @@ if (-not $Work) {
     if ([System.IO.File]::Exists($mark) -and [System.IO.File]::GetLastWriteTime($mark) -gt [DateTime]::Now.AddSeconds(-120)) { exit 0 }
     [System.IO.File]::WriteAllText($mark, [DateTime]::Now.ToString('o'))
     $psi = [System.Diagnostics.ProcessStartInfo]::new()
-    $psi.FileName = 'powershell.exe'
+    $ps = Join-Path $(if ($env:SystemRoot) { $env:SystemRoot } else { 'C:\Windows' }) 'System32\WindowsPowerShell\v1.0\powershell.exe'
+    $psi.FileName = if ([System.IO.File]::Exists($ps)) { $ps } else { 'powershell.exe' }
     $psi.Arguments = '-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $PSCommandPath + '" -Work'
     $psi.UseShellExecute = $true
     $psi.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden

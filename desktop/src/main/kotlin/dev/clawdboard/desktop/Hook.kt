@@ -122,6 +122,10 @@ object Hook {
 
     fun connected(): Boolean = Store.int("hookPort") != 0 && usageScript.exists()
 
+    fun stale(): Boolean = !onMac && connected() && runCatching {
+        !usageScript.readText().contains("WindowsPowerShell") || !settings.readText().contains("WindowsPowerShell")
+    }.getOrDefault(false)
+
     fun refresh(): Boolean = runCatching {
         val before = pushedAt.value
         val command = if (onMac) listOf("/bin/sh", usageScript.absolutePath, "--work")

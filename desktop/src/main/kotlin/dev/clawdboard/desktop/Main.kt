@@ -251,7 +251,7 @@ fun main(args: Array<String>) {
         val p by prefsFlow.collectAsState()
         LaunchedEffect(server.port) {
             val hooked = Store.int("hookPort")
-            if (hooked != 0 && hooked != server.port) withContext(Dispatchers.IO) { Hook.install(server.port) }
+            if (hooked != 0 && (hooked != server.port || Hook.stale())) withContext(Dispatchers.IO) { Hook.install(server.port) }
         }
         val trayScope = rememberCoroutineScope()
         if (onMac) MacBar(server.port, visible, showWidget, { panel = true }, { lock.release(); exitApplication() })
