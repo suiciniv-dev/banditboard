@@ -7,7 +7,11 @@ import java.nio.file.StandardCopyOption
 import java.security.SecureRandom
 
 object Store {
-    val dir = File(System.getenv("APPDATA") ?: System.getProperty("user.home"), "Banditboard").apply { mkdirs() }
+    val dir = File(
+        if (onMac) File(System.getProperty("user.home"), "Library/Application Support").path
+        else System.getenv("APPDATA") ?: System.getProperty("user.home"),
+        "Banditboard",
+    ).apply { mkdirs() }
     private val file = File(dir, "desktop.json")
     private val data = runCatching { JSONObject(file.readText()) }.getOrDefault(JSONObject())
 

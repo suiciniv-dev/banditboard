@@ -73,7 +73,7 @@ fun main(args: Array<String>) {
         NewsItem("Claude Code gets background agents", "", now - 5 * 86_400_000L, null),
         NewsItem("Building safer AI systems together", "", now - 9 * 86_400_000L, null),
     )
-    val controls = WidgetControls(Layout.MINI, {}, true, {}, false, {}, false, {}, true, {})
+    val controls = WidgetControls(Layout.MINI, {}, true, {}, false, {}, false, {}, true, {}, true, {})
     shot(File(out, "windows-dashboard.png"), DpSize(1200.dp, 2180.dp)) {
         Panel(0, StatusSnapshot(emptySet(), emptyList(), now), controls)
     }

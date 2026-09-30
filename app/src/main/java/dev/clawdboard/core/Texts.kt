@@ -156,6 +156,18 @@ interface Texts {
     val desktopWhatToDo: String
     val desktopOpenSettings: String
     val desktopOpenLog: String
+    val macTroubleDenied: String
+    val macTroubleTimeout: String
+    fun macHelpSettings(path: String): String
+    fun macHelpDenied(path: String): String
+    val macHelpTimeout: String
+    val macAutostart: String
+    val macPanelSubtitle: String
+    val macWidget: String
+    val shareTitle: String
+    val shareToggle: String
+    val shareHint: String
+    val shareOff: String
     val trayShow: String
     val trayOnTop: String
     val trayTaskbar: String
@@ -414,6 +426,18 @@ object Pt : Texts {
     override val desktopWhatToDo = "O que fazer ›"
     override val desktopOpenSettings = "Abrir o settings.json"
     override val desktopOpenLog = "Ver o erro completo"
+    override val macTroubleDenied = "O macOS não deixou gravar na pasta do Claude Code."
+    override val macTroubleTimeout = "O script de conexão demorou demais para responder."
+    override fun macHelpSettings(path: String) = "O arquivo $path não é um JSON válido: vírgula sobrando ou aspas faltando. O Banditboard não mexe no arquivo enquanto isso não for corrigido, para você não perder seus ajustes. Corrija, salve e toque em Conectar de novo."
+    override fun macHelpDenied(path: String) = "Veja se a pasta $path e o settings.json dentro dela são do seu usuário e não estão travados (Obter Informações, no Finder). Depois toque em Conectar de novo."
+    override val macHelpTimeout = "O Banditboard parou depois de um minuto sem resposta. Costuma acontecer logo depois de ligar o Mac, quando ele ainda está ocupado. Espere um pouco e toque em Conectar de novo."
+    override val macAutostart = "Abrir ao iniciar sessão"
+    override val macPanelSubtitle = "painel do Mac · uso do Claude"
+    override val macWidget = "Widget na mesa"
+    override val shareTitle = "iPhone"
+    override val shareToggle = "Compartilhar o uso com o iPhone na rede de casa"
+    override val shareHint = "Aponte a câmera do iPhone para o código e toque no aviso para abrir o Banditboard. O app e os widgets passam a buscar o uso aqui."
+    override val shareOff = "Ligue para aparecer o código de pareamento. O iPhone precisa estar no mesmo Wi-Fi."
     override val trayShow = "Mostrar"
     override val trayOnTop = "Sempre no topo"
     override val trayTaskbar = "Mostrar na barra de tarefas"
@@ -700,6 +724,18 @@ object En : Texts {
     override val desktopWhatToDo = "What to do ›"
     override val desktopOpenSettings = "Open settings.json"
     override val desktopOpenLog = "See the full error"
+    override val macTroubleDenied = "macOS did not allow writing to the Claude Code folder."
+    override val macTroubleTimeout = "The connection script took too long to respond."
+    override fun macHelpSettings(path: String) = "The file $path is not valid JSON: a trailing comma or a missing quote. Banditboard leaves the file alone until it is fixed, so you do not lose your settings. Fix it, save, and tap Connect again."
+    override fun macHelpDenied(path: String) = "Check that $path and the settings.json inside it belong to your user and are not locked (Get Info in Finder). Then tap Connect again."
+    override val macHelpTimeout = "Banditboard gave up after a minute without an answer. This usually happens right after the Mac starts, while it is still busy. Wait a bit and tap Connect again."
+    override val macAutostart = "Open at login"
+    override val macPanelSubtitle = "Mac dashboard · Claude usage"
+    override val macWidget = "Desktop widget"
+    override val shareTitle = "iPhone"
+    override val shareToggle = "Share usage with the iPhone on your home network"
+    override val shareHint = "Point the iPhone camera at the code and tap the banner to open Banditboard. The app and widgets start fetching usage from here."
+    override val shareOff = "Turn it on to show the pairing code. The iPhone must be on the same Wi-Fi."
     override val trayShow = "Show"
     override val trayOnTop = "Always on top"
     override val trayTaskbar = "Show in taskbar"

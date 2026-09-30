@@ -4,3 +4,7 @@ gradlew text eol=lf
 *.png binary
 *.ttf binary
 *.jar binary
+*.sh text eol=lf
+*.swift text eol=lf
+*.yml text eol=lf
+*.icns binary

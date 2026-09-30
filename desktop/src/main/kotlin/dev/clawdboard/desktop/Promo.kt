@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,10 +58,9 @@ object Promo {
     }
 }
 
-private val code: QrCode by lazy { QrCode.encodeText(Promo.URL, QrCode.Ecc.MEDIUM) }
-
 @Composable
-internal fun Qr(modifier: Modifier) {
+internal fun Qr(modifier: Modifier, text: String = Promo.URL) {
+    val code = remember(text) { QrCode.encodeText(text, QrCode.Ecc.MEDIUM) }
     Canvas(modifier.clip(RoundedCornerShape(10.dp)).background(Color.White).padding(6.dp)) {
         val n = code.size
         val u = size.width / n

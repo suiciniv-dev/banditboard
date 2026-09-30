@@ -15,6 +15,14 @@ object DarkTitle {
     private fun bgr(argb: Int) = ((argb and 0xFF) shl 16) or (argb and 0xFF00) or ((argb shr 16) and 0xFF)
 
     fun apply(window: java.awt.Window, background: Int, text: Int) {
+        if (onMac) {
+            (window as? javax.swing.RootPaneContainer)?.rootPane?.apply {
+                putClientProperty("apple.awt.fullWindowContent", true)
+                putClientProperty("apple.awt.transparentTitleBar", true)
+                putClientProperty("apple.awt.windowTitleVisible", false)
+            }
+            return
+        }
         val api = dwm ?: return
         runCatching {
             val hwnd = Native.getWindowPointer(window)

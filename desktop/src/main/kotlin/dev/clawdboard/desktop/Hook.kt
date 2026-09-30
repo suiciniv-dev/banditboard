@@ -16,10 +16,14 @@ class Failure(val cause: Cause, val detail: String? = null)
 object Hook {
     private fun resource(name: String) = Hook::class.java.classLoader.getResourceAsStream(name)!!.use { it.readBytes().toString(Charsets.UTF_8) }
 
-    fun installer(url: String, key: String): String =
-        resource("pc/install.ps1").replace("__USAGE__", resource("pc/usage.ps1").trimEnd())
-            .replace("__T_CONNECTED__", txt.installConnected).replace("__T_BACKUP__", txt.installBackup(""))
-            .replace("__T_EVERY__", txt.installEvery(url)).replace("__URL__", url).replace("__KEY__", key).replace("__ID__", "pc")
+    private fun sh(s: String) = if (onMac) s.replace("'", "'\\''") else s
+
+    fun installer(url: String, key: String): String {
+        val kind = if (onMac) "sh" else "ps1"
+        return resource("pc/install.$kind").replace("__USAGE__", resource("pc/usage.$kind").trimEnd())
+            .replace("__T_CONNECTED__", sh(txt.installConnected)).replace("__T_BACKUP__", sh(txt.installBackup("")))
+            .replace("__T_EVERY__", sh(txt.installEvery(url))).replace("__URL__", url).replace("__KEY__", key).replace("__ENC__", "").replace("__ID__", "pc")
+    }
 
     val claudeDir = File(System.getProperty("user.home"), ".claude")
     val settings = File(claudeDir, "settings.json")
@@ -48,25 +52,40 @@ object Hook {
     }
 
     private fun attempt(port: Int): Failure? {
-        val script = File(Store.dir, "install.ps1")
+        val script = File(Store.dir, if (onMac) "install.sh" else "install.ps1")
         log.delete()
         return try {
-            val body = resource("connect.ps1").replace("__LOG__", log.path.replace("'", "''"))
-                .replace("__INSTALL__", installer("http://127.0.0.1:$port", Store.key))
-            script.writeText("\uFEFF" + body, Charsets.UTF_8)
-            val p = ProcessBuilder(powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script.absolutePath)
-                .redirectErrorStream(true).start()
+            val install = installer("http://127.0.0.1:$port", Store.key)
+            val command = if (onMac) {
+                script.writeText(install)
+                listOf("/bin/sh", script.absolutePath)
+            } else {
+                val body = resource("connect.ps1").replace("__LOG__", log.path.replace("'", "''")).replace("__INSTALL__", install)
+                script.writeText("\uFEFF" + body, Charsets.UTF_8)
+                listOf(powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script.absolutePath)
+            }
+            val p = ProcessBuilder(command).redirectErrorStream(true).start()
             p.outputStream.close()
             var out = ByteArray(0)
             val reader = thread(isDaemon = true) { out = runCatching { p.inputStream.readBytes() }.getOrDefault(ByteArray(0)) }
             if (!p.waitFor(60, TimeUnit.SECONDS)) {
                 p.destroyForcibly()
-                log.writeText("PowerShell sem resposta depois de 60 s.\n")
+                log.writeText(if (onMac) "O script de conex\u00E3o ficou sem resposta depois de 60 s.\n" else "PowerShell sem resposta depois de 60 s.\n")
                 return Failure(Cause.TIMEOUT)
             }
             reader.join(5_000)
             when {
                 p.exitValue() == 0 -> null
+                onMac -> {
+                    log.writeText("exit ${p.exitValue()}\n\n${String(out, Charsets.UTF_8).replace(Store.key, "\u2026")}")
+                    Failure(
+                        when (p.exitValue()) {
+                            3 -> Cause.SETTINGS
+                            4 -> Cause.DENIED
+                            else -> Cause.OTHER
+                        },
+                    )
+                }
                 log.exists() -> fromLog()
                 else -> {
                     val text = String(out, console).replace(Store.key, "…")
@@ -96,17 +115,18 @@ object Hook {
     }
 
     fun show(file: File) {
-        runCatching { ProcessBuilder("notepad.exe", file.absolutePath).start() }
+        runCatching { ProcessBuilder(if (onMac) listOf("open", "-t", file.absolutePath) else listOf("notepad.exe", file.absolutePath)).start() }
     }
 
-    private val usageScript = File(claudeDir, "clawdboard-usage.ps1")
+    private val usageScript = File(claudeDir, if (onMac) "clawdboard-usage.sh" else "clawdboard-usage.ps1")
 
     fun connected(): Boolean = Store.int("hookPort") != 0 && usageScript.exists()
 
     fun refresh(): Boolean = runCatching {
         val before = pushedAt.value
-        val p = ProcessBuilder(powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-WindowStyle", "Hidden", "-File", usageScript.absolutePath, "-Work")
-            .redirectErrorStream(true).redirectOutput(ProcessBuilder.Redirect.DISCARD).start()
+        val command = if (onMac) listOf("/bin/sh", usageScript.absolutePath, "--work")
+        else listOf(powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-WindowStyle", "Hidden", "-File", usageScript.absolutePath, "-Work")
+        val p = ProcessBuilder(command).redirectErrorStream(true).redirectOutput(ProcessBuilder.Redirect.DISCARD).start()
         p.waitFor(90, TimeUnit.SECONDS)
         pushedAt.value > before
     }.getOrDefault(false)

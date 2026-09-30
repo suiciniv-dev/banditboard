@@ -145,7 +145,7 @@ private fun receive(body: JSONObject, tray: TrayState): Boolean {
         listOf(AlertKind.SESSION to snap.fiveHour, AlertKind.WEEK to snap.sevenDay).forEach { (kind, w) ->
             val (alert, level) = nextAlert(kind, w, Store.int("mark_${kind.name}"))
             Store.put("mark_${kind.name}", level)
-            alert?.let { tray.sendNotification(notification(it)) }
+            alert?.let { a -> notification(a).let { if (onMac) MenuBar.notify(it) else tray.sendNotification(it) } }
         }
     }
     return true
@@ -175,12 +175,15 @@ internal fun savePrefs(f: (Prefs) -> Prefs) {
 }
 
 fun main(args: Array<String>) {
+    if (!onMac && System.getenv("SKIKO_RENDER_API") == null) System.setProperty("skiko.renderApi", "OPENGL")
     val lock = runCatching {
         FileChannel.open(File(Store.dir, "lock").toPath(), StandardOpenOption.CREATE, StandardOpenOption.WRITE).tryLock()
     }.getOrNull() ?: return
     Store.key
+    Autostart.repair()
+    Share.restore()
     if ("--clawd" in args) savePrefs { it.copy(clawdUnlocked = true) }
-    WinMusic.start()
+    if (!onMac) WinMusic.start()
     Store.get("last")?.let { raw ->
         val at = Store.get("lastAt")?.toLongOrNull() ?: 0L
         usage.value = runCatching { parsePush(JSONObject(raw), at) }.getOrNull()
@@ -190,10 +193,16 @@ fun main(args: Array<String>) {
     application {
         val tray = rememberTrayState()
         val server = remember { Server { receive(it, tray) }.also { it.start() } }
-        var visible by remember { mutableStateOf(true) }
+        var visible by remember { mutableStateOf(!onMac || Store.get("widget") == "true") }
+        val showWidget: (Boolean) -> Unit = { visible = it; if (onMac) Store.put("widget", it.toString()) }
         var onTop by remember { mutableStateOf(Store.get("onTop") != "false") }
         var inTaskbar by remember { mutableStateOf(Store.get("taskbar") == "true") }
-        var layout by remember { mutableStateOf(runCatching { Layout.valueOf(Store.get("layout") ?: "") }.getOrDefault(Layout.FULL)) }
+        var layout by remember {
+            mutableStateOf(
+                runCatching { Layout.valueOf(Store.get("layout") ?: "") }.getOrDefault(Layout.FULL)
+                    .let { if (onMac && it == Layout.MINI) Layout.FULL else it },
+            )
+        }
         var panel by remember { mutableStateOf("--panel" in args) }
         var danceOn by remember { mutableStateOf(Store.get("dance") != "false") }
         val playing by WinMusic.playing.collectAsState()
@@ -244,7 +253,8 @@ fun main(args: Array<String>) {
             if (hooked != 0 && hooked != server.port) withContext(Dispatchers.IO) { Hook.install(server.port) }
         }
         val trayScope = rememberCoroutineScope()
-        Tray(
+        if (onMac) MacBar(server.port, visible, showWidget, { panel = true }, { lock.release(); exitApplication() })
+        else Tray(
             icon = RaccoonIcon,
             state = tray,
             tooltip = "Banditboard",
@@ -289,7 +299,7 @@ fun main(args: Array<String>) {
                     setSize(s.width.value.toInt(), s.height.value.toInt())
                     defaultCloseOperation = WindowConstants.DO_NOTHING_ON_CLOSE
                     addWindowListener(object : WindowAdapter() {
-                        override fun windowClosing(e: WindowEvent) { visible = false }
+                        override fun windowClosing(e: WindowEvent) = showWidget(false)
                     })
                 }
             },
@@ -306,7 +316,7 @@ fun main(args: Array<String>) {
                     Dashboard(server.port, shown == Layout.COMPACT) { panel = true }
                     Text(
                         "×", color = C.dim, fontSize = 16.sp,
-                        modifier = Modifier.align(Alignment.TopEnd).padding(end = 12.dp, top = 4.dp).clickable { visible = false },
+                        modifier = Modifier.align(Alignment.TopEnd).padding(end = 12.dp, top = 4.dp).clickable { showWidget(false) },
                     )
                 }
             }
@@ -324,6 +334,7 @@ fun main(args: Array<String>) {
                 inTaskbar, { inTaskbar = it; Store.put("taskbar", it.toString()) },
                 if (Autostart.available) autostart else null, { Autostart.set(it); autostart = Autostart.enabled() },
                 danceOn, { danceOn = it; Store.put("dance", it.toString()) },
+                visible, showWidget,
             )
             CompositionLocalProvider(LocalDance provides dance) { Panel(server.port, status, controls) }
         }
@@ -408,8 +419,8 @@ private fun Trouble(f: Failure, onHelp: (() -> Unit)?) {
     val title = when (f.cause) {
         Cause.POLICY -> txt.desktopTroublePolicy
         Cause.SETTINGS -> txt.desktopTroubleSettings
-        Cause.DENIED -> txt.desktopTroubleDenied
-        Cause.TIMEOUT -> txt.desktopTroubleTimeout
+        Cause.DENIED -> if (onMac) txt.macTroubleDenied else txt.desktopTroubleDenied
+        Cause.TIMEOUT -> if (onMac) txt.macTroubleTimeout else txt.desktopTroubleTimeout
         Cause.OTHER -> txt.desktopConnectFailed
     }
     if (onHelp != null) Text(
@@ -422,9 +433,9 @@ private fun Trouble(f: Failure, onHelp: (() -> Unit)?) {
     ) else {
         val help = when (f.cause) {
             Cause.POLICY -> txt.desktopHelpPolicy
-            Cause.SETTINGS -> txt.desktopHelpSettings(Hook.settings.path)
-            Cause.DENIED -> txt.desktopHelpDenied(Hook.claudeDir.path)
-            Cause.TIMEOUT -> txt.desktopHelpTimeout
+            Cause.SETTINGS -> if (onMac) txt.macHelpSettings(Hook.settings.path) else txt.desktopHelpSettings(Hook.settings.path)
+            Cause.DENIED -> if (onMac) txt.macHelpDenied(Hook.claudeDir.path) else txt.desktopHelpDenied(Hook.claudeDir.path)
+            Cause.TIMEOUT -> if (onMac) txt.macHelpTimeout else txt.desktopHelpTimeout
             Cause.OTHER -> txt.desktopHelpOther
         }
         Text(title, color = C.warn, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)

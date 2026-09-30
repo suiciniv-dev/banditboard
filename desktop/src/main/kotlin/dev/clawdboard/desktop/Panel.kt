@@ -91,6 +91,8 @@ class WidgetControls(
     val setAutostart: (Boolean) -> Unit,
     val dance: Boolean,
     val setDance: (Boolean) -> Unit,
+    val widget: Boolean,
+    val setWidget: (Boolean) -> Unit,
 )
 
 private val LAV = Color(0xFFB9A6F2)
@@ -112,12 +114,12 @@ internal fun Panel(port: Int, status: StatusSnapshot?, controls: WidgetControls)
     val t = zoned(now)
     CompositionLocalProvider(LocalLook provides look) {
         Box(Modifier.fillMaxSize().background(C.bg).verticalScroll(rememberScrollState()), contentAlignment = Alignment.TopCenter) {
-            Column(Modifier.widthIn(max = 1180.dp).padding(24.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
+            Column(Modifier.widthIn(max = 1180.dp).padding(start = 24.dp, end = 24.dp, bottom = 24.dp, top = if (onMac) 40.dp else 24.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Mascot(Modifier.width(64.dp), reserveTop = false)
                     Column(Modifier.padding(start = 14.dp).weight(1f)) {
                         Text("Banditboard", color = C.text, fontSize = 30.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
-                        Text(txt.panelSubtitle, color = C.muted, fontSize = 14.sp)
+                        Text(if (onMac) txt.macPanelSubtitle else txt.panelSubtitle, color = C.muted, fontSize = 14.sp)
                     }
                     Column(horizontalAlignment = Alignment.End) {
                         Text("%02d:%02d".format(t.hour, t.minute), color = C.text, fontSize = 36.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
@@ -178,11 +180,12 @@ internal fun Panel(port: Int, status: StatusSnapshot?, controls: WidgetControls)
                     }
                     Card(Modifier.weight(1.2f), txt.panelWidget) {
                         Label(txt.trayLayout)
-                        Pills(listOf(Layout.FULL to txt.layoutFull, Layout.COMPACT to txt.trayCompact, Layout.MINI to txt.layoutMini), controls.layout, controls.setLayout)
+                        Pills(listOfNotNull(Layout.FULL to txt.layoutFull, Layout.COMPACT to txt.trayCompact, if (onMac) null else Layout.MINI to txt.layoutMini), controls.layout, controls.setLayout)
+                        if (onMac) Toggle(txt.macWidget, controls.widget, controls.setWidget)
                         Toggle(txt.trayOnTop, controls.onTop, controls.setOnTop)
-                        Toggle(txt.trayTaskbar, controls.taskbar, controls.setTaskbar)
-                        controls.autostart?.let { Toggle(txt.trayAutostart, it, controls.setAutostart) }
-                        Toggle(txt.trayMusic, controls.dance, controls.setDance)
+                        if (!onMac) Toggle(txt.trayTaskbar, controls.taskbar, controls.setTaskbar)
+                        controls.autostart?.let { Toggle(if (onMac) txt.macAutostart else txt.trayAutostart, it, controls.setAutostart) }
+                        if (!onMac) Toggle(txt.trayMusic, controls.dance, controls.setDance)
                         Toggle(txt.alerts, p.alerts) { v -> savePrefs { it.copy(alerts = v) } }
                         Label(txt.mascot)
                         Pills(Species.entries.filter { it != Species.CLAWD || p.clawdUnlocked }.map { it to txt.label(it) }, p.mascot()) { s -> savePrefs { it.copy(species = s) } }
@@ -193,6 +196,17 @@ internal fun Panel(port: Int, status: StatusSnapshot?, controls: WidgetControls)
                         Label(txt.language)
                         Pills(Language.entries.map { it to txt.label(it) }, p.language) { v -> savePrefs { it.copy(language = v) } }
                     }
+                }
+                val sharing by Share.on.collectAsState()
+                Card(Modifier.fillMaxWidth(), txt.shareTitle) {
+                    Toggle(txt.shareToggle, sharing, Share::set)
+                    if (sharing) Row(horizontalArrangement = Arrangement.spacedBy(22.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Qr(Modifier.size(170.dp), Share.pairUri())
+                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Text(txt.shareHint, color = C.muted, fontSize = 13.sp)
+                            Share.addresses().forEach { Text("http://$it:${Share.port}", color = C.dim, fontSize = 12.sp) }
+                        }
+                    } else Text(txt.shareOff, color = C.dim, fontSize = 12.sp)
                 }
                 Card(Modifier.fillMaxWidth(), txt.credits) {
                     Row(horizontalArrangement = Arrangement.spacedBy(22.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -329,7 +343,7 @@ private fun <T> Pills(options: List<Pair<T, String>>, selected: T, onPick: (T) -
 }
 
 @Composable
-private fun Toggle(title: String, checked: Boolean, onChange: (Boolean) -> Unit) {
+internal fun Toggle(title: String, checked: Boolean, onChange: (Boolean) -> Unit) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(title, color = C.text, fontSize = 14.sp, modifier = Modifier.weight(1f))
         Switch(checked, onChange, colors = SwitchDefaults.colors(checkedTrackColor = C.clawd))
