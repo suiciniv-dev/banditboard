@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conectar · Banditboard</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#16130f">
+<link rel="icon" href="/favicon.ico">
+<style>
+@font-face{font-family:Fredoka;src:url(/fonts/fredoka.ttf) format("truetype");font-weight:300 700;font-display:swap}
+:root{
+  --bg:#16130f;--card:#1f1a14;--card2:#262019;--line:#383024;
+  --text:#ece3d6;--muted:#a89a86;--dim:#7d715f;--coral:#d77757;--ok:#8fb573;--warn:#f0a83c;--bad:#e5604d;
+  --f:Fredoka,system-ui,sans-serif;color-scheme:dark
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:0 auto;padding:32px 16px 48px}
+h1{font:600 34px/1.1 var(--f);margin:0 0 6px}
+h2{font:600 20px/1.2 var(--f);color:var(--coral);margin:0 0 10px}
+p{margin:0 0 10px;color:var(--muted)}
+a{color:var(--coral)}
+.lead{margin-bottom:24px}
+.grid{display:grid;grid-template-columns:320px 1fr;gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+.qr{background:#fff;border-radius:12px;padding:10px;display:block;width:100%;aspect-ratio:1}
+.qr svg{display:block;width:100%;height:100%}
+.tabs{display:flex;gap:8px;margin:4px 0 12px}
+.tab{font:500 14px var(--f);color:var(--muted);background:var(--card2);border:0;border-radius:99px;padding:6px 14px;cursor:pointer}
+.tab[aria-selected=true]{background:var(--text);color:var(--bg)}
+pre{margin:0;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px;white-space:pre-wrap;word-break:break-all;font:13px/1.5 ui-monospace,Consolas,monospace;color:var(--text)}
+.row{display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap}
+button.main{font:600 15px var(--f);background:var(--coral);color:#000;border:0;border-radius:99px;padding:9px 18px;cursor:pointer}
+button.link{font:500 14px var(--f);background:none;border:0;color:var(--coral);cursor:pointer;padding:0}
+.done{color:var(--ok);font-size:14px}
+.note{font-size:13px;color:var(--dim);margin-top:14px}
+.warn{color:var(--warn)}
+.status{min-height:24px}
+ol{margin:0 0 6px;padding-left:20px;color:var(--muted)}
+@media (max-width:760px){.grid{grid-template-columns:1fr}.qr{max-width:320px;margin:0 auto}}
+</style>
+</head>
+<body>
+<main>
+  <h1 data-t="title">Conectar o celular</h1>
+  <p class="lead" data-t="lead">Sem o app do Windows ou do Mac, sem estar na mesma rede. Esta página gera um código só seu, e o Claude Code do PC passa a mandar o uso cifrado para o celular.</p>
+  <p class="status" id="status"></p>
+  <div class="grid" id="steps" hidden>
+    <section class="card">
+      <h2 data-t="step1">1. No celular</h2>
+      <div class="qr" id="qr"></div>
+      <p class="note" data-t="scan">Aponte a câmera do iPhone para o código e toque no aviso para abrir o Banditboard. O Android recebe esta opção em breve.</p>
+    </section>
+    <section class="card">
+      <h2 data-t="step2">2. No PC onde roda o Claude Code</h2>
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" data-os="win">Windows</button>
+        <button class="tab" role="tab" aria-selected="false" data-os="mac">Mac</button>
+      </div>
+      <p id="where"></p>
+      <pre id="cmd"></pre>
+      <div class="row">
+        <button class="main" id="copy" data-t="copy">Copiar comando</button>
+        <span class="done" id="copied" hidden data-t="copied">Copiado</span>
+      </div>
+      <p class="note" data-t="after">Depois disso, a cada resposta do Claude Code o uso vai para o celular, no máximo a cada 2 minutos. Pode fechar esta página.</p>
+      <p class="note" data-t="privacy">As chaves foram criadas neste navegador e não saem daqui: o servidor do Banditboard recebe só o uso cifrado, sem conseguir ler. Nenhum token do Claude passa por ele.</p>
+      <p class="note warn" data-t="secret">Não compartilhe esta tela: quem tiver o código ou o comando consegue ver o seu uso.</p>
+      <div class="row"><button class="link" id="again" data-t="again">Gerar outro código</button></div>
+    </section>
+  </div>
+</main>
+<script src="qrcode.js"></script>
+<script>
+(() => {
+  const params = new URLSearchParams(location.search)
+  const WORKER = (params.get('api') || 'https://banditboard-api.vinips00.workers.dev').replace(/\/+$/, '')
+  const pt = params.get('lang') ? params.get('lang') === 'pt' : (navigator.language || 'pt').toLowerCase().startsWith('pt')
+  const T = pt ? {} : {
+    title: 'Connect your phone',
+    lead: 'No Windows or Mac app needed, no need to be on the same network. This page creates a code that is yours alone, and Claude Code on your PC starts sending encrypted usage to your phone.',
+    step1: '1. On your phone',
+    scan: 'Point the iPhone camera at the code and tap the banner to open Banditboard. Android gets this option soon.',
+    step2: '2. On the PC running Claude Code',
+    copy: 'Copy command',
+    copied: 'Copied',
+    after: 'From then on, after each Claude Code response the usage goes to your phone, at most every 2 minutes. You can close this page.',
+    privacy: 'The keys were created in this browser and never leave it: the Banditboard server only receives encrypted usage it cannot read. No Claude token goes through it.',
+    secret: 'Do not share this screen: anyone with the code or the command can see your usage.',
+    again: 'Create another code',
+  }
+  const S = pt
+    ? { making: 'Gerando o seu código…', fail: 'Não deu para falar com o servidor do Banditboard. Veja a conexão e tente de novo.', win: 'Abra o PowerShell e cole:', mac: 'Abra o Terminal e cole:' }
+    : { making: 'Creating your code…', fail: 'Could not reach the Banditboard server. Check your connection and try again.', win: 'Open PowerShell and paste:', mac: 'Open Terminal and paste:' }
+  if (!pt) document.documentElement.lang = 'en'
+  document.querySelectorAll('[data-t]').forEach((el) => { if (T[el.dataset.t]) el.textContent = T[el.dataset.t] })
+
+  const $ = (id) => document.getElementById(id)
+  const hex = (n) => [...crypto.getRandomValues(new Uint8Array(n))].map((b) => b.toString(16).padStart(2, '0')).join('')
+  const sha = async (v) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v)))].map((b) => b.toString(16).padStart(2, '0')).join('')
+  const lang = pt ? 'pt' : 'en'
+  let box = null
+  let os = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) ? 'mac' : 'win'
+
+  function command() {
+    const url = `${WORKER}/v1/box/${box.id}`
+    return os === 'win'
+      ? `& ([scriptblock]::Create((irm '${WORKER}/pc/box.ps1?lang=${lang}'))) '${url}' '${box.write}' '${box.master}'`
+      : `curl -fsSL '${WORKER}/pc/box.sh?lang=${lang}' | sh -s -- '${url}' '${box.write}' '${box.master}'`
+  }
+
+  function render() {
+    document.querySelectorAll('.tab').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.os === os)))
+    $('where').textContent = S[os]
+    $('cmd').textContent = command()
+    $('copied').hidden = true
+  }
+
+  async function create() {
+    $('steps').hidden = true
+    $('status').className = 'status'
+    $('status').textContent = S.making
+    const fresh = { id: hex(16), write: hex(16), read: hex(16), master: hex(32) }
+    try {
+      const res = await fetch(`${WORKER}/v1/box`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: fresh.id, write: await sha(fresh.write), read: await sha(fresh.read) }),
+      })
+      if (res.status !== 201) throw new Error(String(res.status))
+    } catch {
+      $('status').className = 'status warn'
+      $('status').textContent = S.fail
+      return
+    }
+    box = fresh
+    const link = 'banditboard://box?' + new URLSearchParams({ w: WORKER, b: box.id, r: box.read, e: box.master }).toString()
+    const qr = qrcode(0, 'M')
+    qr.addData(link)
+    qr.make()
+    $('qr').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true })
+    $('status').textContent = ''
+    $('steps').hidden = false
+    render()
+  }
+
+  document.querySelectorAll('.tab').forEach((b) => b.addEventListener('click', () => { os = b.dataset.os; render() }))
+  $('copy').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(command()); $('copied').hidden = false } catch {}
+  })
+  $('again').addEventListener('click', create)
+  create()
+})()
+</script>
+</body>
+</html>

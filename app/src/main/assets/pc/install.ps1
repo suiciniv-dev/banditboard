@@ -42,7 +42,7 @@ if (Test-Path $targetsPath) {
     }
 }
 $targets = @($targets | Where-Object { $_.id -ne '__ID__' -and $_.url -ne '__URL__' })
-$targets += New-Object PSObject -Property @{ id = '__ID__'; url = '__URL__'; key = '__KEY__' }
+$targets += New-Object PSObject -Property @{ id = '__ID__'; url = '__URL__'; key = '__KEY__'; enc = '__ENC__' }
 [System.IO.File]::WriteAllText($targetsPath, (ConvertTo-Json -InputObject @($targets) -Depth 4), $utf8)
 
 $usage = @'

@@ -1,0 +1,16 @@
+name = "banditboard-api"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+
+[[rules]]
+type = "Text"
+globs = ["**/*.ps1", "**/*.sh"]
+fallthrough = false
+
+[[d1_databases]]
+binding = "DB"
+database_name = "banditboard"
+database_id = "f6339fdc-db5f-4324-857d-f3981ecd18c9"
+
+[triggers]
+crons = ["17 4 * * *"]

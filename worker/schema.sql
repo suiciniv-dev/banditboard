@@ -1,0 +1,17 @@
+CREATE TABLE IF NOT EXISTS box (
+  id TEXT PRIMARY KEY,
+  write TEXT NOT NULL,
+  read TEXT NOT NULL,
+  blob TEXT,
+  at INTEGER,
+  lvl TEXT NOT NULL DEFAULT '',
+  created INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS device (
+  box TEXT NOT NULL,
+  token TEXT NOT NULL,
+  platform TEXT NOT NULL,
+  added INTEGER NOT NULL,
+  PRIMARY KEY (box, token)
+);

@@ -130,18 +130,47 @@ $targets = @()
 try { $targets = @([System.IO.File]::ReadAllText($targetsPath) | ConvertFrom-Json | ForEach-Object { $_ }) } catch { exit 0 }
 $json = $payload | ConvertTo-Json -Compress -Depth 5
 $bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
+
+function Get-Level($w) {
+    $level = 0
+    if ($w) { foreach ($l in 80, 90, 100) { if ($w.used_percentage -ge $l - 0.5) { $level = $l } } }
+    return $level
+}
+function Protect-Usage([string]$text, [string]$hex) {
+    $master = New-Object byte[] ($hex.Length / 2)
+    for ($i = 0; $i -lt $master.Length; $i++) { $master[$i] = [Convert]::ToByte($hex.Substring($i * 2, 2), 16) }
+    $derive = New-Object System.Security.Cryptography.HMACSHA256 (, $master)
+    $aes = [System.Security.Cryptography.Aes]::Create()
+    $aes.Mode = [System.Security.Cryptography.CipherMode]::CBC
+    $aes.Padding = [System.Security.Cryptography.PaddingMode]::PKCS7
+    $aes.Key = $derive.ComputeHash([System.Text.Encoding]::UTF8.GetBytes('banditboard-enc'))
+    $aes.GenerateIV()
+    $plain = [System.Text.Encoding]::UTF8.GetBytes($text)
+    $sealed = [byte[]]($aes.IV + $aes.CreateEncryptor().TransformFinalBlock($plain, 0, $plain.Length))
+    $mac = New-Object System.Security.Cryptography.HMACSHA256 (, $derive.ComputeHash([System.Text.Encoding]::UTF8.GetBytes('banditboard-mac')))
+    return [Convert]::ToBase64String([byte[]]($sealed + $mac.ComputeHash($sealed)))
+}
+$level = "$(Get-Level $payload.five_hour),$(Get-Level $payload.seven_day)"
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor [System.Net.SecurityProtocolType]::Tls12
+
 foreach ($t in $targets) {
     try {
-        $req = [System.Net.HttpWebRequest]::Create("$($t.url)/api/push")
+        $body = $bytes
+        $path = '/api/push'
+        if ($t.enc) {
+            $body = [System.Text.Encoding]::UTF8.GetBytes('{"blob":"' + (Protect-Usage $json $t.enc) + '","lvl":"' + $level + '"}')
+            $path = '/push'
+        }
+        $req = [System.Net.HttpWebRequest]::Create("$($t.url)$path")
         $req.Method = 'POST'
-        $req.Proxy = $null
+        if (-not $t.enc) { $req.Proxy = $null }
         $req.Timeout = 5000
         $req.ContentType = 'application/json'
         $req.Headers.Add('X-Clawdboard', '1')
         $req.Headers.Add('X-Clawdboard-Key', $t.key)
-        $req.ContentLength = $bytes.Length
+        $req.ContentLength = $body.Length
         $stream = $req.GetRequestStream()
-        $stream.Write($bytes, 0, $bytes.Length)
+        $stream.Write($body, 0, $body.Length)
         $stream.Close()
         $req.GetResponse().Close()
     } catch {

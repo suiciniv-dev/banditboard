@@ -519,7 +519,7 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
       <div class="privs">
         <div class="priv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div><h3 data-t="pv1T">No token, no login</h3><p data-t="pv1">The phone and the Windows app never see your account. Claude Code itself reads the usage, on your PC.</p></div>
         <div class="priv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V11M10 19V5M16 19v-6M22 19H2"/></svg></div><h3 data-t="pv2T">Just the numbers</h3><p data-t="pv2">Only the percentages and when each limit resets. Nothing from your chats, files or projects.</p></div>
-        <div class="priv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-7h6v7"/></svg></div><h3 data-t="pv3T">Over your network</h3><p data-t="pv3">The numbers go straight from the PC to the phone or the Windows app, with a pairing key. No server in between.</p></div>
+        <div class="priv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-7h6v7"/></svg></div><h3 data-t="pv3T">Your network, or encrypted</h3><p data-t="pv3">The numbers go straight from the PC to the phone or the Windows app, with a pairing key. If you connect through the browser, they pass through the Banditboard server encrypted end to end: it keeps only the latest update and cannot read it.</p></div>
         <div class="priv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></div><h3 data-t="pv4T">Open source</h3><p data-t="pv4">MIT licensed. The scripts that run on your PC are short, and you can <a href="https://github.com/suiciniv-dev/banditboard/tree/main/app/src/main/assets/pc">read every line on GitHub</a>.</p></div>
       </div>
     </section>
@@ -574,7 +574,7 @@ const T = {
     privT: "Seus dados <em>ficam em casa</em>", privS: "O Banditboard só precisa dos números do limite. O resto nunca sai do seu PC.",
     pv1T: "Sem token e sem login", pv1: "O celular e o Windows nunca veem a sua conta. Quem lê o uso é o próprio Claude Code, no seu PC.",
     pv2T: "Só os números", pv2: "Vão só as porcentagens e a hora em que cada limite libera. Nada das suas conversas, dos arquivos ou dos projetos.",
-    pv3T: "Pela sua rede", pv3: "Os números vão direto do PC para o celular ou para o Windows, com uma chave de pareamento. Não passam por servidor nenhum.",
+    pv3T: "Pela sua rede ou cifrado", pv3: "Os números vão direto do PC para o celular ou para o Windows, com uma chave de pareamento. Se você conectar pelo navegador, passam pelo servidor do Banditboard cifrados de ponta a ponta: ele guarda só o último envio e não consegue ler.",
     pv4T: "Código aberto", pv4: "Licença MIT. Os scripts que rodam no seu PC são curtos, e dá para <a href=\"https://github.com/suiciniv-dev/banditboard/tree/main/app/src/main/assets/pc\">ler cada linha no GitHub</a>.",
     desc: "Painel de mesa grátis para Android e widget para Windows que mostram o uso do Claude Code: sessão de 5 horas, semana, a hora em que cada uma libera e avisos antes de acabar.",
     other: "EN", otherName: "English",
@@ -649,7 +649,7 @@ const T = {
     privT: "Your data <em>stays home</em>", privS: "Banditboard only needs the limit numbers. Everything else stays on your PC.",
     pv1T: "No token, no login", pv1: "The phone and the Windows app never see your account. Claude Code itself reads the usage, on your PC.",
     pv2T: "Just the numbers", pv2: "Only the percentages and when each limit resets. Nothing from your chats, files or projects.",
-    pv3T: "Over your network", pv3: "The numbers go straight from the PC to the phone or the Windows app, with a pairing key. No server in between.",
+    pv3T: "Your network, or encrypted", pv3: "The numbers go straight from the PC to the phone or the Windows app, with a pairing key. If you connect through the browser, they pass through the Banditboard server encrypted end to end: it keeps only the latest update and cannot read it.",
     pv4T: "Open source", pv4: "MIT licensed. The scripts that run on your PC are short, and you can <a href=\"https://github.com/suiciniv-dev/banditboard/tree/main/app/src/main/assets/pc\">read every line on GitHub</a>.",
     desc: "A free desk dashboard for Android and a widget for Windows that show your Claude Code usage: the 5-hour session, the week, when each one resets, and alerts before you run out.",
     other: "PT", otherName: "Português",
