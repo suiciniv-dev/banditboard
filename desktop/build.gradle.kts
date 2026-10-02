@@ -41,7 +41,7 @@ compose.desktop {
             targetFormats(TargetFormat.Msi, TargetFormat.Exe, TargetFormat.Dmg)
             modules("java.instrument", "jdk.httpserver", "jdk.unsupported")
             packageName = "Banditboard"
-            packageVersion = "1.16.1"
+            packageVersion = "1.16.2"
             vendor = "suiciniv-dev"
             windows {
                 perUserInstall = true

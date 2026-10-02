@@ -105,7 +105,7 @@ object Antigravity {
         val s = snapshot.value
         val text = listOf(
             "Banditboard ${System.getProperty("jpackage.app-version").orEmpty()} · ${System.getProperty("os.name")} ${System.getProperty("os.version")} · Java ${System.getProperty("java.version")}",
-            "gerado em ${Instant.ofEpochMilli(now)}",
+            "gerado em ${Instant.ofEpochMilli(now)} · Banditboard como administrador: ${WinProc.elevated()?.let { if (it) "sim" else "não" } ?: "?"}",
             "Antigravity ligado: ${enabled.value} (escolha salva: ${Store.get("tool_ag") ?: "nenhuma"}) · estado ${state.value}",
             "última leitura: ${if (lastAt.value > 0) Instant.ofEpochMilli(lastAt.value) else "nunca"}",
             "cotas: " + (s?.let { AgPool.entries.joinToString { p -> "$p ${it.pool(p)?.percent ?: "-"}% ${it.pool(p)?.kind ?: ""}" } } ?: "nenhuma"),
@@ -272,13 +272,17 @@ object Antigravity {
 
     private fun scan(): List<Long> = runCatching {
         ProcessHandle.allProcesses().use { all ->
-            all.filter { h -> File(h.info().command().orElse("")).name.lowercase().startsWith("language_server") }.map { it.pid() }.toList()
+            all.filter { h ->
+                val path = h.info().command().orElse(null) ?: (if (onMac) null else WinProc.image(h.pid())) ?: ""
+                File(path).name.lowercase().startsWith("language_server")
+            }.map { it.pid() }.toList()
         }
     }.getOrDefault(emptyList())
 
-    private fun alive(pid: Long) = ProcessHandle.of(pid).map { it.isAlive }.orElse(false)
+    private fun alive(pid: Long) = (if (onMac) null else WinProc.alive(pid)) ?: ProcessHandle.of(pid).map { it.isAlive }.orElse(false)
 
-    private fun exe(pid: Long): String = ProcessHandle.of(pid).flatMap { it.info().command() }.orElse("?")
+    private fun exe(pid: Long): String =
+        ProcessHandle.of(pid).flatMap { it.info().command() }.orElse(null) ?: (if (onMac) null else WinProc.image(pid)) ?: "?"
 
     private fun commandLine(pid: Long, log: MutableList<String>): String? {
         if (onMac) return runCatching { run("ps", "-ww", "-o", "command=", "-p", pid.toString()).trim().ifEmpty { null } }.getOrNull()
@@ -382,6 +386,12 @@ internal object WinProc {
     private interface Kernel32 : Library {
         fun OpenProcess(access: Int, inherit: Boolean, pid: Int): Pointer?
         fun CloseHandle(handle: Pointer): Boolean
+        fun GetExitCodeProcess(handle: Pointer, code: IntByReference): Boolean
+        fun QueryFullProcessImageNameW(handle: Pointer, flags: Int, name: CharArray, size: IntByReference): Boolean
+    }
+
+    private interface Shell32 : Library {
+        fun IsUserAnAdmin(): Boolean
     }
 
     private interface NtDll : Library {
@@ -390,9 +400,37 @@ internal object WinProc {
 
     private const val QUERY_LIMITED = 0x1000
     private const val COMMAND_LINE = 60
+    private const val STILL_ACTIVE = 259
+    private const val ACCESS_DENIED = 5
 
     private val kernel32 by lazy { if (onMac) null else runCatching { Native.load("kernel32", Kernel32::class.java) }.getOrNull() }
     private val ntdll by lazy { if (onMac) null else runCatching { Native.load("ntdll", NtDll::class.java) }.getOrNull() }
+    private val shell32 by lazy { if (onMac) null else runCatching { Native.load("shell32", Shell32::class.java) }.getOrNull() }
+
+    fun elevated(): Boolean? = runCatching { shell32?.IsUserAnAdmin() }.getOrNull()
+
+    fun alive(pid: Long): Boolean? = runCatching {
+        val k = kernel32 ?: return null
+        val handle = k.OpenProcess(QUERY_LIMITED, false, pid.toInt()) ?: return Native.getLastError() == ACCESS_DENIED
+        try {
+            val code = IntByReference()
+            k.GetExitCodeProcess(handle, code) && code.value == STILL_ACTIVE
+        } finally {
+            k.CloseHandle(handle)
+        }
+    }.getOrNull()
+
+    fun image(pid: Long): String? = runCatching {
+        val k = kernel32 ?: return null
+        val handle = k.OpenProcess(QUERY_LIMITED, false, pid.toInt()) ?: return null
+        try {
+            val name = CharArray(1024)
+            val size = IntByReference(name.size)
+            if (k.QueryFullProcessImageNameW(handle, 0, name, size)) String(name, 0, size.value) else null
+        } finally {
+            k.CloseHandle(handle)
+        }
+    }.getOrNull()
 
     fun commandLine(pid: Long): String? = runCatching {
         val k = kernel32 ?: return null
