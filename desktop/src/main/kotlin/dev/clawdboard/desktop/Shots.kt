@@ -128,6 +128,7 @@ fun main(args: Array<String>) {
     }
     Antigravity.enabled.value = true
     Antigravity.open.value = true
+    Antigravity.state.value = Antigravity.State.OK
     Antigravity.lastAt.value = now - 30_000L
     val session = now + 2 * 3_600_000L + 40 * 60_000L
     val week = now + 4 * 86_400_000L + 5 * 3_600_000L

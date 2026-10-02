@@ -298,6 +298,13 @@ interface Texts {
     fun agPlan(name: String): String
     fun agUpdatedAgo(ago: String): String
     fun label(p: AgPool): String
+    val agStarting: String
+    val agNoAccess: String
+    val agNoAccessHint: String
+    val agNoAnswer: String
+    val agUnsupported: String
+    val agExport: String
+    fun agExported(path: String): String
     val agPanelHint: String
 }
 
@@ -661,6 +668,13 @@ object Pt : Texts {
         AgPool.GEMINI -> "Gemini"
         AgPool.OTHERS -> "Claude e GPT"
     }
+    override val agStarting = "Antigravity ainda iniciando"
+    override val agNoAccess = "Sem acesso ao Antigravity"
+    override val agNoAccessHint = "O Antigravity parece estar aberto como administrador. Feche e abra de novo sem \"Executar como administrador\", ou abra o Banditboard como administrador."
+    override val agNoAnswer = "O Antigravity não respondeu"
+    override val agUnsupported = "Esta versão do Antigravity não mostra a cota"
+    override val agExport = "Exportar diagnóstico do Antigravity"
+    override fun agExported(path: String) = "Diagnóstico salvo em $path. Pode mandar o arquivo: ele não tem token, senha nem e-mail."
     override val agPanelHint = "Lê a cota do Antigravity aberto neste computador, só por 127.0.0.1. Para o celular vão só os percentuais, os horários e o nome do plano."
 }
 
@@ -1018,5 +1032,12 @@ object En : Texts {
         AgPool.GEMINI -> "Gemini"
         AgPool.OTHERS -> "Claude and GPT"
     }
+    override val agStarting = "Antigravity is still starting"
+    override val agNoAccess = "No access to Antigravity"
+    override val agNoAccessHint = "Antigravity seems to be running as administrator. Close it and open it again without \"Run as administrator\", or run Banditboard as administrator."
+    override val agNoAnswer = "Antigravity did not answer"
+    override val agUnsupported = "This Antigravity version does not show the quota"
+    override val agExport = "Export Antigravity diagnostics"
+    override fun agExported(path: String) = "Diagnostics saved to $path. You can send the file: it has no token, password or e-mail."
     override val agPanelHint = "Reads the quota of the Antigravity open on this computer, only through 127.0.0.1. Only percentages, reset times and the plan name go to the phone."
 }

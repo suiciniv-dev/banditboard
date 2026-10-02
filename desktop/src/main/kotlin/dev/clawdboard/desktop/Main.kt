@@ -325,6 +325,14 @@ fun main(args: Array<String>) {
                 Menu(txt.tools) {
                     CheckboxItem(txt.toolClaude, claudeOn) { Tools.setClaude(it) }
                     CheckboxItem(txt.toolAntigravity, agOn) { Antigravity.setEnabled(it) }
+                    Separator()
+                    Item(txt.agExport) {
+                        trayScope.launch(Dispatchers.IO) {
+                            val n = runCatching { Antigravity.export(System.currentTimeMillis()) }
+                                .map { Notification("Banditboard", txt.agExported(it.path), Notification.Type.Info) }.getOrNull()
+                            n?.let { tray.sendNotification(it) }
+                        }
+                    }
                 }
                 Menu(txt.theme) {
                     ToolTheme.entries.forEach { t -> CheckboxItem(txt.label(t), theme == t) { _ -> Tools.setTheme(t) } }
@@ -477,6 +485,7 @@ internal fun Widget(tools: List<Tool>, port: Int, compact: Boolean, drag: Modifi
 internal fun AgDashboard(compact: Boolean) {
     val snap by Antigravity.snapshot.collectAsState()
     val open by Antigravity.open.collectAsState()
+    val state by Antigravity.state.collectAsState()
     val at by Antigravity.lastAt.collectAsState()
     var now by remember { mutableLongStateOf(System.currentTimeMillis()) }
     LaunchedEffect(Unit) { while (true) { now = System.currentTimeMillis(); delay(1000) } }
@@ -484,11 +493,7 @@ internal fun AgDashboard(compact: Boolean) {
     val look = Look(skin = p.skin, tint = p.tint, animations = p.animations, species = p.mascot())
     val s = snap
     val pools = AgPool.entries.filter { s == null || s.pool(it) != null }
-    val status = when {
-        !open && s == null -> txt.agWaiting
-        !open -> txt.agClosed
-        else -> txt.agUpdatedAgo(fmtAgo(now - at))
-    }
+    val status = agStatus(state, s != null, now - at)
     CompositionLocalProvider(LocalLook provides look) {
         if (compact) Row(Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -664,4 +669,13 @@ internal fun PoolMeter(s: AgSnapshot?, pool: AgPool, now: Long, small: Boolean =
     val m = s?.pool(pool)
     val window = (if (m?.kind == AlertKind.SESSION) txt.session else txt.week).lowercase()
     Meter(txt.label(pool), m?.let { UsageWindow(it.percent, it.resetsAt) }, now, small, window)
+}
+
+internal fun agStatus(state: Antigravity.State, hasData: Boolean, ago: Long): String = when (state) {
+    Antigravity.State.OK -> txt.agUpdatedAgo(fmtAgo(ago))
+    Antigravity.State.STARTING -> txt.agStarting
+    Antigravity.State.NO_ACCESS -> txt.agNoAccess
+    Antigravity.State.NO_ANSWER -> txt.agNoAnswer
+    Antigravity.State.UNSUPPORTED -> txt.agUnsupported
+    Antigravity.State.OFF, Antigravity.State.CLOSED -> if (hasData) txt.agClosed else txt.agWaiting
 }

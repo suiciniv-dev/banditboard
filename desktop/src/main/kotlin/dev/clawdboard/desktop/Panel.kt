@@ -266,8 +266,11 @@ internal fun Panel(port: Int, status: StatusSnapshot?, controls: WidgetControls)
 private fun AgSection(now: Long) {
     val snap by Antigravity.snapshot.collectAsState()
     val open by Antigravity.open.collectAsState()
+    val state by Antigravity.state.collectAsState()
     val at by Antigravity.lastAt.collectAsState()
     val history by AgHistory.samples.collectAsState()
+    val scope = rememberCoroutineScope()
+    var exported by remember { mutableStateOf<String?>(null) }
     val s = snap
     val shape = RoundedCornerShape(22.dp)
     Column(
@@ -278,12 +281,11 @@ private fun AgSection(now: Long) {
             Mascot(Modifier.width(56.dp), reserveTop = false, wear = AgFamily.PRO.accessory, feel = agFeel(s?.worst()))
             Column(Modifier.padding(start = 14.dp).weight(1f)) {
                 Text(txt.toolAntigravity, color = P.text, fontSize = 26.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
-                val line = when {
-                    !open && s == null -> txt.agWaiting
-                    !open -> txt.agClosed
-                    else -> listOfNotNull(s?.plan?.let { txt.agPlan(it) }, txt.agUpdatedAgo(fmtAgo(now - at))).joinToString(" · ")
-                }
-                Text(line, color = if (open) C.ok else P.muted, fontSize = 14.sp)
+                val line = if (open) listOfNotNull(s?.plan?.let { txt.agPlan(it) }, txt.agUpdatedAgo(fmtAgo(now - at))).joinToString(" · ")
+                else agStatus(state, s != null, now - at)
+                val trouble = state in setOf(Antigravity.State.NO_ACCESS, Antigravity.State.NO_ANSWER, Antigravity.State.UNSUPPORTED)
+                Text(line, color = if (open) C.ok else if (trouble) C.warn else P.muted, fontSize = 14.sp)
+                if (state == Antigravity.State.NO_ACCESS) Text(txt.agNoAccessHint, color = P.muted, fontSize = 13.sp)
             }
         }
         if (s != null) {
@@ -321,6 +323,10 @@ private fun AgSection(now: Long) {
             }
         }
         Text(txt.agPanelHint, color = P.dim, fontSize = 12.sp)
+        Text(
+            exported?.let { txt.agExported(it) } ?: txt.agExport, color = if (exported != null) P.muted else P.accent, fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.clickable { scope.launch { exported = withContext(Dispatchers.IO) { runCatching { Antigravity.export(System.currentTimeMillis()).path }.getOrNull() } } },
+        )
     }
 }
 
