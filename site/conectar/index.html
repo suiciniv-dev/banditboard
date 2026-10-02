@@ -44,7 +44,7 @@ ol{margin:0 0 6px;padding-left:20px;color:var(--muted)}
 <body>
 <main>
   <h1 data-t="title">Conectar o celular</h1>
-  <p class="lead" data-t="lead">Sem o app do Windows ou do Mac, sem estar na mesma rede. Esta página gera um código só seu, e o Claude Code do PC passa a mandar o uso cifrado para o celular.</p>
+  <p class="lead" data-t="lead">Para ver o uso no celular mesmo longe do PC, sem estar na mesma rede. Esta página gera um código só seu, e o PC passa a mandar o uso do Claude Code e do Antigravity, cifrado, para o celular.</p>
   <p class="status" id="status"></p>
   <div class="grid" id="steps" hidden>
     <section class="card">
@@ -53,7 +53,7 @@ ol{margin:0 0 6px;padding-left:20px;color:var(--muted)}
       <p class="note" data-t="scan">No iPhone, aponte a câmera para o código e toque no aviso para abrir o Banditboard. No Android, abra o Banditboard e toque em “Ler QR code”.</p>
     </section>
     <section class="card">
-      <h2 data-t="step2">2. No PC onde roda o Claude Code</h2>
+      <h2 data-t="step2">2. No PC onde roda o Claude Code ou o Antigravity</h2>
       <div class="tabs" role="tablist">
         <button class="tab" role="tab" aria-selected="true" data-os="win">Windows</button>
         <button class="tab" role="tab" aria-selected="false" data-os="mac">Mac</button>
@@ -64,9 +64,9 @@ ol{margin:0 0 6px;padding-left:20px;color:var(--muted)}
         <button class="main" id="copy" data-t="copy">Copiar comando</button>
         <span class="done" id="copied" hidden data-t="copied">Copiado</span>
       </div>
-      <p class="note" data-t="after">Depois disso, a cada resposta do Claude Code o uso vai para o celular, no máximo a cada 2 minutos. Pode fechar esta página.</p>
-      <p class="note" data-t="ag">Usa o Antigravity? Instale também o app do Windows: com ele aberto, a cota do Antigravity vai junto, pelo mesmo código.</p>
-      <p class="note" data-t="privacy">As chaves foram criadas neste navegador e não saem daqui: o servidor do Banditboard recebe só o uso cifrado, sem conseguir ler. Nenhum token do Claude passa por ele.</p>
+      <p class="note" data-t="after">Claude Code: depois disso, a cada resposta o uso vai para o celular, no máximo a cada 2 minutos. Não precisa de app no PC.</p>
+      <p class="note" data-t="ag">Antigravity: rode o mesmo comando e instale também o app do Windows, com o Antigravity ligado em Ferramentas. Com o app aberto, a cota vai pelo mesmo código. Funciona mesmo sem o Claude Code instalado. Pode fechar esta página.</p>
+      <p class="note" data-t="privacy">As chaves foram criadas neste navegador e não saem daqui: o servidor do Banditboard recebe só o uso cifrado, sem conseguir ler. Nenhum token do Claude ou do Google passa por ele.</p>
       <p class="note warn" data-t="secret">Não compartilhe esta tela: quem tiver o código ou o comando consegue ver o seu uso.</p>
       <div class="row"><button class="link" id="again" data-t="again">Gerar outro código</button></div>
     </section>
@@ -80,15 +80,15 @@ ol{margin:0 0 6px;padding-left:20px;color:var(--muted)}
   const pt = params.get('lang') ? params.get('lang') === 'pt' : (navigator.language || 'pt').toLowerCase().startsWith('pt')
   const T = pt ? {} : {
     title: 'Connect your phone',
-    lead: 'No Windows or Mac app needed, no need to be on the same network. This page creates a code that is yours alone, and Claude Code on your PC starts sending encrypted usage to your phone.',
+    lead: 'See your usage on your phone even away from your PC, no need to be on the same network. This page creates a code that is yours alone, and your PC starts sending encrypted Claude Code and Antigravity usage to your phone.',
     step1: '1. On your phone',
     scan: 'On iPhone, point the camera at the code and tap the banner to open Banditboard. On Android, open Banditboard and tap “Scan QR code”.',
-    step2: '2. On the PC running Claude Code',
+    step2: '2. On the PC running Claude Code or Antigravity',
     copy: 'Copy command',
     copied: 'Copied',
-    after: 'From then on, after each Claude Code response the usage goes to your phone, at most every 2 minutes. You can close this page.',
-    ag: 'Using Antigravity? Install the Windows app too: while it runs, the Antigravity quota goes along, with the same code.',
-    privacy: 'The keys were created in this browser and never leave it: the Banditboard server only receives encrypted usage it cannot read. No Claude token goes through it.',
+    after: 'Claude Code: from then on, after each response the usage goes to your phone, at most every 2 minutes. No app needed on the PC.',
+    ag: 'Antigravity: run the same command and also install the Windows app, with Antigravity turned on in Tools. While the app is open, the quota goes through the same code. Works even without Claude Code installed. You can close this page.',
+    privacy: 'The keys were created in this browser and never leave it: the Banditboard server only receives encrypted usage it cannot read. No Claude or Google token goes through it.',
     secret: 'Do not share this screen: anyone with the code or the command can see your usage.',
     again: 'Create another code',
   }
