@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.File
 import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.thread
 
 enum class Cause { POLICY, SETTINGS, DENIED, TIMEOUT, OTHER }
@@ -124,9 +125,24 @@ object Hook {
 
     fun connected(): Boolean = Store.int("hookPort") != 0 && usageScript.exists()
 
-    fun stale(): Boolean = !onMac && connected() && runCatching {
-        !usageScript.readText().contains("WindowsPowerShell") || !settings.readText().contains("WindowsPowerShell")
+    fun stale(): Boolean = connected() && runCatching {
+        val text = usageScript.readText()
+        (Antigravity.enabled.value && AG_MARK !in text) ||
+            (!onMac && (!text.contains("WindowsPowerShell") || !settings.readText().contains("WindowsPowerShell")))
     }.getOrDefault(false)
+
+    private const val AG_MARK = "clawdboard-ag"
+    private val agLevelFile = File(claudeDir, "$AG_MARK.txt")
+    private val upgrading = AtomicBoolean(false)
+
+    fun shareAgLevel(level: String?) {
+        runCatching {
+            if (level == null) agLevelFile.delete()
+            else if (!agLevelFile.exists() || agLevelFile.readText() != level) agLevelFile.writeText(level)
+        }
+        val old = connected() && runCatching { AG_MARK !in usageScript.readText() }.getOrDefault(false)
+        if (level != null && old && upgrading.compareAndSet(false, true)) thread(isDaemon = true, name = "banditboard-hook") { install(Store.int("hookPort")) }
+    }
 
     fun refresh(): Boolean = runCatching {
         val before = pushedAt.value

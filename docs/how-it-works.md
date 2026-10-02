@@ -21,6 +21,9 @@
 
  Windows or Mac app ──► shares read-only on your home network, when you turn it on (ports 47830-47839)
 
+ Antigravity open on the same PC ──► the Windows app reads its quota on 127.0.0.1 every 15 s
+          └──► goes along with the usage, to the same destinations
+
  Readers:
    Android phone   ── PIN pairing, QR code from the Windows/Mac app, or QR code from /conectar
    iPhone          ── QR code from the Windows/Mac app, or QR code from /conectar
@@ -181,8 +184,35 @@ answer of the home network sharing and encrypted to the server box. `file` is em
 arriving, the phone fetches every 5 seconds on the home network and every 20 seconds through the server, and it also notifies
 after 6 seconds. Activity older than 15 minutes is ignored.
 
+## Antigravity
+
+Banditboard for Windows also follows Google Antigravity. When Antigravity is open, its language server listens on a random
+local port. Banditboard finds it through `%APPDATA%\Antigravity\logs\language_server.log` (the process ID and the ports) and,
+as a fallback, by looking for a `language_server` process. It reads the local token that Antigravity passes on that process's
+command line and keeps it only in memory.
+
+Every 15 seconds it asks the language server, on `127.0.0.1`, for `GetUserStatus` (the plan and the model list) and
+`RetrieveUserQuotaSummary` (the groups and their windows), the same calls the Antigravity window uses for View Usage. The
+answer usually comes from Antigravity's own cache. Banditboard asks Antigravity to refresh it from Google when the log shows new
+activity, every 5 minutes, and when you click the widget.
+
+The quota comes in groups: Gemini (Pro and Flash) and Claude and GPT. Each group has a weekly window and, on plans that have
+one, a 5-hour window. Each Racco shows the tightest window of its group.
+
+The phone gets only the percentages, the reset times, the plan name and whether Antigravity is open, in the same envelope as
+the Claude Code usage. The alert level that tells the server when to wake the Android app gets four more digits for
+Antigravity. The desktop app writes them to `~/.claude/clawdboard-ag.txt` and the hook adds them to its own level, so both
+always send the same one. When you turn Antigravity off, the phone hides it.
+
+On Android, an alert at 80%, 90% or 100% also leaves a reminder for the reset time, so the "reset" alert shows up on time even
+with the computer off and the app closed.
+
+If Antigravity runs as administrator, Windows hides its command line from a normal process, and the widget says so. Tools →
+Export Antigravity diagnostics saves a text file to Downloads with the whole check, without tokens, passwords or e-mail.
+
 ## Where the data comes from
 
 - **Usage:** the output of `claude -p "/usage"`, a local Claude Code command that makes no model call: the "Current session", "Current week (all models)" and "Current week (<model>)" lines, with their reset times.
+- **Antigravity:** `GetUserStatus` and `RetrieveUserQuotaSummary` from the Antigravity language server, on `127.0.0.1`.
 - **Status:** `https://status.claude.com/api/v2/incidents/unresolved.json`
 - **News:** the public RSS feed `Olshansk/rss-feeds`.

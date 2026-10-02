@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.clawdboard.core.Music
+import dev.clawdboard.core.Prefs
 import dev.clawdboard.core.Repository
 import dev.clawdboard.core.Sample
 import dev.clawdboard.core.ScreenMode
@@ -61,7 +62,11 @@ import kotlin.random.Random
 import kotlinx.coroutines.delay
 
 private enum class Overlay { NONE, PIN, SETTINGS }
-private enum class Page { DASH, MASCOTS, CHART, NEWS, CLOCK, MUSIC }
+private enum class Page(val ag: Boolean = false) { DASH, MASCOTS, CHART, NEWS, CLOCK, MUSIC, AG(true), BOTH(true) }
+
+private object PageLook {
+    var palette by mutableStateOf<Palette?>(null)
+}
 
 @Composable
 fun ClawdboardApp(repo: Repository) {
@@ -92,11 +97,11 @@ fun ClawdboardApp(repo: Repository) {
             Box(
                 Modifier
                     .fillMaxSize()
-                    .background(C.bg)
+                    .background(PageLook.palette?.bg ?: C.bg)
                     .drawBehind {
                         drawRect(
                             Brush.radialGradient(
-                                listOf(C.glow, Color.Transparent),
+                                listOf(PageLook.palette?.glow ?: C.glow, Color.Transparent),
                                 center = Offset(size.width / 2f, size.height * 1.05f),
                                 radius = size.maxDimension * 0.55f,
                             )
@@ -108,6 +113,7 @@ fun ClawdboardApp(repo: Repository) {
                     when {
                         !st.provisioned -> SetupScreen(repo, st)
                         !st.unlocked -> LockScreen(repo, st)
+                        !prefs.toolsChosen && st.usage == null && st.ag == null && overlay == Overlay.NONE -> ToolPicker(repo, prefs)
                         overlay == Overlay.SETTINGS -> Zoomed(prefs.zoom) {
                             SettingsScreen(repo, st, prefs, onClose = { overlay = Overlay.NONE })
                         }
@@ -118,7 +124,7 @@ fun ClawdboardApp(repo: Repository) {
                         else -> Zoomed(prefs.zoom) {
                             Box(Modifier.fillMaxSize()) {
                                 Shifted(prefs.pixelShift) {
-                                    Screens(st, prefs.mode, prefs.dwellSec, history, repo.music.takeIf { prefs.music }, dancing, onSettings = { overlay = if (repo.vault.isProvisioned) Overlay.PIN else Overlay.SETTINGS })
+                                    Screens(st, prefs, history, repo.music.takeIf { prefs.music }, dancing, onSettings = { overlay = if (repo.vault.isProvisioned) Overlay.PIN else Overlay.SETTINGS })
                                 }
                                 FeedbackCard(repo, Modifier.align(Alignment.BottomCenter))
                             }
@@ -154,19 +160,30 @@ private fun Shifted(enabled: Boolean, content: @Composable () -> Unit) {
 @Composable
 private fun Screens(
     st: Repository.State,
-    mode: ScreenMode,
-    dwellSec: Int,
+    prefs: Prefs,
     history: List<Sample>,
     music: Music?,
     musicPlaying: Boolean,
     onSettings: () -> Unit,
 ) {
-    val pages = if (music != null) Page.entries else Page.entries - Page.MUSIC
-    val home = when (mode) {
-        ScreenMode.CLOCK -> Page.CLOCK
-        ScreenMode.MASCOTS -> Page.MASCOTS
+    val mode = prefs.mode
+    val dwellSec = prefs.dwellSec
+    val agOn = agPageNeeded(prefs, st)
+    val pages = Page.entries.filter { p ->
+        when (p) {
+            Page.MUSIC -> music != null
+            Page.AG -> agOn
+            Page.BOTH -> agOn && prefs.showClaude
+            else -> prefs.showClaude
+        }
+    }
+    val home = when {
+        !prefs.showClaude -> Page.AG
+        mode == ScreenMode.CLOCK -> Page.CLOCK
+        mode == ScreenMode.MASCOTS -> Page.MASCOTS
         else -> Page.DASH
     }
+    val agPal = agPalette(prefs)
     var chosen by remember { mutableStateOf(home) }
     val page = if (chosen in pages) chosen else home
     val playing by rememberUpdatedState(musicPlaying)
@@ -175,7 +192,8 @@ private fun Screens(
         swipeDir = step
         chosen = pages[(pages.indexOf(chosen).coerceAtLeast(0) + step + pages.size) % pages.size]
     }
-    LaunchedEffect(mode) { swipeDir = 0; chosen = home }
+    LaunchedEffect(mode, home) { swipeDir = 0; chosen = home }
+    SideEffect { PageLook.palette = if (page == Page.AG) agPal else null }
     LaunchedEffect(mode, dwellSec, page, pages) {
         if (mode == ScreenMode.CAROUSEL) {
             delay(dwellSec * 1000L)
@@ -226,9 +244,19 @@ private fun Screens(
                 Page.NEWS -> NewsPage(st.news, landscape)
                 Page.CLOCK -> ClockPage(st, landscape)
                 Page.MUSIC -> if (music != null) MusicPage(music, st, landscape, compact)
+                Page.AG -> AgPage(st, agPal, landscape, compact)
+                Page.BOTH -> BothPage(st, agPal, landscape)
             }
         }
-        PageDots(pages.size, pages.indexOf(page), Modifier.align(Alignment.BottomCenter).padding(bottom = 10.dp))
+        PageDots(
+            pages.size, pages.indexOf(page), Modifier.align(Alignment.BottomCenter).padding(bottom = 2.dp),
+            accents = pages.map { if (it.ag) agPal.accent else null },
+            onPick = { i ->
+                val target = pages.getOrNull(i) ?: return@PageDots
+                swipeDir = (i - pages.indexOf(page)).coerceIn(-1, 1)
+                chosen = target
+            },
+        )
         Box(
             Modifier
                 .align(Alignment.BottomEnd)

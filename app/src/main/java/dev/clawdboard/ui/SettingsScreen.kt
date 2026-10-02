@@ -32,6 +32,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import dev.clawdboard.core.Language
@@ -41,7 +52,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.clawdboard.BuildConfig
+import dev.clawdboard.core.Accessory
 import dev.clawdboard.core.Backdrop
+import dev.clawdboard.core.ToolTheme
 import dev.clawdboard.core.Brightness
 import dev.clawdboard.core.Orientation
 import dev.clawdboard.core.Prefs
@@ -106,6 +119,33 @@ fun SettingsScreen(repo: Repository, st: Repository.State, prefs: Prefs, onClose
                 }) { Text(txt.newKey, color = C.text) }
             }
             pairMsg?.let { (ok, m) -> Text(m, color = if (ok) C.ok else C.bad, fontSize = 14.sp) }
+
+            Section(txt.tools)
+            val clipboard = LocalClipboardManager.current
+            var copied by remember { mutableStateOf(false) }
+            val command = st.panelUrl?.removePrefix("http://")?.let { repo.pairCommand(it) }
+            ToolRow(
+                txt.toolClaude, C.clawd, st.lastPushAt?.let { txt.toolConnected(fmtAgo(now - it)) } ?: txt.toolNoData,
+                prefs.showClaude, enabled = prefs.showAg, onShow = { v -> repo.updateSettings { it.copy(showClaude = v) } },
+                command = command?.let { c -> { clipboard.setText(AnnotatedString(c)); copied = true } },
+            ) { Mascot(Modifier.width(52.dp), model = "Fable", reserveTop = false) }
+            Spacer(Modifier.height(10.dp))
+            val agPal = agPalette(prefs)
+            ToolRow(
+                txt.toolAntigravity, agPal.accent, st.ag?.let { txt.toolConnected(fmtAgo(now - it.snap.fetchedAt)) } ?: txt.toolNoData,
+                prefs.showAg, enabled = prefs.showClaude, onShow = { v -> repo.updateSettings { it.copy(showAg = v) } },
+            ) { Mascot(Modifier.width(52.dp), wear = Accessory.STAR, reserveTop = false) }
+            if (copied) Text(txt.commandCopied, color = C.ok, fontSize = 14.sp, modifier = Modifier.padding(top = 6.dp))
+            Hint(txt.agNeedsPc)
+            Label(txt.theme)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                ToolTheme.entries.forEach { t ->
+                    Chip(txt.label(t), agTheme(prefs) == t) {
+                        repo.updateSettings { it.copy(toolTheme = t, backdrop = if (t == ToolTheme.BLACK) Backdrop.BLACK else Backdrop.DEFAULT) }
+                    }
+                }
+            }
+            Hint(txt.themeHint)
 
             Section(txt.screen)
             Label(txt.language)
@@ -251,6 +291,43 @@ fun SettingsScreen(repo: Repository, st: Repository.State, prefs: Prefs, onClose
             Credit(txt.feedback, Nudge.EMAIL, C.clawd) { sendFeedback(context) }
             Hint(txt.fanProject)
             Spacer(Modifier.height(28.dp))
+        }
+    }
+}
+
+@Composable
+private fun ToolRow(
+    name: String,
+    dot: Color,
+    status: String,
+    shown: Boolean,
+    enabled: Boolean,
+    onShow: (Boolean) -> Unit,
+    command: (() -> Unit)? = null,
+    mascot: @Composable () -> Unit,
+) {
+    val shape = RoundedCornerShape(16.dp)
+    Row(
+        Modifier.fillMaxWidth().clip(shape).background(C.card).border(1.dp, C.line, shape).padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        mascot()
+        Spacer(Modifier.width(14.dp))
+        Column(Modifier.weight(1f)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.size(8.dp).clip(CircleShape).background(dot))
+                Spacer(Modifier.width(8.dp))
+                Text(name, color = C.text, fontSize = 17.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+            }
+            Text(status, color = C.muted, fontSize = 13.sp)
+        }
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable(enabled = enabled || !shown) { onShow(!shown) }) {
+            Checkbox(shown, { onShow(it) }, enabled = enabled || !shown, colors = CheckboxDefaults.colors(checkedColor = C.clawd, checkmarkColor = C.bg))
+            Text(txt.trayShow, color = C.text, fontSize = 14.sp)
+        }
+        if (command != null) {
+            Spacer(Modifier.width(10.dp))
+            OutlinedButton(onClick = command) { Text(txt.copyCommand, color = C.text, fontSize = 13.sp) }
         }
     }
 }

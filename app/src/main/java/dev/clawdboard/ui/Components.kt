@@ -211,16 +211,30 @@ fun Chip(label: String, selected: Boolean, onClick: () -> Unit) {
 }
 
 @Composable
-fun PageDots(count: Int, index: Int, modifier: Modifier = Modifier) {
-    Row(modifier, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+fun PageDots(count: Int, index: Int, modifier: Modifier = Modifier, accents: List<Color?> = emptyList(), onPick: ((Int) -> Unit)? = null) {
+    Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         repeat(count) { i ->
+            val accent = accents.getOrNull(i)
+            val gap = if (i > 0 && accent != null && accents.getOrNull(i - 1) == null) 6.dp else 0.dp
+            val color = when {
+                accent != null -> accent.copy(alpha = if (i == index) 0.9f else 0.5f)
+                i == index -> C.muted.copy(alpha = 0.7f)
+                else -> C.dim.copy(alpha = 0.45f)
+            }
             Box(
                 Modifier
-                    .width(if (i == index) 16.dp else 6.dp)
-                    .height(6.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(if (i == index) C.muted.copy(alpha = 0.7f) else C.dim.copy(alpha = 0.45f))
-            )
+                    .padding(start = gap)
+                    .then(if (onPick != null) Modifier.clickable { onPick(i) } else Modifier)
+                    .padding(horizontal = 3.dp, vertical = 8.dp)
+            ) {
+                Box(
+                    Modifier
+                        .width(if (i == index) 16.dp else 6.dp)
+                        .height(6.dp)
+                        .clip(RoundedCornerShape(50))
+                        .background(color)
+                )
+            }
         }
     }
 }

@@ -29,10 +29,15 @@ data class Prefs(
     val species: Species = Species.RACCOON,
     val clawdUnlocked: Boolean = false,
     val language: Language = Language.AUTO,
+    val showClaude: Boolean = true,
+    val showAg: Boolean = true,
+    val toolTheme: ToolTheme = ToolTheme.FOLLOW,
+    val toolsChosen: Boolean = false,
 ) {
     fun mascot() = if (species == Species.CLAWD && !clawdUnlocked) Species.RACCOON else species
 
     fun sanitized() = copy(
+        showClaude = showClaude || !showAg,
         dwellSec = dwellSec.coerceIn(5, 120),
         zoom = zoom.coerceIn(ZOOM_OPTIONS.first(), ZOOM_OPTIONS.last()),
     )
@@ -46,6 +51,7 @@ data class Prefs(
         .put("music", music)
         .put("species", species.name).put("clawdUnlocked", clawdUnlocked)
         .put("language", language.name)
+        .put("showClaude", showClaude).put("showAg", showAg).put("toolTheme", toolTheme.name).put("toolsChosen", toolsChosen)
 
     fun merge(o: JSONObject): Prefs = copy(
         mode = enumOr(o.str("mode"), mode),
@@ -65,6 +71,10 @@ data class Prefs(
         species = enumOr(o.str("species"), species),
         clawdUnlocked = if (o.has("clawdUnlocked")) o.optBoolean("clawdUnlocked", clawdUnlocked) else clawdUnlocked,
         language = enumOr(o.str("language"), language),
+        showClaude = if (o.has("showClaude")) o.optBoolean("showClaude", showClaude) else showClaude,
+        showAg = if (o.has("showAg")) o.optBoolean("showAg", showAg) else showAg,
+        toolTheme = enumOr(o.str("toolTheme"), toolTheme),
+        toolsChosen = if (o.has("toolsChosen")) o.optBoolean("toolsChosen", toolsChosen) else toolsChosen,
     ).sanitized()
 
     companion object {

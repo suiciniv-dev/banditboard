@@ -30,6 +30,12 @@ class Pairing(private val app: Context) {
         return runCatching { parsePush(JSONObject(raw), at)?.settled(now) }.getOrNull()
     }
 
+    fun saveAg(o: JSONObject?) {
+        if (o == null) sp.edit().remove("ag").apply() else sp.edit().putString("ag", o.toString()).apply()
+    }
+
+    fun restoreAg(): AgRemote? = sp.getString("ag", null)?.let { raw -> runCatching { AgPush.parse(JSONObject(raw)) }.getOrNull() }
+
     fun clear() {
         sp.edit().clear().commit()
     }

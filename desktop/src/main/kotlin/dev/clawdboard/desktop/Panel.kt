@@ -52,6 +52,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.clawdboard.core.AgFamily
+import dev.clawdboard.core.AgGroup
 import dev.clawdboard.core.AgPool
 import dev.clawdboard.core.AlertKind
 import dev.clawdboard.core.Language
@@ -189,6 +190,7 @@ internal fun Panel(port: Int, status: StatusSnapshot?, controls: WidgetControls)
                         Connect(port, hint = u == null)
                     }
                     Card(Modifier.weight(1.2f), txt.panelWidget) {
+                        Text(txt.widgetHint, color = P.muted, fontSize = 13.sp)
                         Label(txt.trayLayout)
                         Pills(listOfNotNull(Layout.FULL to txt.layoutFull, Layout.COMPACT to txt.trayCompact, if (onMac) null else Layout.MINI to txt.layoutMini), controls.layout, controls.setLayout)
                         if (onMac) Toggle(txt.macWidget, controls.widget, controls.setWidget)
@@ -290,17 +292,12 @@ private fun AgSection(now: Long) {
         }
         if (s != null) {
             Row(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
-                AgPool.entries.forEach { pool ->
-                    s.pool(pool)?.let { m ->
-                        val window = if (m.kind == AlertKind.SESSION) txt.sessionWindow else txt.weekWindow
-                        UsageCard(Modifier.weight(1f), txt.label(pool), window, UsageWindow(m.percent, m.resetsAt), emptyList(), now)
-                    }
-                }
+                s.groups.forEach { g -> PoolCard(Modifier.weight(1f), g, now) }
             }
             Card(Modifier.fillMaxWidth(), txt.panelModels) {
                 Row(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(28.dp)) {
-                    AgFamily.entries.filter { s.family(it) != null }.forEachIndexed { i, f ->
-                        val pct = s.family(f)?.percent
+                    s.families().forEachIndexed { i, f ->
+                        val pct = s.percent(f)
                         Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text(fmtPct(pct), color = pct?.let { C.level(it) } ?: P.muted, fontSize = 22.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
                             Bar(pct, pct?.let { C.level(it) } ?: P.dim, Modifier.fillMaxWidth(0.8f), 7)
@@ -310,12 +307,6 @@ private fun AgSection(now: Long) {
                     }
                 }
                 Text(txt.agModelsHint, color = P.dim, fontSize = 12.sp, modifier = Modifier.padding(top = 10.dp))
-                FlowRow(Modifier.padding(top = 6.dp), horizontalArrangement = Arrangement.spacedBy(18.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    s.models.sortedBy { it.label }.forEach { m ->
-                        val reset = m.resetsAt?.let { " · ${fmtLeft(it - now)}" }.orEmpty()
-                        Text("● ${m.label} ${fmtPct(m.percent)}$reset", color = if (m.percent > 0) C.level(m.percent) else P.muted, fontSize = 13.sp)
-                    }
-                }
             }
             Card(Modifier.fillMaxWidth(), txt.last7Days) {
                 Chart(history.map { Triple(it.t, it.p5, it.p7) }, now, txt.label(AgPool.GEMINI), txt.label(AgPool.OTHERS))
@@ -378,6 +369,33 @@ private fun UsageCard(modifier: Modifier, title: String, window: String, w: Usag
         }
         Bar(pct, pct?.let { C.level(it) } ?: P.dim, Modifier.fillMaxWidth(), 14)
         scoped.forEach { s -> Text("● ${s.label} ${fmtPct(s.percent)}", color = C.level(s.percent), fontSize = 13.sp) }
+    }
+}
+
+@Composable
+private fun PoolCard(modifier: Modifier, g: AgGroup, now: Long) {
+    val shape = RoundedCornerShape(18.dp)
+    Column(modifier.clip(shape).background(P.card).border(1.dp, P.line, shape).padding(24.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+        Text(txt.label(g.pool), color = P.text, fontSize = 22.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+        g.windows().forEach { (kind, w) ->
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(verticalAlignment = Alignment.Bottom) {
+                    Text(fmtPct(w.percent), color = C.level(w.percent), fontSize = 48.sp, fontFamily = Fredoka, fontWeight = FontWeight.Bold)
+                    Column(Modifier.weight(1f).padding(start = 12.dp, bottom = 8.dp)) {
+                        Text(if (kind == AlertKind.SESSION) txt.session else txt.week, color = P.text, fontSize = 15.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+                        Text(if (kind == AlertKind.SESSION) txt.sessionWindow else txt.weekWindow, color = P.dim, fontSize = 12.sp)
+                    }
+                    w.resetsAt?.let {
+                        Column(Modifier.padding(bottom = 6.dp), horizontalAlignment = Alignment.End) {
+                            Text(txt.resetsIn, color = P.muted, fontSize = 12.sp)
+                            Text(fmtLeft(it - now), color = P.text, fontSize = 22.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+                            Text(fmtAt(it, now), color = P.muted, fontSize = 12.sp)
+                        }
+                    }
+                }
+                Bar(w.percent, C.level(w.percent), Modifier.fillMaxWidth(), 10)
+            }
+        }
     }
 }
 

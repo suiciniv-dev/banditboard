@@ -104,7 +104,7 @@ class MainActivity : ComponentActivity() {
         val p5 = if (i.hasExtra("p5")) i.getIntExtra("p5", 37).toDouble() else 37.0
         val p7 = if (i.hasExtra("p7")) i.getIntExtra("p7", 64).toDouble() else 64.0
         val pf = if (i.hasExtra("pf")) i.getIntExtra("pf", 22).toDouble() else 22.0
-        if (!repo.enterDemo(p5, p7, pf)) return
+        if (!repo.enterDemo(p5, p7, pf, i.getBooleanExtra("ag", false))) return
         if (i.getBooleanExtra("nudge", false)) repo.nudge.force()
         val music = i.hasExtra("music")
         if (music) repo.music.demo(playing = i.getBooleanExtra("playing", true))
@@ -118,6 +118,8 @@ class MainActivity : ComponentActivity() {
                 tint = enumOr(i.getStringExtra("tint"), p.tint),
                 music = if (music) i.getBooleanExtra("music", p.music) else p.music,
                 language = enumOr(i.getStringExtra("lang"), p.language),
+                showClaude = i.getBooleanExtra("showClaude", p.showClaude),
+                showAg = i.getBooleanExtra("showAg", p.showAg),
             )
         }
     }

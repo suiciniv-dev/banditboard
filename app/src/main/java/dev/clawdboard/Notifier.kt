@@ -11,6 +11,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import dev.clawdboard.core.AgPool
 import dev.clawdboard.core.Alert
 import dev.clawdboard.core.AlertKind
 import dev.clawdboard.core.ClaudeSession
@@ -74,5 +75,20 @@ object Notifier {
             .setContentIntent(open(context))
             .build()
         runCatching { NotificationManagerCompat.from(context).notify(10 + a.kind.ordinal, n) }
+    }
+
+    fun agAlert(context: Context, a: Alert, pool: AgPool) {
+        if (!canNotify(context)) return
+        val body = if (a.level == 0) txt.agAlertFree else a.resetsAt?.let { txt.alertResets(fmtAt(it, System.currentTimeMillis())) }
+        val title = listOf(txt.toolAntigravity, txt.label(pool), txt.alertTitle(a.kind == AlertKind.WEEK, a.level)).joinToString(" · ")
+        val n = NotificationCompat.Builder(context, ALERTS)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(title)
+            .setContentText(body)
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(open(context))
+            .build()
+        runCatching { NotificationManagerCompat.from(context).notify(30 + pool.ordinal * 2 + a.kind.ordinal, n) }
     }
 }

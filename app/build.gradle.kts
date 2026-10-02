@@ -17,17 +17,17 @@ android {
         applicationId = "dev.clawdboard"
         minSdk = 26
         targetSdk = 35
-        versionCode = 22
-        versionName = "1.15.1"
+        versionCode = 23
+        versionName = "1.17.0"
     }
 
     buildTypes {
         debug {
             applicationIdSuffix = ".preview"
-            manifestPlaceholders["appLabel"] = "Clawdboard Prévia"
+            manifestPlaceholders["appLabel"] = "Banditboard Prévia"
         }
         release {
-            manifestPlaceholders["appLabel"] = "Clawdboard"
+            manifestPlaceholders["appLabel"] = "Banditboard"
             isMinifyEnabled = false
             signingConfig = signingConfigs.getByName("debug")
         }

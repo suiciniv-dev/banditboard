@@ -52,6 +52,7 @@ object Forward {
     private fun send(now: Long) {
         val list = runCatching { JSONArray(targets.readText()) }.getOrNull() ?: return
         val body = envelope(now)
+        Hook.shareAgLevel(Seal.agLevel(body.optJSONObject("antigravity")))
         val plain = body.toString()
         for (i in 0 until list.length()) {
             val t = list.optJSONObject(i) ?: continue

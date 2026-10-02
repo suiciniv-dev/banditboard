@@ -185,6 +185,8 @@ interface Texts {
     val remoteLan: String
     val remoteUnpair: String
     val trayShow: String
+    val trayHide: String
+    val widgetHint: String
     val trayOnTop: String
     val trayTaskbar: String
     val trayCompact: String
@@ -306,6 +308,19 @@ interface Texts {
     val agExport: String
     fun agExported(path: String): String
     val agPanelHint: String
+    val agNearLimit: String
+    val agWaitingPhone: String
+    val pickTitle: String
+    val pickSubtitle: String
+    val pickClaudeHint: String
+    val pickAgHint: String
+    val pickContinue: String
+    fun toolConnected(ago: String): String
+    val toolNoData: String
+    val copyCommand: String
+    val commandCopied: String
+    val agNeedsPc: String
+    val themeHint: String
 }
 
 private fun languageLabel(l: Language, auto: String) = when (l) {
@@ -514,6 +529,8 @@ object Pt : Texts {
     override val remoteLan = "Recebendo do Banditboard do PC pela rede de casa."
     override val remoteUnpair = "Desparear o QR code"
     override val trayShow = "Mostrar"
+    override val trayHide = "Esconder"
+    override val widgetHint = "Clique no widget para atualizar o uso na hora. Com o botão direito, abre o menu de opções."
     override val trayOnTop = "Sempre no topo"
     override val trayTaskbar = "Mostrar na barra de tarefas"
     override val trayCompact = "Compacto"
@@ -661,7 +678,7 @@ object Pt : Texts {
     override val agClosed = "Antigravity fechado"
     override val agWaiting = "Abra o Antigravity para ler a cota"
     override val agAlertFree = "Pode voltar a usar o Antigravity."
-    override val agModelsHint = "Cada Racco mostra a cota do próprio modelo. Os Gemini dividem uma cota, e o Claude e o GPT dividem outra, como no View Usage do Antigravity."
+    override val agModelsHint = "Os Gemini dividem uma cota, e o Claude e o GPT dividem outra, como no View Usage do Antigravity. Cada Racco mostra a janela mais apertada do seu grupo."
     override fun agPlan(name: String) = "Plano $name"
     override fun agUpdatedAgo(ago: String) = "atualizado $ago · Antigravity"
     override fun label(p: AgPool) = when (p) {
@@ -676,6 +693,19 @@ object Pt : Texts {
     override val agExport = "Exportar diagnóstico do Antigravity"
     override fun agExported(path: String) = "Diagnóstico salvo em $path. Pode mandar o arquivo: ele não tem token, senha nem e-mail."
     override val agPanelHint = "Lê a cota do Antigravity aberto neste computador, só por 127.0.0.1. Para o celular vão só os percentuais, os horários e o nome do plano."
+    override val agNearLimit = "quase no limite"
+    override val agWaitingPhone = "Abra o Antigravity no PC com o Banditboard ligado"
+    override val pickTitle = "Qual IA você quer acompanhar?"
+    override val pickSubtitle = "Dá para ligar mais de uma. Cada uma ganha a própria cor."
+    override val pickClaudeHint = "Hook no PC lê o /usage do Claude Code"
+    override val pickAgHint = "O Banditboard no PC lê a cota do Antigravity aberto"
+    override val pickContinue = "Continuar"
+    override fun toolConnected(ago: String) = "Conectado · último envio $ago"
+    override val toolNoData = "Ainda sem dados"
+    override val copyCommand = "Copiar comando"
+    override val commandCopied = "Comando copiado"
+    override val agNeedsPc = "Precisa do Banditboard no PC com o Antigravity ligado. A cota vem junto com o resto, pelo mesmo pareamento."
+    override val themeHint = "Cada ferramenta usa a própria cor de fundo e de destaque. O Racco, as telas, os avisos e o histórico continuam iguais, um por ferramenta."
 }
 
 object En : Texts {
@@ -878,6 +908,8 @@ object En : Texts {
     override val remoteLan = "Receiving from Banditboard on your PC over your home network."
     override val remoteUnpair = "Unpair the QR code"
     override val trayShow = "Show"
+    override val trayHide = "Hide"
+    override val widgetHint = "Click the widget to refresh the usage right away. Right-click it for the options menu."
     override val trayOnTop = "Always on top"
     override val trayTaskbar = "Show in taskbar"
     override val trayCompact = "Compact"
@@ -1025,7 +1057,7 @@ object En : Texts {
     override val agClosed = "Antigravity closed"
     override val agWaiting = "Open Antigravity to read its quota"
     override val agAlertFree = "You can use Antigravity again."
-    override val agModelsHint = "Each Racco shows its own model's quota. The Gemini models share one quota, and Claude and GPT share another, as in Antigravity's View Usage."
+    override val agModelsHint = "The Gemini models share one quota, and Claude and GPT share another, as in Antigravity's View Usage. Each Racco shows the tightest window of its group."
     override fun agPlan(name: String) = "$name plan"
     override fun agUpdatedAgo(ago: String) = "updated $ago · Antigravity"
     override fun label(p: AgPool) = when (p) {
@@ -1040,4 +1072,17 @@ object En : Texts {
     override val agExport = "Export Antigravity diagnostics"
     override fun agExported(path: String) = "Diagnostics saved to $path. You can send the file: it has no token, password or e-mail."
     override val agPanelHint = "Reads the quota of the Antigravity open on this computer, only through 127.0.0.1. Only percentages, reset times and the plan name go to the phone."
+    override val agNearLimit = "almost at the limit"
+    override val agWaitingPhone = "Open Antigravity on the PC with Banditboard running"
+    override val pickTitle = "Which AI do you want to follow?"
+    override val pickSubtitle = "You can turn on more than one. Each one gets its own color."
+    override val pickClaudeHint = "A hook on the PC reads Claude Code's /usage"
+    override val pickAgHint = "Banditboard on the PC reads the open Antigravity's quota"
+    override val pickContinue = "Continue"
+    override fun toolConnected(ago: String) = "Connected · last update $ago"
+    override val toolNoData = "No data yet"
+    override val copyCommand = "Copy command"
+    override val commandCopied = "Command copied"
+    override val agNeedsPc = "Needs Banditboard on the PC with Antigravity turned on. The quota comes along with the rest, through the same pairing."
+    override val themeHint = "Each tool uses its own background and accent color. The Racco, the screens, the alerts and the history stay the same, one per tool."
 }

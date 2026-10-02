@@ -44,6 +44,25 @@ object Seal {
             val pct = o.optJSONObject(name)?.num("used_percentage") ?: return 0
             return listOf(80, 90, 100).lastOrNull { pct >= it - 0.5 } ?: 0
         }
-        return "${of("five_hour")},${of("seven_day")}"
+        val base = "${of("five_hour")},${of("seven_day")}"
+        return agLevel(o.optJSONObject("antigravity"))?.let { "$base,$it" } ?: base
+    }
+
+    fun agLevel(ag: org.json.JSONObject?): String? {
+        val pools = ag?.optJSONArray("pools")?.takeIf { it.length() > 0 } ?: return null
+        fun code(w: org.json.JSONObject?): Char {
+            val pct = w?.num("percent") ?: return '0'
+            return when {
+                pct >= 99.5 -> '1'
+                pct >= 89.5 -> '9'
+                pct >= 79.5 -> '8'
+                else -> '0'
+            }
+        }
+        val byPool = (0 until pools.length()).mapNotNull { pools.optJSONObject(it) }.associateBy { it.str("pool") }
+        return AgPool.entries.joinToString("") { p ->
+            val g = byPool[p.name]
+            "${code(g?.optJSONObject("session"))}${code(g?.optJSONObject("week"))}"
+        }
     }
 }

@@ -3,23 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title data-t="title">Banditboard · Claude Code usage monitor for Android, iPhone, Windows and Mac</title>
-<meta name="description" data-tc="desc" content="A free dashboard that shows your Claude Code usage on Android, iPhone, Apple Watch, Windows and the Mac menu bar: the 5-hour session, the week, when each one resets, and alerts before you run out.">
+<title data-t="title">Banditboard · Claude Code and Antigravity usage monitor for Android, iPhone, Windows and Mac</title>
+<meta name="description" data-tc="desc" content="A free dashboard that shows your Claude Code and Antigravity usage on Android, iPhone, Apple Watch, Windows and the Mac menu bar: the 5-hour session, the week, when each one resets, and alerts before you run out.">
 <meta name="theme-color" content="#16130f">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Banditboard">
 <meta property="og:locale" data-tc="locale" content="en_US">
 <meta property="og:locale:alternate" data-tc="localeAlt" content="pt_BR">
-<meta property="og:title" data-tc="ogTitle" content="Banditboard · Your Claude Code limits, always in sight">
-<meta property="og:description" data-tc="ogDesc" content="Your Claude Code limits always in sight: on your phone, iPhone, Apple Watch, Windows and Mac. Free and open source.">
+<meta property="og:title" data-tc="ogTitle" content="Banditboard · Your Claude Code and Antigravity limits, always in sight">
+<meta property="og:description" data-tc="ogDesc" content="Your Claude Code and Antigravity limits always in sight: on your phone, iPhone, Apple Watch, Windows and Mac. Free and open source.">
 <meta property="og:url" data-tc="url" content="https://banditboard.pages.dev/en/">
 <meta property="og:image" content="https://banditboard.pages.dev/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" data-tc="ogAlt" content="Racco, the Banditboard raccoon, with the Claude Code session and weekly usage">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" data-tc="ogTitle" content="Banditboard · Your Claude Code limits, always in sight">
-<meta name="twitter:description" data-tc="ogDesc" content="Your Claude Code limits always in sight: on your phone, iPhone, Apple Watch, Windows and Mac. Free and open source.">
+<meta name="twitter:title" data-tc="ogTitle" content="Banditboard · Your Claude Code and Antigravity limits, always in sight">
+<meta name="twitter:description" data-tc="ogDesc" content="Your Claude Code and Antigravity limits always in sight: on your phone, iPhone, Apple Watch, Windows and Mac. Free and open source.">
 <meta name="twitter:image" content="https://banditboard.pages.dev/og.png">
 <meta name="twitter:image:alt" data-tc="ogAlt" content="Racco, the Banditboard raccoon, with the Claude Code session and weekly usage">
 <link rel="canonical" data-th="url" href="https://banditboard.pages.dev/en/">
@@ -33,7 +33,7 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "Banditboard",
-  "description": "A free dashboard that shows your Claude Code usage on Android, iPhone, Apple Watch, Windows and the Mac menu bar: the 5-hour session, the week, when each one resets, and alerts before you run out.",
+  "description": "A free dashboard that shows your Claude Code and Antigravity usage on Android, iPhone, Apple Watch, Windows and the Mac menu bar: the 5-hour session, the week, when each one resets, and alerts before you run out.",
   "inLanguage": "en",
   "url": "https://banditboard.pages.dev/en/",
   "applicationCategory": "DeveloperApplication",
@@ -111,6 +111,9 @@ nav a:hover{color:var(--text)}
 .fin>span{display:block;font:500 34px/1.2 var(--f);color:var(--muted);margin:34px 0 22px}
 .plats{display:flex;gap:22px}
 .plats div{width:196px;padding:26px 0 22px;border-radius:26px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:14px;font:600 26px/1 var(--f);color:var(--text)}
+.ftools{display:flex;gap:34px;justify-content:center;font:600 30px var(--f);color:var(--text);margin-top:30px}
+.ftools i{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--coral);margin-right:12px;vertical-align:3px}
+.ftools .ag i{background:#7aa2f7}
 .plats svg{width:62px;height:62px;color:var(--coral)}
 .links{display:flex;gap:18px;margin-top:40px}
 .links span{display:flex;align-items:center;gap:12px;background:#f3efea;color:#16130f;font:600 27px var(--f);padding:12px 24px;border-radius:18px}
@@ -209,6 +212,10 @@ body:not(.rec) .fin .links{display:none}
 .wid .b i,.ph .b i{display:block;height:100%;border-radius:9px}
 .wid .r{width:64px}
 .wid .r svg{width:64px;height:auto;display:block}
+.wid.ag{background:#0f1218;border-color:#283042}
+.wid.ag .t{color:#e4e8f0}
+.wid.ag .t span{color:#98a2b3}
+.wid.ag .b{background:#1c2230}
 .phone{position:absolute;left:1016px;top:446px;width:566px;height:302px;border-radius:36px;background:#0b0a09;border:3px solid #2e2923;box-shadow:0 24px 50px -12px rgba(0,0,0,.8),inset 0 0 0 9px #0b0a09}
 .pstand{position:absolute;left:1199px;top:744px;width:200px;height:40px;background:linear-gradient(#2f2923,#231e19);clip-path:polygon(18% 0,82% 0,100% 100%,0 100%)}
 .cable{position:absolute;left:1396px;top:770px;width:230px;height:16px;border-top:5px solid #2a2520;border-radius:50% 50% 0 0}
@@ -230,6 +237,34 @@ body:not(.rec) .fin .links{display:none}
 .ph .row svg{width:70px;height:auto;display:block;margin:0 auto}
 .ph .row .n{font:500 14px var(--f);margin-top:4px;color:var(--text)}
 .ph .row .n.x{color:var(--bad)}
+.ph .pick,.ph .ags{z-index:2;opacity:0}
+.pick{background:radial-gradient(ellipse at 50% 120%,rgba(215,119,87,.14),transparent 60%),#16130f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.pick h4{font:600 20px var(--f);color:var(--text);margin:8px 0 0}
+.pick .cards{display:flex;gap:14px}
+.pick .cd{width:206px;border-radius:16px;border:2px solid #3a3126;padding:9px 12px 10px;background:#1f1a14;transition:border-color .2s}
+.pick .cd.ag{background:#151a23;border-color:#283042}
+.pick .cd.on{border-color:var(--coral)}
+.pick .cd.ag.on{border-color:#7aa2f7}
+.pick .hd{display:flex;align-items:center;gap:8px;font:600 15px var(--f);color:var(--text)}
+.pick .cbx{width:16px;height:16px;border-radius:4px;border:2px solid var(--muted);display:grid;place-items:center;box-sizing:border-box}
+.pick .cd.on .cbx{background:var(--coral);border-color:var(--coral)}
+.pick .cd.ag.on .cbx{background:#7aa2f7;border-color:#7aa2f7}
+.pick .cbx::after{content:"";width:7px;height:4px;border-left:2px solid #16130f;border-bottom:2px solid #16130f;transform:rotate(-45deg) translate(1px,-1px);opacity:0}
+.pick .cd.on .cbx::after{opacity:1}
+.pick .cd svg{width:60px;height:auto;display:block;margin:6px auto 0}
+.pick .go{font:600 14px var(--f);background:var(--coral);color:#16130f;border-radius:999px;padding:7px 24px;transition:transform .15s,filter .15s}
+.pick .go.on{transform:scale(.92);filter:brightness(1.18)}
+.ags{background:radial-gradient(ellipse at 50% 120%,rgba(122,162,247,.18),transparent 60%),#0f1218}
+.ags .agh{position:absolute;left:26px;top:31px;font:600 13px var(--f);color:#e4e8f0;display:flex;align-items:center;gap:7px}
+.ags .agh i{width:8px;height:8px;border-radius:50%;background:#7aa2f7}
+.ags .agh span{color:#6b7487;font-weight:400}
+.ags .top{top:56px}
+.ags .lbl,.ags .rs b,.ags .row .n{color:#e4e8f0}
+.ags .lbl span,.ags .wk,.ags .rs{color:#98a2b3}
+.ags .b{background:#1c2230}
+.ags .row .s{color:#98a2b3}
+.agglow{position:absolute;inset:0;opacity:0;pointer-events:none;background:radial-gradient(ellipse 70% 60% at 30% 110%,rgba(122,162,247,.22),transparent 70%),linear-gradient(#0f1218,#121722)}
+.cap em.ag{color:#7aa2f7}
 .ph .row .s{font-size:10px;color:var(--bad);height:13px;line-height:13px}
 .toast{position:absolute;left:50%;top:6px;width:300px;margin-left:-150px;background:rgba(46,40,34,.97);border-radius:16px;padding:6px 12px;display:flex;gap:12px;align-items:center;z-index:3;box-shadow:0 10px 24px rgba(0,0,0,.5);opacity:0}
 .toast .ic{width:32px;height:32px;border-radius:12px;background:#0f0d0b;display:grid;place-items:center}
@@ -474,12 +509,13 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
 <main>
   <div class="hero">
     <div class="wrap">
-      <div class="screen" id="screen" role="img" data-alt="heroAlt" aria-label="Animation: Claude Code hits the limit in the middle of a task; with Banditboard, the phone and the Windows widget show the session climbing, the raccoons sweat, turn red and burst at 100%, then dance when the session resets. Then the Mac shows Racco in the menu bar, followed by the iPhone and the Apple Watch, and the end lists the platforms: Android, iPhone, Apple Watch, Windows and Mac.">
+      <div class="screen" id="screen" role="img" data-alt="heroAlt" aria-label="Animation: Claude Code hits the limit in the middle of a task; with Banditboard, the phone turns on and asks which AI to follow, Claude Code or Antigravity, and both get checked. As the session climbs, the phone and the Windows widget switch to Antigravity blue, with the Gemini Pro, Flash, Claude and GPT Raccos, and back to Claude: the raccoons sweat, turn red and burst at 100%, then dance when the session resets. Then the Mac shows Racco in the menu bar, followed by the iPhone and the Apple Watch, and the end lists the platforms: Android, iPhone, Apple Watch, Windows and Mac.">
         <div class="stage" id="stage">
+          <div class="agglow" id="agGlow"></div>
           <div class="win" id="win"><div class="moon"></div><div class="bar"></div></div>
           <div class="sill"></div>
-          <div class="cap" id="c1" data-t="c1">Tired of hitting your Claude Code <em>limit</em> in the middle of a task?</div>
-          <div class="cap" id="c2" data-t="c2">With Banditboard, you <em>see the limit coming</em>.</div>
+          <div class="cap" id="c1" data-t="c1">Tired of hitting your AI <em>limit</em> in the middle of a task?</div>
+          <div class="cap" id="c2" data-t="c2">Pick what to follow: <em>Claude Code</em>, <em class="ag">Antigravity</em> or both.</div>
           <div class="cap" id="c3" data-t="c3">Session, week, and when each one resets. <em>Always in sight.</em></div>
           <div class="cap" id="c4" data-t="c4">The Raccos sweat, turn red and <em>warn you</em> before they burst.</div>
           <div class="cap" id="c6" data-t="c6">When it resets, they celebrate. With music on, they <em>dance</em>.</div>
@@ -488,7 +524,8 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
           <div class="cap" id="c9" data-t="c9">On Mac, Racco lives in the <em>menu bar</em>.</div>
           <div class="cap" id="c10" data-t="c10">On iPhone, a dashboard, <em>widgets</em> and StandBy.</div>
           <div class="cap" id="c11" data-t="c11">And on your wrist, with <em>Apple Watch</em>.</div>
-          <div class="cap fin" id="c5"><div class="fh"><i data-racco="logo"></i><b>Banditboard</b></div><span data-t="c5">Available on</span><div class="plats"><div><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38L16.92 9.1A11.2 11.2 0 0 0 12 8a11.2 11.2 0 0 0-4.92 1.1L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>Android</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>iPhone</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="3"/><path d="M9 6l1-4h4l1 4M9 18l1 4h4l1-4"/></svg>Apple Watch</div><div><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.1l7.4-1v7.2H3zm0 13.8l7.4 1v-7.1H3zm8.2 1.1L21 21.4v-8.6h-9.8zm0-15.9v7.3H21V2.6z"/></svg>Windows</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</div></div><div class="links"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>banditboard.pages.dev</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>github.com/suiciniv-dev/banditboard</span></div></div>
+          <div class="cap" id="c12" data-t="c12">On Antigravity, Racco follows <em class="ag">Gemini, Claude and GPT</em>.</div>
+          <div class="cap fin" id="c5"><div class="fh"><i data-racco="logo"></i><b>Banditboard</b></div><div class="ftools"><span><i></i>Claude Code</span><span class="ag"><i></i>Antigravity</span></div><span data-t="c5">Available on</span><div class="plats"><div><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38L16.92 9.1A11.2 11.2 0 0 0 12 8a11.2 11.2 0 0 0-4.92 1.1L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>Android</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>iPhone</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="3"/><path d="M9 6l1-4h4l1 4M9 18l1 4h4l1-4"/></svg>Apple Watch</div><div><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.1l7.4-1v7.2H3zm0 13.8l7.4 1v-7.1H3zm8.2 1.1L21 21.4v-8.6h-9.8zm0-15.9v7.3H21V2.6z"/></svg>Windows</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</div></div><div class="links"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>banditboard.pages.dev</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>github.com/suiciniv-dev/banditboard</span></div></div>
           <div class="desk"></div>
           <div class="gmon"><div class="neck"></div><div class="foot"></div>
           <div class="mon"><div class="scr">
@@ -497,6 +534,7 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
             <div class="code" id="code"></div>
             <div class="term" id="term"></div>
             <div class="wid" id="wid"><div class="l"><div class="t"><b data-t="pSession">Session</b><span id="wReset"></span></div><div class="p" id="wPct"></div><div class="b"><i id="wBar"></i></div></div><div class="r" id="wRacco"></div></div>
+            <div class="wid ag" id="wAg"><div class="l"><div class="t"><b>Gemini</b><span data-t="agWLeft">session · 1h 05m</span></div><div class="p" id="waPct"></div><div class="b"><i id="waBar"></i></div></div><div class="r" id="waRacco"></div></div>
             <div class="task"><i></i><i></i><i></i><i></i><div class="tray" id="tray"></div></div>
             <div class="mdash" id="mDash"><div class="ttl"><i data-racco="logo"></i>Banditboard</div><div class="mv"><img id="mImg" data-img="windows-dashboard" src="/img/en/windows-dashboard.webp" alt=""></div></div>
             <svg class="cursor" id="cursor" viewBox="0 0 16 22"><path d="M1 1v17l4.5-4.2 3 6.7 2.6-1.2-3-6.6H14z" fill="#f3efea" stroke="#16130f" stroke-width="1.3" stroke-linejoin="round"/></svg>
@@ -516,6 +554,15 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
             </div>
             <div class="row" id="pRow"></div>
             </div>
+            <div class="scrn ags" id="sAg"><div class="agh"><i></i>Antigravity<span data-t="agPlan">· Google AI Pro plan</span></div>
+            <div class="top">
+              <div><div class="lbl"><span class="k" data-t="pSession">Session</span><span>(Gemini)</span></div><div class="p" id="aPct"></div></div>
+              <div class="mid"><div class="b"><i id="aBar"></i></div><div class="wk" data-t="agWeek">Week: Gemini 21% · Claude and GPT 9%</div></div>
+              <div class="rs"><span data-t="pResets">resets in</span><b>1h 05m</b><span data-t="agAt">today at 4:58 PM</span></div>
+            </div>
+            <div class="row" id="aRow"></div>
+            </div>
+            <div class="scrn pick" id="sPick"><h4 data-t="pkT">Which AI do you want to follow?</h4><div class="cards"><div class="cd" id="pkC"><div class="hd"><span class="cbx"></span>Claude Code</div><i data-racco="Fable"></i></div><div class="cd ag" id="pkA"><div class="hd"><span class="cbx"></span>Antigravity</div><i data-racco="Pro"></i></div></div><div class="go" id="pkGo" data-t="pkGo">Continue</div></div>
             <div class="scrn" id="sMusic"><div class="cover"><svg viewBox="0 0 12 12" fill="#16130f"><rect x="4" y="2" width="6" height="1.6"/><rect x="4" y="2" width="1.3" height="6.6"/><rect x="8.7" y="2" width="1.3" height="5.6"/><rect x="1.8" y="7.4" width="3.5" height="2.6"/><rect x="6.5" y="6.4" width="3.5" height="2.6"/></svg></div><div class="mi"><div class="app"><i></i><span data-t="mPlaying">Now playing</span></div><b>Pixel Groove</b><span class="ar" data-t="mArtist">Racco and the Models</span><div class="prog"><i id="mProg"></i></div><div class="tm"><span id="mNow">1:36</span><span>3:34</span></div><div class="ctl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg><span class="pl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></div></div><div class="mr" id="mRow"></div></div>
             <div class="scrn" id="sClock"><div class="ck"><b>21:48</b><span data-t="ckDate">Sunday, September 28</span></div><div class="ckr" id="ckRow"></div><div class="cks" id="ckS"></div></div>
             <div class="scrn" id="sChart"><div class="chh"><b data-t="chT">Last 7 days</b><span class="lg"><i style="background:var(--coral)"></i><span data-t="pSession">Session</span><i style="background:var(--lav)"></i><span data-t="pWeek">Week</span></span></div><svg class="chs" id="chSvg" viewBox="0 0 500 180"></svg></div>
@@ -558,18 +605,18 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
     <div class="intro" id="baixar">
       <div>
         <div class="badge"><i></i><span data-t="badge">Free and open source</span></div>
-        <h1 data-t="h1">Your Claude Code limits, <em>always in sight</em>.</h1>
-        <p class="lead" data-t="lead">Turn your phone, or an old one you no longer use, into a dashboard for your Claude Code limits: how much of the 5-hour session and the week you have used, when each one resets, and a heads-up before you run out. Also on iPhone, Apple Watch, Windows and the Mac menu bar.</p>
+        <h1 data-t="h1">Your Claude Code and Antigravity limits, <em>always in sight</em>.</h1>
+        <p class="lead" data-t="lead">Turn your phone, or an old one you no longer use, into a dashboard for your Claude Code and Antigravity limits: how much of the 5-hour session and the week you have used, when each one resets, and a heads-up before you run out. Also on iPhone, Apple Watch, Windows and the Mac menu bar.</p>
       </div>
       <div class="dl">
         <div class="row">
-          <a class="btn main" data-dl="apk" href="https://github.com/suiciniv-dev/banditboard/releases/download/v1.15.1/Banditboard-1.15.1.apk"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38L16.92 9.1A11.2 11.2 0 0 0 12 8a11.2 11.2 0 0 0-4.92 1.1L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg><span><span data-t="dlAndroid">Download for Android</span><small data-t="dlAndroidS">APK · Android 8 or newer</small></span></a>
+          <a class="btn main" data-dl="apk" href="https://github.com/suiciniv-dev/banditboard/releases/download/v1.17.0/Banditboard-1.17.0.apk"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38L16.92 9.1A11.2 11.2 0 0 0 12 8a11.2 11.2 0 0 0-4.92 1.1L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg><span><span data-t="dlAndroid">Download for Android</span><small data-t="dlAndroidS">APK · Android 8 or newer</small></span></a>
           <a class="btn alt" data-dl="ipa" href="https://github.com/suiciniv-dev/banditboard/releases/download/v1.14.0/Banditboard-1.14.0-iphone.ipa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg><span><span data-t="dlIphone">Download for iPhone</span><small data-t="dlIphoneS">Beta · iPhone and Apple Watch</small></span></a>
-          <a class="btn alt" data-dl="msi" href="https://github.com/suiciniv-dev/banditboard/releases/download/v1.15.1/Banditboard-1.15.1.msi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.1l7.4-1v7.2H3zm0 13.8l7.4 1v-7.1H3zm8.2 1.1L21 21.4v-8.6h-9.8zm0-15.9v7.3H21V2.6z"/></svg><span><span data-t="dlWindows">Download for Windows</span><small data-t="dlWindowsS">Installer · Windows 10 or newer</small></span></a>
+          <a class="btn alt" data-dl="msi" href="https://github.com/suiciniv-dev/banditboard/releases/download/v1.17.0/Banditboard-1.17.0.msi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.1l7.4-1v7.2H3zm0 13.8l7.4 1v-7.1H3zm8.2 1.1L21 21.4v-8.6h-9.8zm0-15.9v7.3H21V2.6z"/></svg><span><span data-t="dlWindows">Download for Windows</span><small data-t="dlWindowsS">Installer · Windows 10 or newer</small></span></a>
           <a class="btn alt" data-dl="dmg" href="https://github.com/suiciniv-dev/banditboard/releases/download/v1.14.0/Banditboard-1.14.0.dmg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg><span><span data-t="dlMac">Download for Mac</span><small data-t="dlMacS">DMG · macOS 11 or newer</small></span></a>
         </div>
         <div class="soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span data-t="soon">On iPhone it is a free beta for now: you install it with your Apple ID through Sideloadly or AltStore and refresh it every 7 days. <a href="https://github.com/suiciniv-dev/banditboard#-get-started">See how</a>.</span></div>
-        <div class="more"><span data-t="dlMore">Rather not install?</span> <a data-dl="zip" href="https://github.com/suiciniv-dev/banditboard/releases/download/v1.15.1/Banditboard-1.15.1-windows.zip" data-t="dlZip">Get the portable ZIP</a> · <a href="/conectar/" data-t="dlConnect">Connect from anywhere</a> · <a href="https://github.com/suiciniv-dev/banditboard" data-t="dlGit">Code on GitHub</a> <span id="ver"></span></div>
+        <div class="more"><span data-t="dlMore">Rather not install?</span> <a data-dl="zip" href="https://github.com/suiciniv-dev/banditboard/releases/download/v1.17.0/Banditboard-1.17.0-windows.zip" data-t="dlZip">Get the portable ZIP</a> · <a href="/conectar/" data-t="dlConnect">Connect from anywhere</a> · <a href="https://github.com/suiciniv-dev/banditboard" data-t="dlGit">Code on GitHub</a> <span id="ver"></span></div>
       </div>
     </div>
 
@@ -578,7 +625,7 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
       <p class="sub" data-t="howS">No account, no token, no tokens spent. Claude Code itself reads the usage, on your computer.</p>
       <div class="steps">
         <div class="step"><h3 data-t="s1T">Install</h3><p data-t="s1">On the phone, install the APK, or the IPA on iPhone. On the computer, install the Windows or Mac app.</p></div>
-        <div class="step"><h3 data-t="s2T">Connect Claude Code</h3><p data-t="s2">On Windows or Mac, one click on <b>Connect Claude Code</b>. On the phone, scan the QR code from the computer dashboard or from <a href="/conectar/">banditboard.pages.dev/conectar</a>, which works even away from home.</p></div>
+        <div class="step"><h3 data-t="s2T">Connect Claude Code or Antigravity</h3><p data-t="s2">On Windows or Mac, one click on <b>Connect Claude Code</b>. Antigravity open on the computer is found on its own. On the phone, scan the QR code from the computer dashboard or from <a href="/conectar/">banditboard.pages.dev/conectar</a>, which works even away from home.</p></div>
         <div class="step"><h3 data-t="s3T">Work in peace</h3><p data-t="s3">After each Claude Code reply, the dashboard updates on its own. When the limit gets close, you know first.</p></div>
       </div>
     </section>
@@ -588,6 +635,7 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
       <p class="sub" data-t="featS">A dashboard made to stay in sight: on your desk, on your wrist or in a corner of the screen.</p>
       <div class="feats">
         <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19V11M10 19V5M16 19v-6M22 19H2"/></svg></div><h3 data-t="f1T">Usage at a glance</h3><p data-t="f1">The 5-hour session and the week, with a countdown and the time each one resets.</p></div>
+        <div class="feat"><div class="ic r"><i data-racco="Pro"></i></div><h3 data-t="f12T">Claude Code and Antigravity</h3><p data-t="f12">Follow one, the other or both. On Antigravity, the Gemini quota and the Claude and GPT quota, each with its 5-hour and weekly window.</p></div>
         <div class="feat"><div class="ic r"><i data-racco="Haiku"></i></div><h3 data-t="f2T">A Racco for each model</h3><p data-t="f2">Haiku, Sonnet, Opus and Fable. They sleep when the session is empty, sweat at 85%, turn red at 90% and burst at 100%.</p></div>
         <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></div><h3 data-t="f3T">Limit alerts</h3><p data-t="f3">A notification at 80%, 90% and 100%, and another when it resets. On Android, even with the app closed.</p></div>
         <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg></div><h3 data-t="f9T">iPhone and Apple Watch</h3><p data-t="f9">Widgets on the Home Screen, the Lock Screen and in StandBy, and complications on your watch face.</p></div>
@@ -611,6 +659,7 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
       <p class="sub" data-t="shotsS">On a phone lying on the desk, on your iPhone, on your wrist or in a corner of your computer screen.</p>
       <div class="tabsw" role="tablist">
         <button type="button" role="tab" aria-selected="true" data-tab="a">Android</button>
+        <button type="button" role="tab" aria-selected="false" data-tab="g">Antigravity</button>
         <button type="button" role="tab" aria-selected="false" data-tab="i">iPhone</button>
         <button type="button" role="tab" aria-selected="false" data-tab="o">Apple Watch</button>
         <button type="button" role="tab" aria-selected="false" data-tab="w">Windows</button>
@@ -622,6 +671,12 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
         <figure><img loading="lazy" data-img="02-mascots" src="/img/en/02-mascots.webp" width="1600" height="720" data-alt="aMasc" alt="When a model has an incident, its Racco turns gray."><figcaption><b data-t="aMascT">Mascots</b><span data-t="aMasc">When a model has an incident, its Racco turns gray.</span></figcaption></figure>
         <figure><img loading="lazy" src="/img/android/03-alerts.webp" width="1080" height="630" data-alt="aAlert" alt="The notification tells you when the limit resets."><figcaption><b data-t="aAlertT">Alerts</b><span data-t="aAlert">The notification tells you when the limit resets.</span></figcaption></figure>
         <figure><img loading="lazy" data-img="11-music" src="/img/en/11-music.webp" width="1600" height="720" data-alt="aMusic" alt="Cover art, controls, volume and dancing raccoons."><figcaption><b data-t="aMusicT">Music</b><span data-t="aMusic">Cover art, controls, volume and dancing raccoons.</span></figcaption></figure>
+      </div>
+      <div class="gal" id="tab-g" hidden>
+        <figure><img loading="lazy" data-img="android-antigravity" src="/img/en/android-antigravity.webp" width="1600" height="720" data-alt="gPageA" alt="Antigravity page on the phone"><figcaption><b data-t="gPageT">Antigravity page</b><span data-t="gPage">Each group with its own quota and reset time.</span></figcaption></figure>
+        <figure><img loading="lazy" data-img="android-both" src="/img/en/android-both.webp" width="1600" height="720" data-alt="gBothA" alt="Claude Code and Antigravity side by side"><figcaption><b data-t="gBothT">Both together</b><span data-t="gBoth">Claude Code and Antigravity on the same screen, each in its own color.</span></figcaption></figure>
+        <figure><img loading="lazy" data-img="android-picker" src="/img/en/android-picker.webp" width="1600" height="720" data-alt="gPickA" alt="Choosing the tool on first launch"><figcaption><b data-t="gPickT">On first launch</b><span data-t="gPick">Pick Claude Code, Antigravity or both.</span></figcaption></figure>
+        <figure><img loading="lazy" data-img="windows-widget-antigravity" src="/img/en/windows-widget-antigravity.webp" width="960" height="728" data-alt="gWidA" alt="Windows widget with Claude Code and Antigravity"><figcaption><b data-t="gWidT">Windows widget</b><span data-t="gWid">One click refreshes right away. Right-click opens the menu.</span></figcaption></figure>
       </div>
       <div class="gal p" id="tab-i" hidden>
         <figure><img loading="lazy" data-img="ios-dashboard" src="/img/en/ios-dashboard.webp" width="1320" height="2868" data-alt="iDashA" alt="iPhone dashboard"><figcaption><b data-t="iDashT">Dashboard</b><span data-t="iDash">Session, week, the four Raccos, status and news.</span></figcaption></figure>
@@ -680,6 +735,7 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
         <details><summary data-t="q5">Does my computer need to stay on?</summary><p data-t="a5">Usage arrives while you use Claude Code on the computer. With it off, the apps keep the last update and clear a window on their own once its reset time passes.</p></details>
         <details><summary data-t="q6">I got a warning when installing. Is that normal?</summary><p data-t="a6">Yes. The APK comes from GitHub, not the Play Store, so Android asks you to allow "install unknown apps". On Windows, if you see the unknown publisher warning, click "More info" and then "Run anyway": the installer is not digitally signed yet. On Mac, the app is not notarized by Apple yet: the first time, go to System Settings → Privacy & Security and click "Open Anyway".</p></details>
         <details><summary data-t="q7">Is there an iPhone, Apple Watch or Mac version?</summary><p data-t="a7">Yes. On Mac, just download the DMG. On iPhone it is a free beta for now: the IPA is unsigned, you install it with your Apple ID through Sideloadly or AltStore, and the Apple Watch app comes with it. With a free Apple ID you have to refresh it every 7 days. The App Store version comes later.</p></details>
+        <details><summary data-t="q9">Does it work with Antigravity?</summary><p data-t="a9">Yes. With Antigravity open on the computer, Banditboard for Windows or Mac reads the quota straight from it, on the computer itself, and sends it to the phone through the same pairing. No Google login and none of your quota spent.</p></details>
         <details><summary data-t="q8">Does it work away from home?</summary><p data-t="a8">Yes. Open <a href="/conectar/">banditboard.pages.dev/conectar</a>, scan the QR code with the phone and run the command on the computer. Usage travels encrypted end to end, and on Android the alerts arrive even with the app closed.</p></details>
       </div>
     </section>
@@ -690,9 +746,9 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
         <h2 data-t="ctaT">No more surprises mid-task.</h2>
         <p class="sub" style="margin:0 auto" data-t="ctaS">Install it on your phone, your watch, your computer or all of them. The same hook sends the usage to every one.</p>
         <div class="row">
-          <a class="btn main" data-dl="apk" href="https://github.com/suiciniv-dev/banditboard/releases/download/v1.15.1/Banditboard-1.15.1.apk" data-t="dlAndroid">Download for Android</a>
+          <a class="btn main" data-dl="apk" href="https://github.com/suiciniv-dev/banditboard/releases/download/v1.17.0/Banditboard-1.17.0.apk" data-t="dlAndroid">Download for Android</a>
           <a class="btn alt" data-dl="ipa" href="https://github.com/suiciniv-dev/banditboard/releases/download/v1.14.0/Banditboard-1.14.0-iphone.ipa" data-t="dlIphone">Download for iPhone</a>
-          <a class="btn alt" data-dl="msi" href="https://github.com/suiciniv-dev/banditboard/releases/download/v1.15.1/Banditboard-1.15.1.msi" data-t="dlWindows">Download for Windows</a>
+          <a class="btn alt" data-dl="msi" href="https://github.com/suiciniv-dev/banditboard/releases/download/v1.17.0/Banditboard-1.17.0.msi" data-t="dlWindows">Download for Windows</a>
           <a class="btn alt" data-dl="dmg" href="https://github.com/suiciniv-dev/banditboard/releases/download/v1.14.0/Banditboard-1.14.0.dmg" data-t="dlMac">Download for Mac</a>
           <a class="star" href="https://github.com/suiciniv-dev/banditboard"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg><span data-t="starCta">Star it on GitHub</span><b data-stars></b></a>
         </div>
@@ -704,7 +760,7 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
 <footer>
   <div class="wrap">
     <span><span data-t="by">Made by</span> <a href="https://suiciniv-dev-apps.pages.dev/">Vinícius Pires da Silva</a> · <a href="https://www.linkedin.com/in/viniciuspiresdasilva/">LinkedIn</a> · <a href="https://github.com/suiciniv-dev/banditboard">GitHub</a> · <a href="https://github.com/suiciniv-dev/banditboard/blob/main/LICENSE" data-t="lic">MIT License</a></span>
-    <span data-t="legal">Personal project, not affiliated with Anthropic. Claude and Claude Code are trademarks of Anthropic.</span>
+    <span data-t="legal">Personal project, not affiliated with Anthropic or Google. Claude and Claude Code are trademarks of Anthropic. Antigravity and Gemini are trademarks of Google.</span>
   </div>
 </footer>
 
@@ -713,9 +769,9 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
 <script>
 const T = {
   pt: {
-    title: "Banditboard · Monitor de uso do Claude Code no Android, iPhone, Windows e Mac",
-    ogTitle: "Banditboard · O limite do Claude Code sempre à vista",
-    ogDesc: "O limite do Claude Code sempre à vista: no celular, no iPhone, no Apple Watch, no Windows e no Mac. Grátis e de código aberto.",
+    title: "Banditboard · Monitor de uso do Claude Code e do Antigravity no Android, iPhone, Windows e Mac",
+    ogTitle: "Banditboard · Os limites do Claude Code e do Antigravity sempre à vista",
+    ogDesc: "Os limites do Claude Code e do Antigravity sempre à vista: no celular, no iPhone, no Apple Watch, no Windows e no Mac. Grátis e de código aberto.",
     ogAlt: "O Racco, guaxinim do Banditboard, com o uso da sessão e da semana do Claude Code",
     locale: "pt_BR", localeAlt: "en_US", url: "https://banditboard.pages.dev/", home: "/",
     star: "Estrela", starCta: "Deixe uma estrela no GitHub", starAlt: "Deixe uma estrela no GitHub", lic: "Licença MIT",
@@ -725,13 +781,13 @@ const T = {
     pv2T: "Só os números", pv2: "Vão só as porcentagens e a hora em que cada limite libera. Nada das suas conversas, dos arquivos ou dos projetos.",
     pv3T: "Pela sua rede ou cifrado", pv3: "Os números vão direto do computador para os seus aparelhos, com uma chave de pareamento. Se você conectar de qualquer lugar pelo site, eles passam pelo servidor do Banditboard cifrados de ponta a ponta: ele guarda só o último envio e não consegue ler.",
     pv4T: "Código aberto", pv4: "Licença MIT. Os scripts que rodam no seu PC são curtos, e dá para <a href=\"https://github.com/suiciniv-dev/banditboard/tree/main/app/src/main/assets/pc\">ler cada linha no GitHub</a>.",
-    desc: "Painel grátis que mostra o uso do Claude Code no Android, no iPhone, no Apple Watch, no Windows e na barra de menus do Mac: sessão de 5 horas, semana, a hora em que cada uma libera e avisos antes de acabar.",
+    desc: "Painel grátis que mostra o uso do Claude Code e do Antigravity no Android, no iPhone, no Apple Watch, no Windows e na barra de menus do Mac: sessão de 5 horas, semana, a hora em que cada uma libera e avisos antes de acabar.",
     other: "EN", otherName: "English",
     navHow: "Como funciona", navFeat: "Recursos", navShots: "Telas", navFaq: "Perguntas", navDl: "Baixar",
-    heroAlt: "Animação: o Claude Code bate no limite no meio da tarefa; com o Banditboard, o celular e o widget do Windows mostram a sessão subindo, os guaxinins suam, ficam vermelhos e estouram em 100%, e dançam quando a sessão libera. Depois aparecem o Mac com o Racco na barra de menus, o iPhone e o Apple Watch, e no fim as plataformas: Android, iPhone, Apple Watch, Windows e Mac.",
+    heroAlt: "Animação: o Claude Code bate no limite no meio da tarefa; com o Banditboard, o celular liga e pergunta qual IA acompanhar, o Claude Code ou o Antigravity, e marca os dois. Enquanto a sessão sobe, o celular e o widget do Windows passam para o azul do Antigravity, com os Raccos do Gemini Pro, do Flash, do Claude e do GPT, e voltam para o Claude: os guaxinins suam, ficam vermelhos e estouram em 100%, e dançam quando a sessão libera. Depois aparecem o Mac com o Racco na barra de menus, o iPhone e o Apple Watch, e no fim as plataformas: Android, iPhone, Apple Watch, Windows e Mac.",
     pause: "Pausar", play: "Continuar",
-    c1: "Cansado de bater no <em>limite</em> do Claude Code no meio da tarefa?",
-    c2: "Com o Banditboard, você <em>vê o limite chegando</em>.",
+    c1: "Cansado de bater no <em>limite</em> da IA no meio da tarefa?",
+    c2: "Escolha o que acompanhar: <em>Claude Code</em>, <em class=\"ag\">Antigravity</em> ou os dois.",
     c3: "Sessão, semana e a hora em que cada uma libera. <em>Sempre à vista.</em>",
     c4: "Os Raccos suam, ficam vermelhos e <em>avisam antes</em> de estourar.",
     c6: "Quando libera, eles comemoram. Com música, <em>dançam</em>.",
@@ -740,6 +796,15 @@ const T = {
     c9: "No Mac, o Racco mora na <em>barra de menus</em>.",
     c10: "No iPhone, painel, <em>widgets</em> e StandBy.",
     c11: "E no pulso, com o <em>Apple Watch</em>.",
+    c12: "No Antigravity, o Racco acompanha o <em class=\"ag\">Gemini, o Claude e o GPT</em>.",
+    pkT: "Qual IA você quer acompanhar?", pkGo: "Continuar", agNear: "quase no limite", agPlan: "· Plano Google AI Pro", agWLeft: "sessão · 1h 05m",
+    agWeek: "Semana: Gemini 21% · Claude e GPT 9%", agAt: "hoje às 16:58",
+    f12T: "Claude Code e Antigravity", f12: "Acompanhe um, o outro ou os dois. No Antigravity, a cota do Gemini e a do Claude e GPT, cada uma com a janela de 5 horas e a semanal.",
+    gPageT: "Página do Antigravity", gPage: "Cada grupo com a sua cota e a hora em que libera.", gPageA: "Página do Antigravity no celular",
+    gBothT: "Os dois juntos", gBoth: "Claude Code e Antigravity na mesma tela, cada um com a sua cor.", gBothA: "Claude Code e Antigravity lado a lado",
+    gPickT: "Na primeira vez", gPick: "Escolha o Claude Code, o Antigravity ou os dois.", gPickA: "Escolha da ferramenta na primeira vez",
+    gWidT: "Widget do Windows", gWid: "Um clique atualiza na hora. O botão direito abre o menu.", gWidA: "Widget do Windows com o Claude Code e o Antigravity",
+    q9: "Funciona com o Antigravity?", a9: "Funciona. Com o Antigravity aberto no computador, o Banditboard do Windows ou do Mac lê a cota direto dele, no próprio computador, e manda para o celular pelo mesmo pareamento. Sem login do Google e sem gastar a sua cota.",
     mpAgo: "atualizado há 6s", mpWid: "Widget na mesa", mpPanel: "Painel e ajustes", mpRef: "Atualizar agora",
     iNews: "Notícias da Anthropic",
     iLeft5: "libera em 2h 12m", iLeft7: "libera em 3d 4h", iModels: "Modelos", iOk: "Todos os sistemas operacionais",
@@ -752,8 +817,8 @@ const T = {
     term2: ["$ claude", "> refatore o checkout e rode os testes", "● Editando 12 arquivos…", "✓ 48 testes passando", "✓ Tudo salvo antes do limite"],
     term3: "$ claude --continue",
     badge: "Grátis e de código aberto",
-    h1: "O limite do Claude Code, <em>sempre à vista</em>.",
-    lead: "Transforme o seu celular, ou aquele já meio antigo, num painel dos seus limites do Claude Code: quanto você já usou da sessão de 5 horas e da semana, quando cada uma libera e um aviso antes de acabar. Também no iPhone, no Apple Watch, no Windows e na barra de menus do Mac.",
+    h1: "Os limites do Claude Code e do Antigravity, <em>sempre à vista</em>.",
+    lead: "Transforme o seu celular, ou aquele já meio antigo, num painel dos seus limites do Claude Code e do Antigravity: quanto você já usou da sessão de 5 horas e da semana, quando cada uma libera e um aviso antes de acabar. Também no iPhone, no Apple Watch, no Windows e na barra de menus do Mac.",
     dlAndroid: "Baixar para Android", dlAndroidS: "APK · Android 8 ou mais novo",
     dlWindows: "Baixar para Windows", dlWindowsS: "Instalador · Windows 10 ou mais novo",
     dlIphone: "Baixar para iPhone", dlIphoneS: "Beta · iPhone e Apple Watch",
@@ -763,7 +828,7 @@ const T = {
     howT: "Pronto em <em>dois minutos</em>",
     howS: "Sem conta, sem token e sem gastar tokens. Quem lê o uso é o próprio Claude Code, no seu computador.",
     s1T: "Instale", s1: "No celular, instale o APK ou, no iPhone, o IPA. No computador, instale o app do Windows ou do Mac.",
-    s2T: "Conecte o Claude Code", s2: "No Windows ou no Mac, é um clique em <b>Conectar Claude Code</b>. No celular, leia o QR code do painel do computador ou de <a href=\"/conectar/\">banditboard.pages.dev/conectar</a>, que funciona até fora de casa.",
+    s2T: "Conecte o Claude Code ou o Antigravity", s2: "No Windows ou no Mac, é um clique em <b>Conectar Claude Code</b>. O Antigravity aberto no computador é achado sozinho. No celular, leia o QR code do painel do computador ou de <a href=\"/conectar/\">banditboard.pages.dev/conectar</a>, que funciona até fora de casa.",
     s3T: "Trabalhe em paz", s3: "A cada resposta do Claude Code, o painel atualiza sozinho. Quando o limite chega perto, você fica sabendo antes.",
     featT: "Tudo o que você precisa <em>de relance</em>", featS: "Um painel feito para ficar sempre à vista: na mesa, no pulso ou no canto da tela.",
     f1T: "Uso num piscar de olhos", f1: "Sessão de 5 horas e semana, com contagem regressiva e a hora em que cada uma libera.",
@@ -811,12 +876,12 @@ const T = {
     q7: "Tem para iPhone, Apple Watch e Mac?", a7: "Tem. No Mac, é só baixar o DMG. No iPhone, por enquanto é um teste grátis: o IPA vem sem assinatura, você instala com o seu Apple ID pelo Sideloadly ou pelo AltStore, e o app do Apple Watch vem junto. Com um Apple ID gratuito, é preciso renovar a cada 7 dias. A versão na App Store vem depois.",
     q8: "Funciona fora de casa?", a8: "Funciona. Abra <a href=\"/conectar/\">banditboard.pages.dev/conectar</a>, leia o QR code com o celular e rode o comando no computador. O uso passa cifrado de ponta a ponta, e no Android os avisos chegam mesmo com o app fechado.",
     ctaT: "Chega de surpresa no meio da tarefa.", ctaS: "Instale no celular, no relógio, no computador ou em todos. O mesmo hook manda o uso para todos.",
-    by: "Feito por", legal: "Projeto pessoal, sem afiliação com a Anthropic. Claude e Claude Code são marcas da Anthropic."
+    by: "Feito por", legal: "Projeto pessoal, sem afiliação com a Anthropic nem com o Google. Claude e Claude Code são marcas da Anthropic. Antigravity e Gemini são marcas do Google."
   },
   en: {
-    title: "Banditboard · Claude Code usage monitor for Android, iPhone, Windows and Mac",
-    ogTitle: "Banditboard · Your Claude Code limits, always in sight",
-    ogDesc: "Your Claude Code limits always in sight: on your phone, iPhone, Apple Watch, Windows and Mac. Free and open source.",
+    title: "Banditboard · Claude Code and Antigravity usage monitor for Android, iPhone, Windows and Mac",
+    ogTitle: "Banditboard · Your Claude Code and Antigravity limits, always in sight",
+    ogDesc: "Your Claude Code and Antigravity limits always in sight: on your phone, iPhone, Apple Watch, Windows and Mac. Free and open source.",
     ogAlt: "Racco, the Banditboard raccoon, with the Claude Code session and weekly usage",
     locale: "en_US", localeAlt: "pt_BR", url: "https://banditboard.pages.dev/en/", home: "/en/",
     star: "Star", starCta: "Star it on GitHub", starAlt: "Star Banditboard on GitHub", lic: "MIT License",
@@ -826,13 +891,13 @@ const T = {
     pv2T: "Just the numbers", pv2: "Only the percentages and when each limit resets. Nothing from your chats, files or projects.",
     pv3T: "Your network, or encrypted", pv3: "The numbers go straight from the computer to your devices, with a pairing key. If you connect from anywhere through the website, they pass through the Banditboard server encrypted end to end: it keeps only the latest update and cannot read it.",
     pv4T: "Open source", pv4: "MIT licensed. The scripts that run on your PC are short, and you can <a href=\"https://github.com/suiciniv-dev/banditboard/tree/main/app/src/main/assets/pc\">read every line on GitHub</a>.",
-    desc: "A free dashboard that shows your Claude Code usage on Android, iPhone, Apple Watch, Windows and the Mac menu bar: the 5-hour session, the week, when each one resets, and alerts before you run out.",
+    desc: "A free dashboard that shows your Claude Code and Antigravity usage on Android, iPhone, Apple Watch, Windows and the Mac menu bar: the 5-hour session, the week, when each one resets, and alerts before you run out.",
     other: "PT", otherName: "Português",
     navHow: "How it works", navFeat: "Features", navShots: "Screens", navFaq: "FAQ", navDl: "Download",
-    heroAlt: "Animation: Claude Code hits the limit in the middle of a task; with Banditboard, the phone and the Windows widget show the session climbing, the raccoons sweat, turn red and burst at 100%, then dance when the session resets. Then the Mac shows Racco in the menu bar, followed by the iPhone and the Apple Watch, and the end lists the platforms: Android, iPhone, Apple Watch, Windows and Mac.",
+    heroAlt: "Animation: Claude Code hits the limit in the middle of a task; with Banditboard, the phone turns on and asks which AI to follow, Claude Code or Antigravity, and both get checked. As the session climbs, the phone and the Windows widget switch to Antigravity blue, with the Gemini Pro, Flash, Claude and GPT Raccos, and back to Claude: the raccoons sweat, turn red and burst at 100%, then dance when the session resets. Then the Mac shows Racco in the menu bar, followed by the iPhone and the Apple Watch, and the end lists the platforms: Android, iPhone, Apple Watch, Windows and Mac.",
     pause: "Pause", play: "Play",
-    c1: "Tired of hitting your Claude Code <em>limit</em> in the middle of a task?",
-    c2: "With Banditboard, you <em>see the limit coming</em>.",
+    c1: "Tired of hitting your AI <em>limit</em> in the middle of a task?",
+    c2: "Pick what to follow: <em>Claude Code</em>, <em class=\"ag\">Antigravity</em> or both.",
     c3: "Session, week, and when each one resets. <em>Always in sight.</em>",
     c4: "The Raccos sweat, turn red and <em>warn you</em> before they burst.",
     c6: "When it resets, they celebrate. With music on, they <em>dance</em>.",
@@ -841,6 +906,15 @@ const T = {
     c9: "On Mac, Racco lives in the <em>menu bar</em>.",
     c10: "On iPhone, a dashboard, <em>widgets</em> and StandBy.",
     c11: "And on your wrist, with <em>Apple Watch</em>.",
+    c12: "On Antigravity, Racco follows <em class=\"ag\">Gemini, Claude and GPT</em>.",
+    pkT: "Which AI do you want to follow?", pkGo: "Continue", agNear: "almost at the limit", agPlan: "· Google AI Pro plan", agWLeft: "session · 1h 05m",
+    agWeek: "Week: Gemini 21% · Claude and GPT 9%", agAt: "today at 4:58 PM",
+    f12T: "Claude Code and Antigravity", f12: "Follow one, the other or both. On Antigravity, the Gemini quota and the Claude and GPT quota, each with its 5-hour and weekly window.",
+    gPageT: "Antigravity page", gPage: "Each group with its own quota and reset time.", gPageA: "Antigravity page on the phone",
+    gBothT: "Both together", gBoth: "Claude Code and Antigravity on the same screen, each in its own color.", gBothA: "Claude Code and Antigravity side by side",
+    gPickT: "On first launch", gPick: "Pick Claude Code, Antigravity or both.", gPickA: "Choosing the tool on first launch",
+    gWidT: "Windows widget", gWid: "One click refreshes right away. Right-click opens the menu.", gWidA: "Windows widget with Claude Code and Antigravity",
+    q9: "Does it work with Antigravity?", a9: "Yes. With Antigravity open on the computer, Banditboard for Windows or Mac reads the quota straight from it, on the computer itself, and sends it to the phone through the same pairing. No Google login and none of your quota spent.",
     mpAgo: "updated 6s ago", mpWid: "Desktop widget", mpPanel: "Dashboard and settings", mpRef: "Refresh now",
     iNews: "Anthropic news",
     iLeft5: "resets in 2h 12m", iLeft7: "resets in 3d 4h", iModels: "Models", iOk: "All systems operational",
@@ -853,8 +927,8 @@ const T = {
     term2: ["$ claude", "> refactor checkout and run the tests", "● Editing 12 files…", "✓ 48 tests passing", "✓ Everything saved before the limit"],
     term3: "$ claude --continue",
     badge: "Free and open source",
-    h1: "Your Claude Code limits, <em>always in sight</em>.",
-    lead: "Turn your phone, or an old one you no longer use, into a dashboard for your Claude Code limits: how much of the 5-hour session and the week you have used, when each one resets, and a heads-up before you run out. Also on iPhone, Apple Watch, Windows and the Mac menu bar.",
+    h1: "Your Claude Code and Antigravity limits, <em>always in sight</em>.",
+    lead: "Turn your phone, or an old one you no longer use, into a dashboard for your Claude Code and Antigravity limits: how much of the 5-hour session and the week you have used, when each one resets, and a heads-up before you run out. Also on iPhone, Apple Watch, Windows and the Mac menu bar.",
     dlAndroid: "Download for Android", dlAndroidS: "APK · Android 8 or newer",
     dlWindows: "Download for Windows", dlWindowsS: "Installer · Windows 10 or newer",
     dlIphone: "Download for iPhone", dlIphoneS: "Beta · iPhone and Apple Watch",
@@ -864,7 +938,7 @@ const T = {
     howT: "Ready in <em>two minutes</em>",
     howS: "No account, no token, no tokens spent. Claude Code itself reads the usage, on your computer.",
     s1T: "Install", s1: "On the phone, install the APK, or the IPA on iPhone. On the computer, install the Windows or Mac app.",
-    s2T: "Connect Claude Code", s2: "On Windows or Mac, one click on <b>Connect Claude Code</b>. On the phone, scan the QR code from the computer dashboard or from <a href=\"/conectar/\">banditboard.pages.dev/conectar</a>, which works even away from home.",
+    s2T: "Connect Claude Code or Antigravity", s2: "On Windows or Mac, one click on <b>Connect Claude Code</b>. Antigravity open on the computer is found on its own. On the phone, scan the QR code from the computer dashboard or from <a href=\"/conectar/\">banditboard.pages.dev/conectar</a>, which works even away from home.",
     s3T: "Work in peace", s3: "After each Claude Code reply, the dashboard updates on its own. When the limit gets close, you know first.",
     featT: "Everything you need <em>at a glance</em>", featS: "A dashboard made to stay in sight: on your desk, on your wrist or in a corner of the screen.",
     f1T: "Usage at a glance", f1: "The 5-hour session and the week, with a countdown and the time each one resets.",
@@ -912,7 +986,7 @@ const T = {
     q7: "Is there an iPhone, Apple Watch or Mac version?", a7: "Yes. On Mac, just download the DMG. On iPhone it is a free beta for now: the IPA is unsigned, you install it with your Apple ID through Sideloadly or AltStore, and the Apple Watch app comes with it. With a free Apple ID you have to refresh it every 7 days. The App Store version comes later.",
     q8: "Does it work away from home?", a8: "Yes. Open <a href=\"/conectar/\">banditboard.pages.dev/conectar</a>, scan the QR code with the phone and run the command on the computer. Usage travels encrypted end to end, and on Android the alerts arrive even with the app closed.",
     ctaT: "No more surprises mid-task.", ctaS: "Install it on your phone, your watch, your computer or all of them. The same hook sends the usage to every one.",
-    by: "Made by", legal: "Personal project, not affiliated with Anthropic. Claude and Claude Code are trademarks of Anthropic."
+    by: "Made by", legal: "Personal project, not affiliated with Anthropic or Google. Claude and Claude Code are trademarks of Anthropic. Antigravity and Gemini are trademarks of Google."
   }
 };
 
@@ -952,8 +1026,13 @@ const ACC = {
   Haiku: [[7,1,1,3,"#5e8a4a"],[5,1,2,1,"#8fb573"],[6,2,1,1,"#8fb573"],[8,0,2,1,"#8fb573"],[8,1,1,1,"#8fb573"]],
   Sonnet: [[3,2,10,1,"#3f3a48"],[2,3,1,2,"#3f3a48"],[13,3,1,2,"#3f3a48"],[1,5,2,3,"#3f3a48"],[13,5,2,3,"#3f3a48"],[1,6,1,1,"#7d7590"],[14,6,1,1,"#7d7590"]],
   Opus: [4, 11].flatMap(e => [[e-1,5,3,1,GOLD],[e-1,8,3,1,GOLD],[e-1,6,1,2,GOLD],[e+1,6,1,2,GOLD]]).concat([[6,6,4,1,GOLD]]),
-  Fable: [[5,0,6,2,"#3b3446"],[5,0,1,2,"#5a4f6b"],[5,2,6,1,GOLD],[4,3,8,1,"#3b3446"]]
+  Fable: [[5,0,6,2,"#3b3446"],[5,0,1,2,"#5a4f6b"],[5,2,6,1,GOLD],[4,3,8,1,"#3b3446"]],
+  Pro: [[7,0,2,4,"#8ab4f8"],[5,1,6,2,"#8ab4f8"],[7,1,2,2,"#dce7fd"]],
+  Flash: [[9,0,2,1,GOLD],[8,1,2,1,GOLD],[7,2,4,1,GOLD],[7,3,2,1,GOLD]],
+  GPT: [[5,1,6,2,"#4f8f82"],[7,0,2,1,"#cfe9e2"],[4,3,8,1,"#2f5f55"]]
 };
+ACC.Claude = ACC.Opus;
+const AG = [["Pro", "Gemini Pro", 92], ["Flash", "Flash", 92], ["Claude", "Claude", 34], ["GPT", "GPT-OSS", 34]];
 const MODELS = ["Haiku", "Sonnet", "Opus", "Fable"];
 function mix(a, b, t){
   const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
@@ -995,7 +1074,7 @@ function racco(model, st, i){
     const note = x => `${r(x + 1, 0, 2, 1)}${r(x + 1, 1, 1, 1)}${r(x, 2, 2, 1)}`;
     extra += `<g class="note ${i % 2 ? "nl" : "nr"}" fill="#b9a6f2">${note(i % 2 ? 0 : 13)}</g><g class="note ${i % 2 ? "nr" : "nl"}" fill="#b9a6f2">${note(i % 2 ? 13 : 0)}</g>`;
   }
-  const cls = ["cl", sleepy && "sleepy", heat > 0 && "hot", heat >= .5 && !dancing && "shake", model === "Opus" && "nolook", out && "dead", dancing && !out && "dance"].filter(Boolean).join(" ");
+  const cls = ["cl", sleepy && "sleepy", heat > 0 && "hot", heat >= .5 && !dancing && "shake", (model === "Opus" || model === "Claude") && "nolook", out && "dead", dancing && !out && "dance"].filter(Boolean).join(" ");
   const style = `--d:${-(i * 2.3 + .7).toFixed(1)}s;--lx:${i % 2 ? -1 : 1}px`;
   const vb = acc ? `0 0 16 14` : `0 3 16 11`;
   return `<svg class="${cls}" style="${style}" viewBox="${vb}" shape-rendering="crispEdges" aria-hidden="true"><g class="all"><g class="bod">${torso}${arms}${eyes}${accs}</g><g class="la">${legA}</g><g class="lb">${legB}</g>${extra}</g></svg>`;
@@ -1059,8 +1138,19 @@ const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 })();
 
 const ease = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
-const LOOP = 43, HOLD = 1.6;
-const CAPS = [["c1", 2.9, 5.9], ["c2", 5.9, 9.2], ["c3", 9.2, 12.0], ["c4", 12.0, 14.8], ["c6", 14.8, 19.0], ["c7", 19.0, 23.0], ["c8", 23.0, 26.8], ["c9", 26.8, 30.5], ["c10", 30.5, 33.9], ["c11", 33.9, 37.2], ["c5", 37.2, LOOP]];
+const OLD = 43, HOLD = 1.6;
+const INS = [[6.5, 2.4, "pick"]];
+const LOOP = OLD + INS.reduce((a, x) => a + x[1], 0);
+function remap(tn){
+  let t = tn;
+  for (const [at, d, name] of INS) {
+    if (t < at) return [t, null, 0];
+    if (t < at + d) return [at, name, t - at];
+    t -= d;
+  }
+  return [t, null, 0];
+}
+const CAPS = [["c1", 2.9, 5.9], ["c2", 5.9, 8.2], ["c12", 8.2, 11.0], ["c3", 11.0, 12.9], ["c4", 12.9, 14.8], ["c6", 14.8, 19.0], ["c7", 19.0, 23.0], ["c8", 23.0, 26.8], ["c9", 26.8, 30.5], ["c10", 30.5, 33.9], ["c11", 33.9, 37.2], ["c5", 37.2, OLD]];
 const cache = {};
 function set(key, el, prop, value){ if (cache[key] !== value) { cache[key] = value; if (prop === "html") el.innerHTML = value; else if (prop === "text") el.textContent = value; else if (prop.startsWith("--")) el.style.setProperty(prop, value); else el.style[prop] = value; } }
 function typed(lines, t0, t, speed){
@@ -1079,15 +1169,20 @@ function termHtml(rows, cursor){
   const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
   return rows.map(([s, c], k) => `<div class="${c}">${esc(s)}${cursor && k === rows.length - 1 ? '<span class="cur"></span>' : ""}</div>`).join("");
 }
-function render(tt){
+function render(tn){
   const L = T[LANG];
+  const [tt, scene, u] = remap(tn);
+  const pk = scene === "pick" ? Math.min(ease(u / .3), 1 - ease((u - 2.05) / .35)) : 0;
+  set("sPick", $("sPick"), "opacity", pk.toFixed(3));
+  const pkKey = scene === "pick" ? `${u >= .6 ? 1 : 0}${u >= 1.05 ? 1 : 0}${u >= 1.55 && u < 1.8 ? 1 : 0}` : "000";
+  if (cache.pk !== pkKey) { cache.pk = pkKey; $("pkC").classList.toggle("on", pkKey[0] === "1"); $("pkA").classList.toggle("on", pkKey[1] === "1"); $("pkGo").classList.toggle("on", pkKey[2] === "1"); }
   const t = tt < 4.3 ? tt : tt < 4.3 + HOLD ? 4.299 : tt - HOLD;
   set("gray", stage, "--g", (1 - ease((tt - 5.2) / .8)).toFixed(3));
   const vis = t < 4.3 ? Math.floor(2 + t * 2.6) : 8;
   if (cache.code !== vis) { cache.code = vis; [...$("code").children].forEach((r, k) => { r.style.visibility = k < vis ? "visible" : "hidden"; }); }
   for (const [id, a, b] of CAPS) {
     const fin = id === "c5";
-    const fi = ease((tt - a) / .45), fo = fin ? 1 - ease((tt - (LOOP - .5)) / .45) : 1 - ease((tt - (b - .35)) / .35);
+    const fi = ease((tt - a) / .45), fo = fin ? 1 - ease((tt - (OLD - .5)) / .45) : 1 - ease((tt - (b - .35)) / .35);
     const o = tt < a || tt > b ? 0 : Math.min(fi, fo);
     set(id + "o", $(id), "opacity", o.toFixed(3));
     set(id + "t", $(id), "transform", `translateY(${((1 - fi) * 24).toFixed(1)}px)`);
@@ -1173,6 +1268,25 @@ function render(tt){
   set("mDash", $("mDash"), "opacity", od.toFixed(3));
   set("mDashS", $("mDash"), "transform", `scale(${(.94 + .06 * od).toFixed(3)})`);
   set("mImg", $("mImg"), "transform", `translateY(${(-440 * ease((t - 23.1) / 1.9)).toFixed(1)}px)`);
+  const m = Math.min(ease((tt - 8.0) / .5), 1 - ease((tt - 10.4) / .5));
+  set("sAg", $("sAg"), "opacity", m.toFixed(3));
+  set("wAg", $("wAg"), "opacity", m.toFixed(3));
+  set("agGlow", $("agGlow"), "opacity", m.toFixed(3));
+  if (m > 0) {
+    const ag2 = Math.round(pr * .45);
+    set("aPct", $("aPct"), "text", pr + "%"); set("aPctC", $("aPct"), "color", col);
+    set("aBar", $("aBar"), "width", pr + "%"); set("aBarC", $("aBar"), "background", col);
+    set("waPct", $("waPct"), "text", pr + "%"); set("waPctC", $("waPct"), "color", col);
+    set("waBar", $("waBar"), "width", pr + "%"); set("waBarC", $("waBar"), "background", col);
+    const fa = feel(pr), fb = feel(ag2);
+    const agKey = `${fa.mood}|${fa.heat}|${fb.mood}|${LANG}`;
+    if (cache.ag !== agKey) {
+      cache.ag = agKey;
+      $("aRow").innerHTML = AG.map(([k, name], i) => { const v = i < 2 ? pr : ag2; return `<div>${racco(k, i < 2 ? fa : fb, i)}<div class="n">${name}</div><div class="s">${v >= 85 ? L.agNear : ""}</div></div>`; }).join("");
+      $("waRacco").innerHTML = racco("Pro", fa, 2);
+      if (REC) syncAnims(tn);
+    }
+  }
   if (toast) { set("toastT", $("toastT"), "text", toast[0]); set("toastS", $("toastS"), "text", toast[1]); }
   set("toast", $("toast"), "opacity", to.toFixed(3));
   set("toastY", $("toast"), "transform", `translateY(${((to - 1) * 30).toFixed(1)}px)`);
@@ -1200,7 +1314,7 @@ function render(tt){
 function syncAnims(t){ document.getAnimations().forEach(a => { a.pause(); a.currentTime = t * 1000; }); }
 
 let playing = !matchMedia("(prefers-reduced-motion: reduce)").matches;
-let start = performance.now() - 1400, pausedAt = 40, visible = true;
+let start = performance.now() - 1400, pausedAt = 42, visible = true;
 function frame(now){
   if (playing && visible) render(((now - start) / 1000) % LOOP);
   requestAnimationFrame(frame);
@@ -1268,7 +1382,7 @@ function offerLang(){
 
 document.querySelectorAll("[data-tab]").forEach(b => b.addEventListener("click", () => {
   document.querySelectorAll("[data-tab]").forEach(x => x.setAttribute("aria-selected", x === b ? "true" : "false"));
-  ["a", "i", "o", "w", "m", "c"].forEach(k => { $("tab-" + k).hidden = b.dataset.tab !== k; });
+  ["a", "g", "i", "o", "w", "m", "c"].forEach(k => { $("tab-" + k).hidden = b.dataset.tab !== k; });
 }));
 const zoom = $("zoom");
 document.querySelectorAll("figure img").forEach(img => img.parentElement.addEventListener("click", () => {

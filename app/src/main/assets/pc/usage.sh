@@ -143,6 +143,10 @@ json="{${payload#,}}"
 level() { awk -v p="$1" 'BEGIN { l = 0; if (p != "") { if (p + 0 >= 79.5) l = 80; if (p + 0 >= 89.5) l = 90; if (p + 0 >= 99.5) l = 100 } print l }'; }
 pct_of() { printf '%s\n' "$text" | grep -F -m 1 "$1" | sed -n "s/^.*$2[[:space:]]*\([0-9][0-9.]*\)%.*/\1/p"; }
 lvl="$(level "$(pct_of 'Current session:' 'session:')"),$(level "$(pct_of 'Current week (all models):' 'models):')")"
+if [ -f "$dir/clawdboard-ag.txt" ]; then
+    agl="$(tr -dc '0-9' < "$dir/clawdboard-ag.txt")"
+    [ "${#agl}" -eq 4 ] && lvl="$lvl,$agl"
+fi
 
 hmac_hex() { openssl dgst -sha256 -mac HMAC -macopt "hexkey:$1" -binary | od -An -v -tx1 | tr -d ' \n'; }
 seal() {

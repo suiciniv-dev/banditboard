@@ -2,14 +2,14 @@
 
 <p align="right"><b>English</b> · <a href="README.pt-BR.md">Português</a></p>
 
-**Keep your Claude Code limits in sight: on an old Android phone, your iPhone and Apple Watch, or a widget on Windows and Mac.**
+**Keep your Claude Code and Antigravity limits in sight: on an old Android phone, your iPhone and Apple Watch, or a widget on Windows and Mac.**
 
 <p align="center">
-  <img src="prints/1.8.0/hero.gif" width="760" alt="Raccoons sleeping with an empty session, waking up, turning red near the limit, bursting at 100% and dancing when music plays">
+  <img src="prints/1.17.0/hero.gif" width="760" alt="Raccoons sleeping with an empty session, waking up, turning red near the limit, bursting at 100% and dancing when music plays, then the Antigravity page with the Gemini, Claude and GPT raccoons">
 </p>
 
 <p align="center">
-  <a href="https://banditboard.pages.dev/video/banditboard-en.mp4"><img src="prints/1.14.0/en/video.webp" width="560" alt="Watch the video: Banditboard on Android, iPhone, Apple Watch, Windows and Mac"></a><br>
+  <a href="https://banditboard.pages.dev/video/banditboard-en.mp4"><img src="prints/1.17.0/en/video.webp" width="560" alt="Watch the video: Banditboard for Claude Code and Antigravity on Android, iPhone, Apple Watch, Windows and Mac"></a><br>
   <sub>▶️ <a href="https://banditboard.pages.dev/video/banditboard-en.mp4">Watch the video</a></sub>
 </p>
 
@@ -31,14 +31,30 @@
 
 ## What is Banditboard?
 
-Banditboard is an always-on display for your Claude usage. It shows how much of the 5-hour session and of the week you have
-used, when each one resets and whether any model has an open incident. Each model is Racco, a pixel-art raccoon who sleeps,
+Banditboard is an always-on display for your AI coding limits: Claude Code, Google Antigravity or both. It shows how much of
+the 5-hour session and of the week you have used, when each one resets and whether any model has an open incident. Each model is Racco, a pixel-art raccoon who sleeps,
 sweats, bursts at 100% and dances when music plays.
 
 It started on that old Android phone sitting in a drawer, and now it runs wherever you look: an iPhone with Home Screen
 widgets and StandBy, an Apple Watch with complications, a small always-on-top widget on Windows, and Racco with your session
 percentage in the Mac menu bar. Use one or all of them at once: the same Claude Code hook feeds every device. Turn on Claude activity and Racco also follows what
 Claude Code is doing right now: working with you, raising a hand when Claude needs you and sleeping when it stops.
+
+### Claude Code and Antigravity
+
+On first launch, the phone asks which AI you want to follow. Each tool gets its own color, its own Raccos and its own pages,
+and with both on there is a side-by-side screen too.
+
+For Antigravity, Banditboard for Windows reads the quota of the Antigravity open on the same computer, the way View Usage
+shows it: Gemini on one side, Claude and GPT on the other, each with its 5-hour window and its weekly one. The Gemini Pro,
+Gemini Flash, Claude and GPT-OSS Raccos wear a star, a bolt, glasses and a beanie. The quota reaches your phone through the
+same pairing as Claude Code, and the alerts arrive even with the app closed. For now, Antigravity runs on the Windows widget
+and on Android; the Mac, the iPhone and the Apple Watch get it later.
+
+<p align="center">
+  <img src="prints/1.17.0/en/android-picker.webp" width="400" alt="First launch on Android: which AI do you want to follow, with Claude Code and Antigravity checked">
+  <img src="prints/1.17.0/en/android-both.webp" width="400" alt="Claude Code and Antigravity side by side on the phone, each in its own color">
+</p>
 
 ### Why Banditboard?
 
@@ -50,13 +66,14 @@ itself, so there is no token or login to hand over.
 ## ✨ Features
 
 - 📊 **Usage at a glance**: 5-hour session and 7-day week, with a countdown and the local time each one resets
+- 🛰️ **Antigravity** (new in 1.17.0): the Gemini quota and the Claude and GPT quota of Google Antigravity, each with its 5-hour and weekly window, on the Windows widget and on Android. Follow Claude Code, Antigravity or both
 - 🤖 **Claude activity** (optional): the project, the branch and what Claude Code is doing right now, and each model's Racco reacts. It works along, shows "…" while commands run, raises a hand with "!" when Claude asks for permission or has a question, celebrates when it finishes and sleeps when it stops. If Claude keeps waiting for you, Windows and Android notify you. On Windows and Android since 1.15.0; the Mac, iPhone and Apple Watch get it in the next version
-- 🦝 **Racco, the raccoon**: one per model (Haiku, Sonnet, Opus and Fable). They blink, wave, sleep when the session is empty, sweat from 85%, turn red from 90% and burst at 100%. Skins, tints and the classic Racco are in the settings
-- 🔔 **Limit alerts**: a notification at 80%, 90% and 100% of the session or the week, and another when it resets. On Android they arrive even with the app closed
+- 🦝 **Racco, the raccoon**: one per model (Haiku, Sonnet, Opus and Fable). They blink, wave, sleep when the session is empty, sweat from 85%, turn red from 90% and burst at 100%. Skins, tints and the classic Racco are in the settings. On Antigravity, Gemini Pro, Gemini Flash, Claude and GPT-OSS wear a star, a bolt, glasses and a beanie
+- 🔔 **Limit alerts**: a notification at 80%, 90% and 100% of the session or the week, and another when it resets. On Android they arrive even with the app closed, and the reset alert goes off on time even with the computer off
 - 📱 **iPhone**: dashboard, Home Screen and Lock Screen widgets, StandBy on the charger, and alerts
 - ⌚ **Apple Watch**: an app with session, week and models, plus complications for your watch face. After pairing through the iPhone, the watch fetches usage by itself
 - 🍎 **Mac menu bar**: Racco and the session percentage next to the clock, a small panel on click and an optional desktop widget
-- 🪟 **Windows widget**: full, compact or just Racco in a corner of the screen, always on top, with alerts from Windows itself
+- 🪟 **Windows widget**: full, compact or just Racco in a corner of the screen, always on top, with alerts from Windows itself. Click it to refresh right away, or right-click it for the menu
 - 🌐 **Connect from anywhere**: pair on [banditboard.pages.dev/conectar](https://banditboard.pages.dev/conectar/) and usage reaches your phone outside your home network, encrypted end to end
 - 📷 **QR code pairing**: scan a code from the website or from the Windows or Mac dashboard, no PIN needed
 - 🔌 **No token on the phone**: the numbers come from Claude Code's own `/usage` on your computer
@@ -86,7 +103,8 @@ The Windows and Mac apps are complete monitors on their own, and they also conne
 
 1. Install the MSI (no admin needed). Prefer not to install? Unzip the ZIP anywhere and run `Banditboard.exe`.
 2. Click "Connect Claude Code" on the widget. Usage shows up right away. If it can't connect, the widget says why and "What to do" opens the dashboard with the next step.
-3. Keep using Claude Code. After a response, the widget updates. To fetch it on the spot, use "Refresh now" on the dashboard or in the tray menu.
+3. Keep using Claude Code. After a response, the widget updates. To fetch it on the spot, click the widget, or use "Refresh now" on the dashboard or in the menu (right-click the widget or the tray icon).
+4. Using Antigravity? Just leave it open: Banditboard finds it on its own and adds a blue card to the widget. Turn each tool on or off under Tools, in the same menu.
 
 **Mac**
 
@@ -103,6 +121,9 @@ Pick one of three ways to get the numbers there:
 - **PIN on your home network (Android).** Open the address shown on the phone in your PC browser, create a PIN, click "Copy" on the "Claude Code on your PC" card and paste the command into PowerShell.
 
 On Android, the scanner is under "Scan QR code". On iPhone, point the Camera at the code and tap the banner.
+
+The same pairing carries Antigravity too. On Android, the first launch asks which AI to follow, and you can change it later in
+Settings → Tools. For alerts away from home with the app closed, pair from anywhere through the website.
 
 **Installing on iPhone (beta).** Banditboard is not on the App Store yet. The IPA in the release is unsigned: you install it
 with your own Apple ID using [Sideloadly](https://sideloadly.io/) (Windows or Mac) or [AltStore](https://altstore.io/). With a
@@ -136,13 +157,14 @@ so connecting a new device never disconnects the others.
 - No device ever holds a Claude token or calls the Anthropic API. Claude Code on your computer reads your limits with `/usage` and a small script forwards them. The script never reads Claude Code's credentials.
 - The script sends only the percentages, their reset times and the model family of each session active in the last 10 minutes ("opus", "sonnet"...), nothing from your conversations, files or session IDs.
 - Each push carries a 128-bit pairing key. The receiving app checks it against a SHA-256 hash, and "Create new key" invalidates the old command at once.
-- **Connecting from anywhere.** The /conectar page creates the keys in your browser: a box ID, a write key, a read key and a 256-bit master key. The Banditboard server (a Cloudflare Worker) only receives SHA-256 hashes of the write and read keys. The script encrypts every push with AES-256-CBC and HMAC-SHA256, with keys derived from the master key, which only the QR code and the command carry. The server keeps the latest encrypted push, its time and a coarse level (0, 80, 90 or 100 for the session and the week) to know when to wake the Android app, and it can't read the numbers. Android alerts go through Firebase Cloud Messaging as the same ciphertext. A box that receives nothing for 45 days is deleted.
+- **Connecting from anywhere.** The /conectar page creates the keys in your browser: a box ID, a write key, a read key and a 256-bit master key. The Banditboard server (a Cloudflare Worker) only receives SHA-256 hashes of the write and read keys. The script encrypts every push with AES-256-CBC and HMAC-SHA256, with keys derived from the master key, which only the QR code and the command carry. The server keeps the latest encrypted push, its time and a coarse level (0, 80, 90 or 100 for each session and week, of Claude Code and of Antigravity) to know when to wake the Android app, and it can't read the numbers. Android alerts go through Firebase Cloud Messaging as the same ciphertext. A box that receives nothing for 45 days is deleted.
 - **QR code on your home network.** Sharing is off until you turn it on in the Windows or Mac dashboard. Then the app answers read-only on your home network (ports 47830 to 47839), and only to requests that carry the key from the QR code.
 - On Android, the pairing key is encrypted with AES-256-GCM using a key derived from your PIN (PBKDF2, 150,000 iterations) and wrapped by an Android Keystore key. The PIN is never stored, and 10 wrong PINs in a row wipe the pairing key, the history and the settings. A QR code pairing is kept in the app's private storage and needs no PIN.
 - On iPhone and Apple Watch, the pairing lives in the Keychain, shared only with Banditboard's own widgets.
 - The Android web dashboard only runs on the local network, asks for the same PIN and only answers when the Host is an IP address, `localhost` or a `.local` name, which blocks DNS rebinding. Logging in on the dashboard also unlocks the phone screen.
 - The installer keeps a backup of your Claude Code settings in `settings.json.antes-do-clawdboard`, adds two hooks (`Stop` and `SessionStart`) and does not touch your status line.
 - **Claude activity.** The activity hooks send each Claude Code event only to the Banditboard app on the same computer (`127.0.0.1`). The app keeps just the state, the project folder name and the branch (and the file name, if you turn it on) and sends only that to your other devices, the same way it sends usage: over your home network or encrypted end to end through the server. Prompts, code and commands never leave the computer.
+- **Antigravity.** Banditboard reads the quota from the Antigravity language server on the same computer, only over `127.0.0.1`, with the same local calls the Antigravity window uses for View Usage. The local token Antigravity puts on its own command line stays in memory and is never saved. There is no Google login, and only the percentages, the reset times and the plan name go to your devices.
 - The Windows and Mac apps receive pushes only on `127.0.0.1`, and they still check the pairing key on every push.
 - Music mode needs notification access because Android only shows the active player to apps with that access. Banditboard uses it to see and control the player; it does not read your notifications.
 
@@ -155,7 +177,7 @@ installer). The server is [`worker/src/index.js`](worker/src/index.js).
 **Check the download.** Every release lists the SHA-256 of each file. Compare it with yours:
 
 ```powershell
-Get-FileHash .\Banditboard-1.15.1.msi -Algorithm SHA256
+Get-FileHash .\Banditboard-1.17.0.msi -Algorithm SHA256
 ```
 
 ```sh
@@ -178,6 +200,23 @@ shasum -a 256 Banditboard-1.14.0.dmg
 
 The desk clock in portrait, and the limit alerts. The phone keeps a quiet notification while it listens for your PC, so the
 alerts arrive even with the app closed. You can turn them off in Settings → Screen.
+
+### Antigravity
+
+<img src="prints/1.17.0/en/android-antigravity.webp" width="600" alt="Antigravity page on the phone with session and week for Gemini and for Claude and GPT, and the four Antigravity raccoons">
+
+<p>
+  <img src="prints/1.17.0/en/windows-widget-antigravity.webp" width="480" alt="Windows widget with a Claude Code card and an Antigravity card">
+  <img src="prints/1.17.0/en/windows-compact-antigravity.webp" width="300" alt="Compact widget with Claude Code and Antigravity">
+</p>
+
+<img src="prints/1.17.0/en/windows-panel-antigravity.webp" width="600" alt="Antigravity section of the Windows dashboard with a card per group, each with the session and the week">
+
+Each group gets its own row and its own reset time, just like View Usage. On the Windows dashboard, each group has a card with
+both windows, and the Raccos show the tightest window of their group. On Android, turn each tool on or off and pick the theme
+in Settings → Tools.
+
+<img src="prints/1.17.0/en/android-tools.webp" width="480" alt="Tools section of the Android settings with Claude Code and Antigravity, a Show checkbox for each, and the theme choice">
 
 ### iPhone
 
@@ -245,7 +284,8 @@ Full, compact or just Racco: pick the layout in the tray icon menu. Double-click
 the tray, to open the dashboard: the same cards as the phone's web dashboard, every widget setting and the credits, with a QR
 code to get the phone app. Drag the widget anywhere; it remembers the spot, can stay out of the taskbar and can start with
 Windows. When music plays on Windows, the raccoons dance. With a single Claude Code session open, Just Racco and the compact
-widget wear that session's model accessory (glasses for Opus, a top hat for Fable).
+widget wear that session's model accessory (glasses for Opus, a top hat for Fable). Click the widget to refresh it right away,
+and Racco gives a little wiggle. Right-click it for the same menu as the tray icon.
 
 ### Racco reactions
 
@@ -272,11 +312,13 @@ Opus is gray with X eyes in these shots because the sample data includes an open
 - **The phone stopped updating after the router restarted.** With the PIN pairing, the phone probably got a new IP. The screen and the dashboard footer always show the current address: open it on the PC and run the command again. To avoid this, reserve a fixed IP for the phone in the router, or connect from anywhere through the website.
 - **Windows can't connect Claude Code.** The widget shows the reason, and "What to do" opens the dashboard with the next step and the exact PowerShell error. The details go to `%APPDATA%\Banditboard\conectar.log` (without the pairing key), which you can attach to an [issue](../../issues).
 - **Claude activity doesn't show up.** Claude Code loads hooks when a session starts, so open a new session after turning it on. The Windows or Mac app has to be running, because it is what receives the events.
-- **The numbers don't move.** The hook runs after Claude Code responses, at most every 2 minutes. To fetch now, use "Refresh now" on the Windows or Mac dashboard, in the tray menu or in the Mac menu bar panel.
+- **The numbers don't move.** The hook runs after Claude Code responses, at most every 2 minutes, and Antigravity is read every 15 seconds. To fetch now, click the widget, or use "Refresh now" on the Windows or Mac dashboard, in the tray menu or in the Mac menu bar panel.
+- **Antigravity shows "No access".** Antigravity is probably running as administrator. Close it and open it again normally, or open Banditboard as administrator. Tools → "Export Antigravity diagnostics" saves a text file to Downloads, without tokens, passwords or e-mail, which you can attach to an [issue](../../issues).
 
 ## 🧭 Roadmap
 
 - [Linux: a shell version of the usage hook](../../issues/1)
+- Antigravity on the Mac, the iPhone and the Apple Watch
 - iPhone and Apple Watch on TestFlight and the App Store, with push alerts
 - Wear OS app for Galaxy Watch and other Android watches
 - [Android 16: target API 36](../../issues/4)
@@ -301,8 +343,8 @@ Questions and ideas go to [Discussions](../../discussions); bugs go to [Issues](
 Licensed under the [MIT License](LICENSE). The Fredoka font is distributed under the SIL Open Font License; its text ships
 inside the APK in `assets/licenses/`.
 
-Banditboard is a personal fan project, **not affiliated with, endorsed by or sponsored by Anthropic**. Claude and Claude Code are
-trademarks of Anthropic, PBC. Android is a trademark of Google LLC; iPhone, Apple Watch, macOS and StandBy are trademarks of
+Banditboard is a personal fan project, **not affiliated with, endorsed by or sponsored by Anthropic or Google**. Claude and Claude
+Code are trademarks of Anthropic, PBC. Google Antigravity, Gemini and Android are trademarks of Google LLC; iPhone, Apple Watch, macOS and StandBy are trademarks of
 Apple Inc.; Windows is a trademark of Microsoft Corporation.
 
 Built with ❤️ by [Vinícius Pires da Silva](https://www.linkedin.com/in/viniciuspiresdasilva/).

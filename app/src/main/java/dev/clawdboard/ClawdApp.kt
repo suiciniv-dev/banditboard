@@ -28,8 +28,24 @@ class ClawdApp : Application() {
                     val (alert, level) = nextAlert(kind, w, marks.getInt(kind.name, 0))
                     marks.edit().putInt(kind.name, level).apply()
                     alert?.let { Notifier.alert(this, it) }
+                    Resets.note(this, kind.name, level, w?.resetsAt, alert?.level == 0)
                 }
             }
+            Resets.sync(this)
+        }
+        repo.onAg = { snap ->
+            if (repo.settings.value.alerts && repo.settings.value.showAg) {
+                snap.groups.forEach { g ->
+                    g.windows().forEach { (kind, w) ->
+                        val key = "ag_${g.pool.name}_${kind.name}"
+                        val (alert, level) = nextAlert(kind, w, marks.getInt(key, 0))
+                        marks.edit().putInt(key, level).apply()
+                        alert?.let { Notifier.agAlert(this, it, g.pool) }
+                        Resets.note(this, key, level, w.resetsAt, alert?.level == 0)
+                    }
+                }
+            }
+            Resets.sync(this)
         }
         repo.onAttention = { s ->
             scope.launch {
@@ -40,6 +56,7 @@ class ClawdApp : Application() {
         scope.launch { repo.pollRemote() }
         repo.onPaired = { PushService.sync(this) }
         PushService.sync(this)
+        Resets.sync(this)
     }
 }
 

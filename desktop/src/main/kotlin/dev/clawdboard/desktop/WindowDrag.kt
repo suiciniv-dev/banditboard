@@ -3,6 +3,7 @@ package dev.clawdboard.desktop
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.input.pointer.pointerInput
 import java.awt.GraphicsEnvironment
 import java.awt.MouseInfo
@@ -11,10 +12,23 @@ import java.awt.Toolkit
 import java.awt.Window
 import kotlin.math.abs
 
-internal fun Modifier.dragWindow(window: Window, onDoubleClick: () -> Unit, onMoved: () -> Unit): Modifier = pointerInput(window) {
+internal fun Modifier.dragWindow(
+    window: Window,
+    key: Any?,
+    onClick: () -> Unit,
+    onDoubleClick: () -> Unit,
+    onMenu: () -> Unit,
+    onMoved: () -> Unit,
+): Modifier = pointerInput(window, key) {
     var lastTap = 0L
     awaitEachGesture {
         val down = awaitFirstDown()
+        if (currentEvent.buttons.isSecondaryPressed) {
+            down.consume()
+            lastTap = 0L
+            onMenu()
+            return@awaitEachGesture
+        }
         val start = MouseInfo.getPointerInfo()?.location ?: return@awaitEachGesture
         val origin = window.location
         var moved = false
@@ -38,6 +52,7 @@ internal fun Modifier.dragWindow(window: Window, onDoubleClick: () -> Unit, onMo
             onDoubleClick()
         } else {
             lastTap = down.uptimeMillis
+            onClick()
         }
     }
 }

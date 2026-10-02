@@ -44,6 +44,7 @@ class Repository(private val app: Context) {
         val remote: Remote.Source? = null,
         val activity: List<ClaudeSession>? = null,
         val activityAt: Long = 0L,
+        val ag: AgRemote? = null,
     ) {
         fun claude(now: Long): List<ClaudeSession>? = activity?.takeIf { now - activityAt < ACTIVITY_FRESH_MS }
     }
@@ -63,6 +64,7 @@ class Repository(private val app: Context) {
             usage = pairing.restore(System.currentTimeMillis()),
             lastPushAt = pairing.lastPushAt,
             remote = remote.source,
+            ag = pairing.restoreAg(),
         )
     )
     val state: StateFlow<State> = _state.asStateFlow()
@@ -211,6 +213,8 @@ class Repository(private val app: Context) {
 
     var onAttention: ((ClaudeSession) -> Unit)? = null
 
+    var onAg: ((AgSnapshot) -> Unit)? = null
+
     fun stillWaiting(key: String): ClaudeSession? =
         _state.value.claude(System.currentTimeMillis())?.firstOrNull { it.attention && it.key == key }
 
@@ -223,8 +227,22 @@ class Repository(private val app: Context) {
             _state.update { it.copy(activity = list, activityAt = now) }
             list.orEmpty().filter { it.attention && it.key !in before }.forEach { s -> onAttention?.invoke(s) }
         }
+        val agBody = body.optJSONObject("antigravity")
+        val ag = AgPush.parse(agBody)
+        if (ag != null) {
+            val before = _state.value.ag
+            if (before == null || ag.snap.fetchedAt >= before.snap.fetchedAt) {
+                pairing.saveAg(agBody)
+                _state.update { it.copy(ag = ag) }
+                onAg?.invoke(ag.snap.settled(now))
+            }
+        } else if (AgPush.off(agBody) && _state.value.ag != null) {
+            pairing.saveAg(null)
+            _state.update { it.copy(ag = null) }
+        }
+        val agCarried = ag != null || AgPush.off(agBody)
         val usageAt = body.optLong("usage_at", 0L).takeIf { it > 0 } ?: at
-        val snap = parsePush(body, usageAt) ?: return carried
+        val snap = parsePush(body, usageAt) ?: return carried || agCarried
         if (carried && _state.value.lastPushAt == usageAt) return true
         pairing.save(body, usageAt)
         history.record(snap)
@@ -302,7 +320,7 @@ class Repository(private val app: Context) {
 
     @Volatile private var demo = false
 
-    fun enterDemo(p5: Double = 37.0, p7: Double = 64.0, pf: Double = 22.0): Boolean {
+    fun enterDemo(p5: Double = 37.0, p7: Double = 64.0, pf: Double = 22.0, ag: Boolean = false): Boolean {
         if (vault.isProvisioned) return false
         demo = true
         val now = System.currentTimeMillis()
@@ -329,7 +347,18 @@ class Repository(private val app: Context) {
             i++
         }
         history.preview(samples)
-        _state.update { it.copy(provisioned = true, unlocked = true, usage = snap, lastPushAt = now - 12_000L, status = status) }
+        val agDemo = if (!ag) null else AgRemote(
+            AgSnapshot(
+                AgFamily.entries.map { AgModel(it.label, 0.0, null, false, null) },
+                listOf(
+                    AgGroup(AgPool.GEMINI, UsageWindow(92.0, now + 65 * 60_000L), UsageWindow(48.0, now + 4 * 86_400_000L + 9 * 3_600_000L)),
+                    AgGroup(AgPool.OTHERS, UsageWindow(34.0, now + 3 * 3_600_000L), UsageWindow(12.0, now + 6 * 86_400_000L)),
+                ),
+                "Google AI Pro", now - 30_000L,
+            ),
+            true,
+        )
+        _state.update { it.copy(provisioned = true, unlocked = true, usage = snap, lastPushAt = now - 12_000L, status = status, ag = agDemo ?: it.ag) }
         return true
     }
 

@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
@@ -101,6 +102,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import org.json.JSONObject
 import dev.clawdboard.core.I18n
 import dev.clawdboard.core.Species
@@ -157,16 +159,23 @@ private fun receive(body: JSONObject, tray: TrayState): Boolean {
     return true
 }
 
+private var agSent: AgSnapshot? = null
+
 private fun receiveAg(snap: AgSnapshot, tray: TrayState) {
-    AgHistory.record(snap.fetchedAt, snap.pool(AgPool.GEMINI)?.percent, snap.pool(AgPool.OTHERS)?.percent)
-    Forward.changed()
+    AgHistory.record(snap.fetchedAt, snap.group(AgPool.GEMINI)?.worst()?.second?.percent, snap.group(AgPool.OTHERS)?.worst()?.second?.percent)
+    val sent = agSent
+    if (!snap.sameQuota(sent) || sent == null || snap.fetchedAt - sent.fetchedAt >= 300_000L) {
+        agSent = snap
+        Forward.changed()
+    }
     if (!prefsFlow.value.alerts) return
-    AgPool.entries.forEach { pool ->
-        val m = snap.pool(pool) ?: return@forEach
-        val kind = m.kind ?: AlertKind.WEEK
-        val (alert, level) = nextAlert(kind, UsageWindow(m.percent, m.resetsAt), Store.int("ag_mark_${pool.name}"))
-        Store.put("ag_mark_${pool.name}", level)
-        alert?.let { a -> notification(a, Tool.ANTIGRAVITY, txt.label(pool)).let { if (onMac) MenuBar.notify(it) else tray.sendNotification(it) } }
+    snap.groups.forEach { g ->
+        g.windows().forEach { (kind, w) ->
+            val key = "ag_mark_${g.pool.name}_${kind.name}"
+            val (alert, level) = nextAlert(kind, w, Store.get(key)?.toIntOrNull() ?: Store.int("ag_mark_${g.pool.name}"))
+            Store.put(key, level)
+            alert?.let { a -> notification(a, Tool.ANTIGRAVITY, txt.label(g.pool)).let { if (onMac) MenuBar.notify(it) else tray.sendNotification(it) } }
+        }
     }
 }
 
@@ -231,7 +240,7 @@ fun main(args: Array<String>) {
         LaunchedEffect(Unit) {
             while (true) {
                 runCatching { withContext(Dispatchers.IO) { Antigravity.tick(System.currentTimeMillis()) }?.let { receiveAg(it, tray) } }
-                delay(Antigravity.CHECK_MS)
+                withTimeoutOrNull(Antigravity.CHECK_MS) { Antigravity.wake.receive() }
             }
         }
         Claude.notify = { title, body ->
@@ -302,52 +311,51 @@ fun main(args: Array<String>) {
         val agOn by Antigravity.enabled.collectAsState()
         val theme by Tools.theme.collectAsState()
         val tools = Tools.shown(claudeOn, agOn)
+        fun entries(widget: Boolean): List<Entry> = listOfNotNull(
+            Entry.Action(txt.trayPanel) { panel = true },
+            if (widget) Entry.Action(txt.trayHide) { showWidget(false) } else Entry.Action(txt.trayShow) { showWidget(true) },
+            Entry.Action(txt.desktopRefresh) { Refresh.all() },
+            Entry.Sub(
+                txt.trayLayout,
+                listOfNotNull(Layout.FULL to txt.layoutFull, Layout.COMPACT to txt.trayCompact, if (onMac) null else Layout.MINI to txt.layoutMini).map { (l, name) ->
+                    Entry.Check(name, layout == l) { _ -> layout = l; Store.put("layout", l.name) }
+                },
+            ),
+            Entry.Check(txt.trayOnTop, onTop) { onTop = it; Store.put("onTop", it.toString()) },
+            if (onMac) null else Entry.Check(txt.trayTaskbar, inTaskbar) { inTaskbar = it; Store.put("taskbar", it.toString()) },
+            if (Autostart.available) Entry.Check(if (onMac) txt.macAutostart else txt.trayAutostart, autostart) { Autostart.set(it); autostart = Autostart.enabled() } else null,
+            if (onMac) null else Entry.Check(txt.trayMusic, danceOn) { danceOn = it; Store.put("dance", it.toString()) },
+            Entry.Check(txt.alerts, p.alerts) { v -> savePrefs { it.copy(alerts = v) } },
+            Entry.Sub(
+                txt.tools,
+                listOf(
+                    Entry.Check(txt.toolClaude, claudeOn) { Tools.setClaude(it) },
+                    Entry.Check(txt.toolAntigravity, agOn) { Antigravity.setEnabled(it) },
+                    Entry.Line,
+                    Entry.Action(txt.agExport) {
+                        trayScope.launch(Dispatchers.IO) {
+                            val n = runCatching { Antigravity.export(System.currentTimeMillis()) }
+                                .map { Notification("Banditboard", txt.agExported(it.path), Notification.Type.Info) }.getOrNull()
+                            n?.let { if (onMac) MenuBar.notify(it) else tray.sendNotification(it) }
+                        }
+                    },
+                ),
+            ),
+            Entry.Sub(txt.theme, ToolTheme.entries.map { t -> Entry.Check(txt.label(t), theme == t) { _ -> Tools.setTheme(t) } }),
+            Entry.Sub(txt.mascot, Species.entries.filter { it != Species.CLAWD || p.clawdUnlocked }.map { s -> Entry.Check(txt.label(s), p.mascot() == s) { _ -> savePrefs { it.copy(species = s) } } }),
+            Entry.Sub(txt.color, Tint.entries.map { t -> Entry.Check(txt.label(t), p.tint == t) { _ -> savePrefs { it.copy(tint = t) } } }),
+            Entry.Line,
+            Entry.Action(txt.trayQuit) { lock.release(); exitApplication() },
+        )
+        val widgetEntries = entries(widget = true)
+        SideEffect { WidgetMenu.items = widgetEntries }
         if (onMac) MacBar(server.port, visible, showWidget, { panel = true }, { lock.release(); exitApplication() })
         else Tray(
             icon = RaccoonIcon,
             state = tray,
             tooltip = "Banditboard",
             onAction = { visible = true },
-            menu = {
-                Item(txt.trayPanel) { panel = true }
-                Item(txt.trayShow) { visible = true }
-                Item(txt.desktopRefresh) { trayScope.launch(Dispatchers.IO) { Hook.refresh() } }
-                Menu(txt.trayLayout) {
-                    listOf(Layout.FULL to txt.layoutFull, Layout.COMPACT to txt.trayCompact, Layout.MINI to txt.layoutMini).forEach { (l, name) ->
-                        CheckboxItem(name, layout == l) { _ -> layout = l; Store.put("layout", l.name) }
-                    }
-                }
-                CheckboxItem(txt.trayOnTop, onTop) { onTop = it; Store.put("onTop", it.toString()) }
-                CheckboxItem(txt.trayTaskbar, inTaskbar) { inTaskbar = it; Store.put("taskbar", it.toString()) }
-                if (Autostart.available) CheckboxItem(txt.trayAutostart, autostart) { Autostart.set(it); autostart = Autostart.enabled() }
-                CheckboxItem(txt.trayMusic, danceOn) { danceOn = it; Store.put("dance", it.toString()) }
-                CheckboxItem(txt.alerts, p.alerts) { v -> savePrefs { it.copy(alerts = v) } }
-                Menu(txt.tools) {
-                    CheckboxItem(txt.toolClaude, claudeOn) { Tools.setClaude(it) }
-                    CheckboxItem(txt.toolAntigravity, agOn) { Antigravity.setEnabled(it) }
-                    Separator()
-                    Item(txt.agExport) {
-                        trayScope.launch(Dispatchers.IO) {
-                            val n = runCatching { Antigravity.export(System.currentTimeMillis()) }
-                                .map { Notification("Banditboard", txt.agExported(it.path), Notification.Type.Info) }.getOrNull()
-                            n?.let { tray.sendNotification(it) }
-                        }
-                    }
-                }
-                Menu(txt.theme) {
-                    ToolTheme.entries.forEach { t -> CheckboxItem(txt.label(t), theme == t) { _ -> Tools.setTheme(t) } }
-                }
-                Menu(txt.mascot) {
-                    Species.entries.filter { it != Species.CLAWD || p.clawdUnlocked }.forEach { s ->
-                        CheckboxItem(txt.label(s), p.mascot() == s) { _ -> savePrefs { it.copy(species = s) } }
-                    }
-                }
-                Menu(txt.color) {
-                    Tint.entries.forEach { t -> CheckboxItem(txt.label(t), p.tint == t) { _ -> savePrefs { it.copy(tint = t) } } }
-                }
-                Separator()
-                Item(txt.trayQuit) { lock.release(); exitApplication() }
-            },
+            menu = { render(entries(widget = false)) },
         )
         key(inTaskbar, shown, tools.size) { Window(
             visible = visible,
@@ -373,8 +381,16 @@ fun main(args: Array<String>) {
             LaunchedEffect(Unit) { WidgetSpot.place(shown, window) }
             if (onTop && !onMac) LaunchedEffect(Unit) { while (true) { WinTop.raise(window); delay(2_000) } }
             CompositionLocalProvider(LocalDance provides dance) {
-                val drag = Modifier.dragWindow(window, onDoubleClick = { panel = true }, onMoved = { WidgetSpot.save(shown, window) })
-                if (shown == Layout.MINI) Box(Modifier.fillMaxSize().then(drag)) { Mini() }
+                val drag: (Tool?) -> Modifier = { tool ->
+                    Modifier.dragWindow(
+                        window, tool,
+                        onClick = { if (tool == null) Refresh.all() else Refresh.now(tool) },
+                        onDoubleClick = { panel = true },
+                        onMenu = { WidgetMenu.show(window) },
+                        onMoved = { WidgetSpot.save(shown, window) },
+                    )
+                }
+                if (shown == Layout.MINI) Box(Modifier.fillMaxSize().then(drag(null))) { Mini() }
                 else Widget(tools, server.port, shown == Layout.COMPACT, drag, onHelp = { panel = true }, onClose = { showWidget(false) })
             }
         } }
@@ -408,7 +424,7 @@ internal fun Mini() {
     LaunchedEffect(Unit) { while (true) { now = System.currentTimeMillis(); delay(1000) } }
     val u = snap?.settled(now)
     val claudeWorst = listOfNotNull(u?.fiveHour?.percent, u?.sevenDay?.percent).maxOrNull()
-    val agWorst = ag?.models?.maxOfOrNull { it.percent }
+    val agWorst = ag?.worst()
     val tool = when {
         Tool.ANTIGRAVITY !in tools -> Tool.CLAUDE
         Tool.CLAUDE !in tools -> Tool.ANTIGRAVITY
@@ -424,6 +440,7 @@ private fun ClaudeMini() {
     val p by prefsFlow.collectAsState()
     val list by Claude.sessions.collectAsState()
     val on by Claude.watching.collectAsState()
+    val poke by Refresh.claude.collectAsState()
     var now by remember { mutableLongStateOf(System.currentTimeMillis()) }
     LaunchedEffect(Unit) { while (true) { now = System.currentTimeMillis(); delay(1000) } }
     val u = snap?.settled(now)
@@ -433,7 +450,7 @@ private fun ClaudeMini() {
         Column(Modifier.fillMaxSize().padding(6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             val solo = (if (on) Claude.solo(list) else null) ?: u?.soloModel(now)
             val react = Claude.react(null, list, now, on)
-            Mascot(Modifier.fillMaxWidth(), model = solo, feel = feelOf(u, solo ?: "Opus", react), reserveTop = solo != null || react.bubble())
+            Mascot(Modifier.fillMaxWidth(), model = solo, feel = feelOf(u, solo ?: "Opus", react), reserveTop = solo != null || react.bubble(), poke = poke)
             MiniPct(pct)
         }
     }
@@ -443,11 +460,12 @@ private fun ClaudeMini() {
 private fun AgMini() {
     val snap by Antigravity.snapshot.collectAsState()
     val p by prefsFlow.collectAsState()
+    val poke by Refresh.ag.collectAsState()
     val look = Look(skin = p.skin, tint = p.tint, animations = p.animations, species = p.mascot())
     val worst = agWorstFamily(snap)
     CompositionLocalProvider(LocalLook provides look) {
         Column(Modifier.fillMaxSize().padding(6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Mascot(Modifier.fillMaxWidth(), wear = (worst?.first ?: AgFamily.PRO).accessory, feel = agFeel(worst?.second))
+            Mascot(Modifier.fillMaxWidth(), wear = (worst?.first ?: AgFamily.PRO).accessory, feel = agFeel(worst?.second), poke = poke)
             MiniPct(worst?.second)
         }
     }
@@ -462,14 +480,14 @@ private fun MiniPct(pct: Double?) {
 }
 
 internal fun agWorstFamily(s: AgSnapshot?): Pair<AgFamily, Double>? =
-    AgFamily.entries.mapNotNull { f -> s?.family(f)?.let { f to it.percent } }.maxByOrNull { it.second }
+    s?.families()?.mapNotNull { f -> s.percent(f)?.let { f to it } }?.maxByOrNull { it.second }
 
 @Composable
-internal fun Widget(tools: List<Tool>, port: Int, compact: Boolean, drag: Modifier = Modifier, onHelp: (() -> Unit)? = null, onClose: (() -> Unit)? = null) {
+internal fun Widget(tools: List<Tool>, port: Int, compact: Boolean, drag: (Tool) -> Modifier = { Modifier }, onHelp: (() -> Unit)? = null, onClose: (() -> Unit)? = null) {
     Column(Modifier.fillMaxSize().padding(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         tools.forEachIndexed { i, tool ->
             Themed(tool) {
-                Box(Modifier.weight(1f).fillMaxWidth().shadow(10.dp, RoundedCornerShape(22.dp)).clip(RoundedCornerShape(22.dp)).background(P.bg).then(drag)) {
+                Box(Modifier.weight(1f).fillMaxWidth().shadow(10.dp, RoundedCornerShape(22.dp)).clip(RoundedCornerShape(22.dp)).background(P.bg).then(drag(tool))) {
                     if (tool == Tool.CLAUDE) Dashboard(port, compact, onHelp) else AgDashboard(compact)
                     if (i == 0 && onClose != null) Text(
                         "×", color = P.dim, fontSize = 16.sp,
@@ -490,9 +508,10 @@ internal fun AgDashboard(compact: Boolean) {
     var now by remember { mutableLongStateOf(System.currentTimeMillis()) }
     LaunchedEffect(Unit) { while (true) { now = System.currentTimeMillis(); delay(1000) } }
     val p by prefsFlow.collectAsState()
+    val poke by Refresh.ag.collectAsState()
     val look = Look(skin = p.skin, tint = p.tint, animations = p.animations, species = p.mascot())
     val s = snap
-    val pools = AgPool.entries.filter { s == null || s.pool(it) != null }
+    val pools = AgPool.entries.filter { s == null || s.group(it) != null }
     val status = agStatus(state, s != null, now - at)
     CompositionLocalProvider(LocalLook provides look) {
         if (compact) Row(Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -501,17 +520,17 @@ internal fun AgDashboard(compact: Boolean) {
                 if (pools.size < 2) Text(status, color = if (open) P.dim else P.muted, fontSize = 10.sp, maxLines = 1)
             }
             val worst = agWorstFamily(s)
-            Mascot(Modifier.width(64.dp), wear = (worst?.first ?: AgFamily.PRO).accessory, feel = agFeel(worst?.second))
+            Mascot(Modifier.width(64.dp), wear = (worst?.first ?: AgFamily.PRO).accessory, feel = agFeel(worst?.second), poke = poke)
         } else Row(Modifier.fillMaxSize().padding(horizontal = 18.dp, vertical = 14.dp), horizontalArrangement = Arrangement.spacedBy(18.dp)) {
             Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.SpaceBetween) {
                 pools.forEach { PoolMeter(s, it, now) }
                 Text(status, color = if (open) P.dim else P.muted, fontSize = 11.sp, maxLines = 1)
             }
             Row(Modifier.width(200.dp).fillMaxHeight(), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
-                val families = AgFamily.entries.filter { s == null || s.family(it) != null }
+                val families = s?.families() ?: AgFamily.entries
                 families.forEachIndexed { i, f ->
                     Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Mascot(Modifier.fillMaxWidth(), seed = i, wear = f.accessory, feel = agFeel(s?.family(f)?.percent))
+                        Mascot(Modifier.fillMaxWidth(), seed = i, wear = f.accessory, feel = agFeel(s?.percent(f)), poke = poke)
                         Text(f.short, color = P.muted, fontSize = 12.sp, fontFamily = Fredoka)
                     }
                 }
@@ -531,6 +550,7 @@ internal fun Dashboard(port: Int, compact: Boolean, onHelp: (() -> Unit)? = null
     val u = snap?.settled(now)
     val list by Claude.sessions.collectAsState()
     val on by Claude.watching.collectAsState()
+    val poke by Refresh.claude.collectAsState()
     CompositionLocalProvider(LocalLook provides look) {
         if (compact) Row(Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -538,7 +558,7 @@ internal fun Dashboard(port: Int, compact: Boolean, onHelp: (() -> Unit)? = null
                 Meter(txt.week, u?.sevenDay, now, small = true)
             }
             val solo = (if (on) Claude.solo(list) else null) ?: u?.soloModel(now)
-            Mascot(Modifier.width(64.dp), model = solo, feel = feelOf(u, solo ?: "Opus", Claude.react(null, list, now, on)))
+            Mascot(Modifier.width(64.dp), model = solo, feel = feelOf(u, solo ?: "Opus", Claude.react(null, list, now, on)), poke = poke)
         } else Column(Modifier.fillMaxSize().padding(horizontal = 18.dp, vertical = 14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
           Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(18.dp)) {
             Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.SpaceBetween) {
@@ -552,7 +572,7 @@ internal fun Dashboard(port: Int, compact: Boolean, onHelp: (() -> Unit)? = null
             Row(Modifier.width(200.dp).fillMaxHeight(), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                 MODELS.forEachIndexed { i, m ->
                     Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Mascot(Modifier.fillMaxWidth(), model = m, seed = i, feel = feelOf(u, m, Claude.react(m, list, now, on)))
+                        Mascot(Modifier.fillMaxWidth(), model = m, seed = i, feel = feelOf(u, m, Claude.react(m, list, now, on)), poke = poke)
                         Text(m, color = P.muted, fontSize = 12.sp, fontFamily = Fredoka)
                     }
                 }
@@ -564,7 +584,7 @@ internal fun Dashboard(port: Int, compact: Boolean, onHelp: (() -> Unit)? = null
 }
 
 @Composable
-internal fun Meter(label: String, w: UsageWindow?, now: Long, small: Boolean = false, window: String? = null) {
+internal fun Meter(label: String, w: UsageWindow?, now: Long, small: Boolean = false, window: String? = null, extra: Pair<String, UsageWindow>? = null) {
     val pct = w?.percent
     Column {
         Row(verticalAlignment = Alignment.Bottom) {
@@ -573,7 +593,21 @@ internal fun Meter(label: String, w: UsageWindow?, now: Long, small: Boolean = f
             val left = w?.resetsAt?.let { if (small || window != null) fmtLeft(it - now) else "${txt.resetsIn} ${fmtLeft(it - now)}" }
             listOfNotNull(window, left).joinToString(" · ").takeIf { it.isNotEmpty() }?.let { Text(it, color = P.muted, fontSize = if (small) 10.sp else 12.sp) }
         }
-        Text(fmtPct(pct), color = pct?.let { C.level(it) } ?: P.dim, fontSize = if (small) 18.sp else 26.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+        Row(verticalAlignment = Alignment.Bottom) {
+            Text(fmtPct(pct), color = pct?.let { C.level(it) } ?: P.dim, fontSize = if (small) 18.sp else 26.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+            extra?.let { (name, x) ->
+                Spacer(Modifier.weight(1f))
+                Text(
+                    buildAnnotatedString {
+                        append("$name ")
+                        withStyle(SpanStyle(color = if (x.percent > 0) C.level(x.percent) else P.muted, fontWeight = FontWeight.SemiBold)) { append(fmtPct(x.percent)) }
+                        x.resetsAt?.let { append(" · ${fmtLeft(it - now)}") }
+                    },
+                    color = P.muted, fontSize = if (small) 10.sp else 12.sp, maxLines = 1,
+                    modifier = Modifier.padding(bottom = if (small) 3.dp else 5.dp),
+                )
+            }
+        }
         Box(Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)).background(P.track)) {
             if (pct != null) Box(Modifier.fillMaxWidth((pct / 100).toFloat().coerceIn(0f, 1f)).fillMaxHeight().background(C.level(pct)))
         }
@@ -666,9 +700,11 @@ internal fun Connect(port: Int, hint: Boolean = true, onHelp: (() -> Unit)? = nu
 
 @Composable
 internal fun PoolMeter(s: AgSnapshot?, pool: AgPool, now: Long, small: Boolean = false) {
-    val m = s?.pool(pool)
-    val window = (if (m?.kind == AlertKind.SESSION) txt.session else txt.week).lowercase()
-    Meter(txt.label(pool), m?.let { UsageWindow(it.percent, it.resetsAt) }, now, small, window)
+    val g = s?.group(pool)
+    val main = g?.worst()
+    val other = g?.windows()?.firstOrNull { it.first != main?.first }
+    fun name(kind: AlertKind) = (if (kind == AlertKind.SESSION) txt.session else txt.week).lowercase()
+    Meter(txt.label(pool), main?.second, now, small, name(main?.first ?: AlertKind.WEEK), other?.let { name(it.first) to it.second })
 }
 
 internal fun agStatus(state: Antigravity.State, hasData: Boolean, ago: Long): String = when (state) {

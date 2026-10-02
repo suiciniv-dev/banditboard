@@ -59,6 +59,10 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".ResetReceiver"
+            android:exported="false" />
+
         <service
             android:name=".BackgroundService"
             android:exported="false"

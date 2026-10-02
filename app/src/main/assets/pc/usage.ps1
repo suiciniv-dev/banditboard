@@ -152,6 +152,8 @@ function Protect-Usage([string]$text, [string]$hex) {
     return [Convert]::ToBase64String([byte[]]($sealed + $mac.ComputeHash($sealed)))
 }
 $level = "$(Get-Level $payload.five_hour),$(Get-Level $payload.seven_day)"
+$agPath = [System.IO.Path]::Combine($HOME, '.claude', 'clawdboard-ag.txt')
+try { if ([System.IO.File]::Exists($agPath)) { $ag = [System.IO.File]::ReadAllText($agPath).Trim(); if ($ag -match '^[0-9]{4}$') { $level = "$level,$ag" } } } catch { }
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor [System.Net.SecurityProtocolType]::Tls12
 
 foreach ($t in $targets) {

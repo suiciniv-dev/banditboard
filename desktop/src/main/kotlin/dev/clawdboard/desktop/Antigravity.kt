@@ -5,10 +5,9 @@ import com.sun.jna.Memory
 import com.sun.jna.Native
 import com.sun.jna.Pointer
 import com.sun.jna.ptr.IntByReference
-import dev.clawdboard.core.AgFamily
-import dev.clawdboard.core.AgPool
 import dev.clawdboard.core.AgParse
 import dev.clawdboard.core.AgSnapshot
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONArray
 import org.json.JSONObject
@@ -31,9 +30,11 @@ object Antigravity {
 
     private const val BASE = "/exa.language_server_pb.LanguageServerService/"
     private val HOSTS = listOf("127.0.0.1", "[::1]")
-    const val QUERY_MS = 90_000L
     const val CHECK_MS = 15_000L
+    private const val FORCE_MS = 300_000L
+    private const val PULL_GAP_MS = 3_000L
 
+    val wake = Channel<Unit>(Channel.CONFLATED)
     val enabled = MutableStateFlow(Store.get("tool_ag") == "true")
     val state = MutableStateFlow(State.OFF)
     val open = MutableStateFlow(false)
@@ -46,7 +47,9 @@ object Antigravity {
 
     private var server: Server? = null
     private var endpoint: Endpoint? = null
-    private var queriedAt = 0L
+    private var forcedAt = 0L
+    private var forcedStamp: String? = null
+    @Volatile private var pulled = false
     private val cimTried = mutableSetOf<Long>()
     private var logKey = ""
     private var logRead: Pair<Long?, List<Int>> = null to emptyList()
@@ -76,10 +79,15 @@ object Antigravity {
         Forward.changed()
     }
 
+    fun pull() {
+        pulled = true
+        wake.trySend(Unit)
+    }
+
     private fun forget() {
         server = null
         endpoint = null
-        queriedAt = 0L
+        forcedAt = 0L
     }
 
     private fun setState(s: State) {
@@ -94,13 +102,14 @@ object Antigravity {
         val log = mutableListOf<String>()
         val (found, sure, why) = discover(log)
         if (found != null) {
-            val body = query(found, log)
+            val body = query(found, "GetUserStatus", STATUS_BODY, log)
             val snap = body?.let { AgParse.parse(it, now) }
             log += when {
                 body == null -> "GetUserStatus: sem resposta em nenhuma porta"
                 snap == null -> "GetUserStatus: formato desconhecido (${body.length} bytes)"
                 else -> "GetUserStatus: ok, ${snap.models.size} modelos, plano ${snap.plan ?: "?"}"
             }
+            if (body != null) log += quotaLine(query(found, "RetrieveUserQuotaSummary", CACHED_BODY, log), now)
         } else log += "resultado da busca: $why (Antigravity confirmado: $sure)"
         val s = snapshot.value
         val text = listOf(
@@ -108,7 +117,7 @@ object Antigravity {
             "gerado em ${Instant.ofEpochMilli(now)} · Banditboard como administrador: ${WinProc.elevated()?.let { if (it) "sim" else "não" } ?: "?"}",
             "Antigravity ligado: ${enabled.value} (escolha salva: ${Store.get("tool_ag") ?: "nenhuma"}) · estado ${state.value}",
             "última leitura: ${if (lastAt.value > 0) Instant.ofEpochMilli(lastAt.value) else "nunca"}",
-            "cotas: " + (s?.let { AgPool.entries.joinToString { p -> "$p ${it.pool(p)?.percent ?: "-"}% ${it.pool(p)?.kind ?: ""}" } } ?: "nenhuma"),
+            "cotas: " + (s?.groups?.joinToString { g -> "${g.pool} 5h ${g.session?.percent ?: "-"}% semana ${g.week?.percent ?: "-"}%" }?.ifEmpty { null } ?: "nenhuma"),
             "",
             "checagem agora:",
         ) + log.map { "  $it" } + listOf("", "último registro:") + diagnosis.value.lines().map { "  $it" }
@@ -140,20 +149,28 @@ object Antigravity {
             }
             server = found
             endpoint = null
-            queriedAt = 0L
+            forcedAt = 0L
         }
-        if (open.value && now - queriedAt < QUERY_MS) return null
         val s = server ?: return null
         val log = mutableListOf<String>()
-        val body = query(s, log)
+        val body = query(s, "GetUserStatus", STATUS_BODY, log)
         if (body == null) {
             forget()
             setState(State.NO_ANSWER)
             report(now, log)
             return null
         }
-        queriedAt = now
-        val snap = AgParse.parse(body, now, firstSeen)
+        val asked = pulled
+        pulled = false
+        val stamp = logStamp()
+        val force = (asked && now - forcedAt >= PULL_GAP_MS) || now - forcedAt >= FORCE_MS || (stamp != forcedStamp && now - forcedAt >= CHECK_MS)
+        var quota = query(s, "RetrieveUserQuotaSummary", if (force) FORCED_BODY else CACHED_BODY, log)
+        if (force) {
+            forcedAt = now
+            forcedStamp = logStamp()
+            if (quota == null) quota = query(s, "RetrieveUserQuotaSummary", CACHED_BODY, log)
+        }
+        val snap = AgParse.parse(body, now, firstSeen, quota)
         if (snap == null) {
             log += "GetUserStatus respondeu num formato desconhecido (${body.length} bytes)"
             setState(State.UNSUPPORTED)
@@ -161,7 +178,7 @@ object Antigravity {
             return null
         }
         setState(State.OK)
-        report(now, steps + log + "cota lida: ${snap.models.size} modelos")
+        report(now, steps + log + "cota lida: ${snap.models.size} modelos" + quotaLine(quota, now))
         snapshot.value = snap
         lastAt.value = now
         Store.put("ag_last", snap.toJson().toString())
@@ -170,24 +187,27 @@ object Antigravity {
         return snap
     }
 
+    private fun quotaLine(quota: String?, now: Long): String {
+        val groups = quota?.let { AgParse.groups(it, now) }
+        return when {
+            quota == null -> "RetrieveUserQuotaSummary: sem resposta, cota pelo GetUserStatus"
+            groups.isNullOrEmpty() -> "RetrieveUserQuotaSummary: formato desconhecido (${quota.length} bytes)"
+            else -> "RetrieveUserQuotaSummary: " + groups.joinToString { g -> "${g.pool} 5h ${g.session?.percent ?: "-"}% semana ${g.week?.percent ?: "-"}%" }
+        }
+    }
+
+    private fun logStamp(): String? =
+        logDirs().map { File(it, "language_server.log") }.filter { it.isFile }.maxByOrNull { it.lastModified() }?.let { "${it.lastModified()}|${it.length()}" }
+
     fun phoneJson(): JSONObject? {
-        if (!enabled.value) return null
+        if (!enabled.value) return JSONObject().put("off", true)
         val s = snapshot.value ?: return null
         fun w(x: dev.clawdboard.core.UsageWindow?): Any = x?.let { JSONObject().put("percent", it.percent).put("resetsAt", it.resetsAt ?: JSONObject.NULL) } ?: JSONObject.NULL
         val models = JSONArray()
-        AgFamily.entries.forEach { f ->
-            s.family(f)?.let { m ->
-                models.put(JSONObject().put("label", f.label).put("percent", m.percent).put("resetsAt", m.resetsAt ?: JSONObject.NULL).put("exhausted", m.exhausted))
-            }
-        }
+        s.families().forEach { f -> models.put(JSONObject().put("label", f.label).put("percent", s.percent(f) ?: 0.0)) }
         val pools = JSONArray()
-        AgPool.entries.forEach { p ->
-            s.pool(p)?.let { m ->
-                pools.put(JSONObject().put("pool", p.name).put("percent", m.percent).put("resetsAt", m.resetsAt ?: JSONObject.NULL).put("kind", m.kind?.name ?: JSONObject.NULL))
-            }
-        }
-        return JSONObject().put("open", open.value).put("pools", pools).put("plan", s.plan ?: JSONObject.NULL).put("usage_at", lastAt.value)
-            .put("session", w(s.session)).put("week", w(s.week)).put("models", models)
+        s.groups.forEach { g -> pools.put(JSONObject().put("pool", g.pool.name).put("session", w(g.session)).put("week", w(g.week))) }
+        return JSONObject().put("open", open.value).put("pools", pools).put("plan", s.plan ?: JSONObject.NULL).put("usage_at", lastAt.value).put("models", models)
     }
 
     private data class Found(val server: Server?, val sure: Boolean, val why: State)
@@ -317,11 +337,15 @@ object Antigravity {
         return out
     }
 
-    private fun query(s: Server, log: MutableList<String>): String? {
-        endpoint?.let { e -> post(e, s.token, log)?.let { return it } }
+    private fun query(s: Server, method: String, request: String, log: MutableList<String>): String? {
+        endpoint?.let { e -> return post(e, s.token, method, request, log) ?: if (method == "GetUserStatus") scan(s, method, request, log) else null }
+        return scan(s, method, request, log)
+    }
+
+    private fun scan(s: Server, method: String, request: String, log: MutableList<String>): String? {
         for (port in s.ports) for (https in listOf(true, false)) for (host in HOSTS) {
             val e = Endpoint(host, port, https)
-            val body = post(e, s.token, log) ?: continue
+            val body = post(e, s.token, method, request, log) ?: continue
             endpoint = e
             return body
         }
@@ -329,11 +353,13 @@ object Antigravity {
     }
 
     private const val STATUS_BODY = "{\"metadata\":{\"ideName\":\"antigravity\",\"extensionName\":\"antigravity\",\"locale\":\"en\"}}"
+    private const val CACHED_BODY = "{\"forceRefresh\":false}"
+    private const val FORCED_BODY = "{\"forceRefresh\":true}"
 
-    private fun post(e: Endpoint, token: String, log: MutableList<String>): String? {
+    private fun post(e: Endpoint, token: String, method: String, request: String, log: MutableList<String>): String? {
         val scheme = if (e.https) "https" else "http"
         return runCatching {
-            val c = URL("$scheme://${e.host}:${e.port}${BASE}GetUserStatus").openConnection(Proxy.NO_PROXY) as HttpURLConnection
+            val c = URL("$scheme://${e.host}:${e.port}$BASE$method").openConnection(Proxy.NO_PROXY) as HttpURLConnection
             try {
                 if (c is HttpsURLConnection) {
                     c.sslSocketFactory = localTls
@@ -347,17 +373,17 @@ object Antigravity {
                 c.setRequestProperty("Content-Type", "application/json")
                 c.setRequestProperty("Connect-Protocol-Version", "1")
                 c.setRequestProperty("X-Codeium-Csrf-Token", token)
-                c.outputStream.use { it.write(STATUS_BODY.toByteArray(Charsets.UTF_8)) }
+                c.outputStream.use { it.write(request.toByteArray(Charsets.UTF_8)) }
                 val code = c.responseCode
                 if (code != 200) {
-                    log += "$scheme ${e.host}:${e.port} -> HTTP $code"
+                    log += "$method $scheme ${e.host}:${e.port} -> HTTP $code"
                     null
                 } else c.inputStream.use { it.readBytes().toString(Charsets.UTF_8) }
             } finally {
                 c.disconnect()
             }
         }.getOrElse {
-            log += "$scheme ${e.host}:${e.port} -> ${it.javaClass.simpleName}"
+            log += "$method $scheme ${e.host}:${e.port} -> ${it.javaClass.simpleName}"
             null
         }
     }

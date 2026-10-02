@@ -122,6 +122,7 @@ fun Mascot(
     feel: Feel = Feel(),
     reserveTop: Boolean = true,
     wear: Accessory? = null,
+    poke: Int = 0,
 ) {
     val look = LocalLook.current
     val acc = if (wear != null && look.skin == Skin.MODELS) wear else accessoryFor(look.skin, model)
@@ -323,6 +324,17 @@ fun Mascot(
                 pose = pose.copy(dy = 1); delay(700)
                 pose = pose.copy(z = false, dy = 0); delay(900)
             }
+        }
+    }
+
+    if (poke > 0 && animate) {
+        LaunchedEffect(poke) {
+            val side = if ((poke + seed) % 2 == 0) 1 else -1
+            repeat(2) {
+                pose = pose.copy(dy = 1, shake = side, arm = side); delay(90)
+                pose = pose.copy(dy = 0, shake = -side, arm = -side); delay(90)
+            }
+            pose = pose.copy(dy = 0, shake = 0, arm = 0)
         }
     }
 

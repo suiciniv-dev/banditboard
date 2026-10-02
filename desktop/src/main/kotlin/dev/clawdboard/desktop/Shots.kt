@@ -23,7 +23,9 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import dev.clawdboard.core.AgFamily
+import dev.clawdboard.core.AgGroup
 import dev.clawdboard.core.AgModel
+import dev.clawdboard.core.AgPool
 import dev.clawdboard.core.AgSnapshot
 import dev.clawdboard.core.AlertKind
 import dev.clawdboard.core.I18n
@@ -138,9 +140,13 @@ fun main(args: Array<String>) {
             AgModel("Gemini 3.8 Flash (High)", 38.0, session, false, AlertKind.SESSION),
             AgModel("Claude Sonnet 4.6 (Thinking)", 88.0, week, false, AlertKind.WEEK),
             AgModel("Claude Opus 4.6 (Thinking)", 88.0, week, false, AlertKind.WEEK),
-            AgModel("GPT-OSS 120B (Medium)", 12.0, week, false, AlertKind.WEEK),
+            AgModel("GPT-OSS 120B (Medium)", 88.0, week, false, AlertKind.WEEK),
         ),
-        UsageWindow(38.0, session), UsageWindow(88.0, week), "Google AI Pro", now,
+        listOf(
+            AgGroup(AgPool.GEMINI, UsageWindow(38.0, session), UsageWindow(21.0, week)),
+            AgGroup(AgPool.OTHERS, UsageWindow(12.0, now + 3_600_000L), UsageWindow(88.0, week)),
+        ),
+        "Google AI Pro", now,
     )
     AgHistory.samples.value = (0 until 336).map { k -> start + k * 1_800_000L }.filter { zoned(it).hour in 10..20 }.map { t ->
         val h = zoned(t).hour + zoned(t).minute / 60.0 - 10
@@ -158,7 +164,7 @@ fun main(args: Array<String>) {
             Row(Modifier.fillMaxSize().background(P.bg).padding(16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 AgFamily.entries.forEachIndexed { i, f ->
                     androidx.compose.foundation.layout.Column(Modifier.width(110.dp), horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
-                        Mascot(Modifier.width(110.dp), seed = i, wear = f.accessory, feel = agFeel(Antigravity.snapshot.value?.family(f)?.percent))
+                        Mascot(Modifier.width(110.dp), seed = i, wear = f.accessory, feel = agFeel(Antigravity.snapshot.value?.percent(f)))
                         androidx.compose.material3.Text(f.label, color = P.muted, fontSize = 13.sp, fontFamily = Fredoka)
                     }
                 }

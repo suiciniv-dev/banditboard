@@ -21,6 +21,9 @@
 
  App do Windows ou do Mac ──► compartilha só para leitura na rede de casa, quando você liga (portas 47830-47839)
 
+ Antigravity aberto no mesmo PC ──► o app do Windows lê a cota em 127.0.0.1 a cada 15 s
+          └──► vai junto com o uso, para os mesmos destinos
+
  Quem lê:
    Celular Android ── pareamento por PIN, QR code do app do Windows/Mac ou QR code do /conectar
    iPhone          ── QR code do app do Windows/Mac ou QR code do /conectar
@@ -185,8 +188,36 @@ resposta do compartilhamento na rede de casa e cifrado para a caixa do servidor.
 Com a atividade chegando, o celular busca a cada 5 segundos pela rede de casa e a cada 20 segundos pelo servidor, e também avisa
 depois de 6 segundos. Atividade com mais de 15 minutos é ignorada.
 
+## Antigravity
+
+O Banditboard do Windows também acompanha o Antigravity do Google. Com o Antigravity aberto, o language server dele escuta
+numa porta local que muda a cada vez. O Banditboard acha essa porta pelo `%APPDATA%\Antigravity\logs\language_server.log` (o
+número do processo e as portas) e, se não der, procurando um processo `language_server`. Ele lê o token local que o
+Antigravity passa na linha de comando desse processo e guarda só na memória.
+
+A cada 15 segundos, ele pede ao language server, em `127.0.0.1`, o `GetUserStatus` (o plano e a lista de modelos) e o
+`RetrieveUserQuotaSummary` (os grupos e as janelas), as mesmas chamadas que a janela do Antigravity usa no View Usage. Quase
+sempre a resposta vem do cache do próprio Antigravity. O Banditboard pede para o Antigravity atualizar com o Google quando o
+log mostra uso novo, a cada 5 minutos e quando você clica no widget.
+
+A cota vem em grupos: Gemini (Pro e Flash) e Claude e GPT. Cada grupo tem uma janela semanal e, nos planos que têm, uma
+janela de 5 horas. Cada Racco mostra a janela mais apertada do grupo dele.
+
+O celular recebe só as porcentagens, a hora em que cada janela libera, o nome do plano e se o Antigravity está aberto, no
+mesmo envelope do uso do Claude Code. O nível de aviso, que diz ao servidor quando acordar o app do Android, ganha mais quatro
+dígitos para o Antigravity. O app do computador grava esses dígitos em `~/.claude/clawdboard-ag.txt` e o hook junta ao nível
+dele, então os dois mandam sempre o mesmo. Quando você desliga o Antigravity, o celular esconde ele.
+
+No Android, um aviso de 80%, 90% ou 100% também deixa um lembrete para a hora de liberar, então o aviso de que liberou chega
+na hora certa mesmo com o computador desligado e o app fechado.
+
+Se o Antigravity estiver aberto como administrador, o Windows esconde a linha de comando dele de um processo comum, e o widget
+avisa. Em Ferramentas → Exportar diagnóstico do Antigravity, o Banditboard salva um arquivo de texto em Downloads com toda a
+checagem, sem token, senha nem e-mail.
+
 ## De onde vêm os dados
 
 - **Uso:** a saída do `claude -p "/usage"`, um comando local do Claude Code que não chama nenhum modelo. Ele lê as linhas "Current session", "Current week (all models)" e "Current week (<modelo>)", com a hora em que cada uma libera.
+- **Antigravity:** o `GetUserStatus` e o `RetrieveUserQuotaSummary` do language server do Antigravity, em `127.0.0.1`.
 - **Status:** `https://status.claude.com/api/v2/incidents/unresolved.json`
 - **Notícias:** o feed RSS público `Olshansk/rss-feeds`.
