@@ -477,6 +477,41 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
   header .star span{display:none}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}.cl,.cl *,.rain i,.city i{animation:none!important}}
+
+.agwin{position:absolute;left:0;top:0;right:0;bottom:26px;background:#0f1218;opacity:0;overflow:hidden}
+.agwin .bar{height:30px;background:#151a23;display:flex;align-items:center;gap:8px;padding:0 14px;font:600 13px var(--f);color:#98a2b3;border-bottom:1px solid #283042}
+.agwin .bar i{width:9px;height:9px;border-radius:50%;background:#7aa2f7}
+.agwin .bar b{color:#e4e8f0;font-weight:600}
+.agwin .ags2{position:absolute;left:0;top:30px;bottom:0;width:150px;background:#121722;padding:14px 10px;border-right:1px solid #283042}
+.agwin .ags2 div{display:flex;align-items:center;gap:8px;font:500 12px var(--f);color:#98a2b3;padding:7px 8px;border-radius:8px;margin-bottom:6px}
+.agwin .ags2 div.on{background:#1c2230;color:#e4e8f0}
+.agwin .ags2 em{font-style:normal;color:#7aa2f7}
+.agwin .feed{position:absolute;left:170px;right:20px;top:46px;font:500 16px/1.7 ui-monospace,"Cascadia Mono",Consolas,monospace;color:#c9d2e3;white-space:pre}
+.agwin .feed .h{color:#e4e8f0;font-weight:600}.agwin .feed .d{color:#98a2b3}.agwin .feed .ok{color:#8fb573}.agwin .feed .u{color:#e4e8f0}
+.agwin .feed .cur{display:inline-block;width:9px;height:17px;background:#7aa2f7;vertical-align:-3px}
+.chip{position:absolute;top:4px;left:10px;height:22px;display:flex;align-items:center;gap:7px;padding:0 10px;border-radius:7px;background:#2a231c;font:600 12px var(--f);color:#ece3d6;z-index:2;opacity:0}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--coral)}
+.chip.ag{background:#1c2230}.chip.ag i{background:#7aa2f7}
+#chipB{left:calc(50% + 10px)}
+.flowsvg{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:3}
+.ph .sb{z-index:3}
+.ph .sb .brand{display:flex;align-items:center;gap:6px;color:#ece3d6;font:600 12px var(--f)}
+.ph .sb .brand svg{width:20px;height:auto}
+.ph .sb .brand b{font-weight:600;color:var(--coral);transition:color .2s}
+.scrn.both{z-index:2;opacity:0;display:grid;grid-template-columns:1fr 1fr}
+.both>div{position:relative;padding:34px 16px 10px;overflow:hidden}
+.both .bc{background:#16130f}.both .ba{background:#0f1218}
+.both .hd{font:600 13px var(--f);color:#ece3d6;display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.both .hd i{width:7px;height:7px;border-radius:50%;background:var(--coral)}.both .ba .hd i{background:#7aa2f7}
+.both .rw{display:flex;align-items:baseline;gap:6px;font:600 11px var(--f);color:#ece3d6;margin-top:6px}
+.both .rw b{font:700 20px var(--f)}
+.both .bb{height:6px;border-radius:9px;background:#2b2419;overflow:hidden;margin-top:3px}.both .ba .bb{background:#1c2230}
+.both .bb i{display:block;height:100%;border-radius:9px}
+.both .rr{position:absolute;left:10px;right:10px;bottom:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;text-align:center;font:500 9px var(--f);color:#a89a86}
+.both .rr svg{width:34px;height:auto;display:block;margin:0 auto}
+.fin .ftag{font:600 46px/1.15 var(--f);color:var(--text);margin-top:30px;text-align:center}
+.fin .ftag em{font-style:normal;color:var(--coral)}.fin .ftag em.ag{color:#7aa2f7}
+.stage.v .fin .ftag{font-size:54px;padding:0 60px}
 </style>
 </head>
 <body>
@@ -504,20 +539,22 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
       <div class="screen" id="screen" role="img" data-alt="heroAlt" aria-label="Animação: o Claude Code bate no limite no meio da tarefa; com o Banditboard, o celular liga e pergunta qual IA acompanhar, o Claude Code ou o Antigravity, e marca os dois. Enquanto a sessão sobe, o celular e o widget do Windows passam para o azul do Antigravity, com os Raccos do Gemini Pro, do Flash, do Claude e do GPT, e voltam para o Claude: os guaxinins suam, ficam vermelhos e estouram em 100%, e dançam quando a sessão libera. Depois aparecem o Mac com o Racco na barra de menus, o iPhone e o Apple Watch, e no fim as plataformas: Android, iPhone, Apple Watch, Windows e Mac.">
         <div class="stage" id="stage">
           <div class="agglow" id="agGlow"></div>
+          <svg class="flowsvg" id="flow"></svg>
           <div class="win" id="win"><div class="moon"></div><div class="bar"></div></div>
           <div class="sill"></div>
-          <div class="cap" id="c1" data-t="c1">Cansado de bater no <em>limite</em> da IA no meio da tarefa?</div>
-          <div class="cap" id="c2" data-t="c2">Escolha o que acompanhar: <em>Claude Code</em>, <em class="ag">Antigravity</em> ou os dois.</div>
-          <div class="cap" id="c3" data-t="c3">Sessão, semana e a hora em que cada uma libera. <em>Sempre à vista.</em></div>
-          <div class="cap" id="c4" data-t="c4">Os Raccos suam, ficam vermelhos e <em>avisam antes</em> de estourar.</div>
-          <div class="cap" id="c6" data-t="c6">Quando libera, eles comemoram. Com música, <em>dançam</em>.</div>
-          <div class="cap" id="c7" data-t="c7">Relógio de mesa e <em>histórico de 7 dias</em>, direto no celular.</div>
-          <div class="cap" id="c8" data-t="c8">No Windows, dois cliques no widget abrem o <em>painel completo</em>.</div>
-          <div class="cap" id="c9" data-t="c9">No Mac, o Racco mora na <em>barra de menus</em>.</div>
-          <div class="cap" id="c10" data-t="c10">No iPhone, painel, <em>widgets</em> e StandBy.</div>
-          <div class="cap" id="c11" data-t="c11">E no pulso, com o <em>Apple Watch</em>.</div>
-          <div class="cap" id="c12" data-t="c12">No Antigravity, o Racco acompanha o <em class="ag">Gemini, o Claude e o GPT</em>.</div>
-          <div class="cap fin" id="c5"><div class="fh"><i data-racco="logo"></i><b>Banditboard</b></div><div class="ftools"><span><i></i>Claude Code</span><span class="ag"><i></i>Antigravity</span></div><span data-t="c5">Disponível para</span><div class="plats"><div><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38L16.92 9.1A11.2 11.2 0 0 0 12 8a11.2 11.2 0 0 0-4.92 1.1L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>Android</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>iPhone</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="3"/><path d="M9 6l1-4h4l1 4M9 18l1 4h4l1-4"/></svg>Apple Watch</div><div><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.1l7.4-1v7.2H3zm0 13.8l7.4 1v-7.1H3zm8.2 1.1L21 21.4v-8.6h-9.8zm0-15.9v7.3H21V2.6z"/></svg>Windows</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</div></div><div class="links"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>banditboard.pages.dev</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>github.com/suiciniv-dev/banditboard</span></div></div>
+          <div class="cap" id="h0" data-t="h0"></div>
+          <div class="cap" id="n1" data-t="n1"></div>
+          <div class="cap" id="n2" data-t="n2"></div>
+          <div class="cap" id="n3" data-t="n3"></div>
+          <div class="cap" id="n4" data-t="n4"></div>
+          <div class="cap" id="n5" data-t="n5"></div>
+          <div class="cap" id="n6" data-t="n6"></div>
+          <div class="cap" id="n7" data-t="n7"></div>
+          <div class="cap" id="n8" data-t="n8"></div>
+          <div class="cap" id="n9" data-t="c9"></div>
+          <div class="cap" id="n10" data-t="c10"></div>
+          <div class="cap" id="n11" data-t="c11"></div>
+          <div class="cap fin" id="c5"><div class="fh"><i data-racco="logo"></i><b>Banditboard</b></div><div class="ftag" data-t="nfin"></div><span data-t="c5">Disponível para</span><div class="plats"><div><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38L16.92 9.1A11.2 11.2 0 0 0 12 8a11.2 11.2 0 0 0-4.92 1.1L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>Android</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>iPhone</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="3"/><path d="M9 6l1-4h4l1 4M9 18l1 4h4l1-4"/></svg>Apple Watch</div><div><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.1l7.4-1v7.2H3zm0 13.8l7.4 1v-7.1H3zm8.2 1.1L21 21.4v-8.6h-9.8zm0-15.9v7.3H21V2.6z"/></svg>Windows</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>Mac</div></div><div class="links"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>banditboard.pages.dev</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>github.com/suiciniv-dev/banditboard</span></div></div>
           <div class="desk"></div>
           <div class="gmon"><div class="neck"></div><div class="foot"></div>
           <div class="mon"><div class="scr">
@@ -525,10 +562,13 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
             <div class="side" id="side"></div>
             <div class="code" id="code"></div>
             <div class="term" id="term"></div>
+            <div class="agwin" id="agWin"><div class="bar"><i></i><b>Antigravity</b>· Agent Manager</div><div class="ags2"><div class="on"><em>✦</em><span data-t="nAg1">Refatorar o checkout</span></div><div><em>✦</em><span data-t="nAg2">Testes de UI</span></div><div><em>✦</em><span data-t="nAg3">Revisar o PR</span></div></div><div class="feed" id="agFeed"></div></div>
+            <div class="chip" id="chipA"><i></i><span>Claude Code</span></div>
+            <div class="chip ag" id="chipB"><i></i><span>Antigravity</span></div>
             <div class="wid" id="wid"><div class="l"><div class="t"><b data-t="pSession">Sessão</b><span id="wReset"></span></div><div class="p" id="wPct"></div><div class="b"><i id="wBar"></i></div></div><div class="r" id="wRacco"></div></div>
             <div class="wid ag" id="wAg"><div class="l"><div class="t"><b>Gemini</b><span data-t="agWLeft">sessão · 1h 05m</span></div><div class="p" id="waPct"></div><div class="b"><i id="waBar"></i></div></div><div class="r" id="waRacco"></div></div>
             <div class="task"><i></i><i></i><i></i><i></i><div class="tray" id="tray"></div></div>
-            <div class="mdash" id="mDash"><div class="ttl"><i data-racco="logo"></i>Banditboard</div><div class="mv"><img id="mImg" data-img="windows-dashboard" src="/img/pt/windows-dashboard.webp" alt=""></div></div>
+            <div class="mdash" id="mDash"><div class="ttl"><i data-racco="logo"></i>Banditboard</div><div class="mv"><img id="mImg" src="/img/pt/windows-dashboard-ag.webp" alt=""></div></div>
             <svg class="cursor" id="cursor" viewBox="0 0 16 22"><path d="M1 1v17l4.5-4.2 3 6.7 2.6-1.2-3-6.6H14z" fill="#f3efea" stroke="#16130f" stroke-width="1.3" stroke-linejoin="round"/></svg>
             <div class="ripple" id="ripple"></div>
             <div class="flash" id="flash"></div>
@@ -536,7 +576,7 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
           <div class="gph"><div class="pstand"></div><div class="cable"></div>
           <div class="phone"><div class="ph">
             <div class="off" id="off"></div>
-            <div class="sb"><span>21:48</span><span><i></i></span></div>
+            <div class="sb"><span>21:48</span><span class="brand"><i data-racco="logo"></i>Banditboard <b id="srcT">· Claude Code</b></span><span><i></i></span></div>
             <div class="toast" id="toast"><div class="ic"><i data-racco="logo"></i></div><div><b id="toastT"></b><span id="toastS"></span></div></div>
             <div class="scrn" id="sDash">
             <div class="top">
@@ -546,7 +586,7 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
             </div>
             <div class="row" id="pRow"></div>
             </div>
-            <div class="scrn ags" id="sAg"><div class="agh"><i></i>Antigravity<span data-t="agPlan">· Plano Google AI Pro</span></div>
+            <div class="scrn ags" id="sAg">
             <div class="top">
               <div><div class="lbl"><span class="k" data-t="pSession">Sessão</span><span>(Gemini)</span></div><div class="p" id="aPct"></div></div>
               <div class="mid"><div class="b"><i id="aBar"></i></div><div class="wk" data-t="agWeek">Semana: Gemini 21% · Claude e GPT 9%</div></div>
@@ -554,6 +594,7 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
             </div>
             <div class="row" id="aRow"></div>
             </div>
+            <div class="scrn both" id="sBoth"><div class="bc"><div class="hd"><i></i>Claude Code</div><div class="rw"><span data-t="pSession">Sessão</span><b style="color:var(--ok)">37%</b></div><div class="bb"><i style="width:37%;background:var(--ok)"></i></div><div class="rw"><span data-t="pWeek">Semana</span><b style="color:var(--warn)">64%</b></div><div class="bb"><i style="width:64%;background:var(--warn)"></i></div><div class="rr" id="bRowC"></div></div><div class="ba"><div class="hd"><i></i>Antigravity</div><div class="rw"><span data-t="nGs">Sessão (Gemini)</span><b style="color:var(--ok)">42%</b></div><div class="bb"><i style="width:42%;background:var(--ok)"></i></div><div class="rw"><span data-t="nGw">Semana (Gemini)</span><b style="color:var(--ok)">21%</b></div><div class="bb"><i style="width:21%;background:var(--ok)"></i></div><div class="rr" id="bRowA"></div></div></div>
             <div class="scrn pick" id="sPick"><h4 data-t="pkT">Qual IA você quer acompanhar?</h4><div class="cards"><div class="cd" id="pkC"><div class="hd"><span class="cbx"></span>Claude Code</div><i data-racco="Fable"></i></div><div class="cd ag" id="pkA"><div class="hd"><span class="cbx"></span>Antigravity</div><i data-racco="Pro"></i></div></div><div class="go" id="pkGo" data-t="pkGo">Continuar</div></div>
             <div class="scrn" id="sMusic"><div class="cover"><svg viewBox="0 0 12 12" fill="#16130f"><rect x="4" y="2" width="6" height="1.6"/><rect x="4" y="2" width="1.3" height="6.6"/><rect x="8.7" y="2" width="1.3" height="5.6"/><rect x="1.8" y="7.4" width="3.5" height="2.6"/><rect x="6.5" y="6.4" width="3.5" height="2.6"/></svg></div><div class="mi"><div class="app"><i></i><span data-t="mPlaying">Tocando agora</span></div><b>Pixel Groove</b><span class="ar" data-t="mArtist">Racco e os Modelos</span><div class="prog"><i id="mProg"></i></div><div class="tm"><span id="mNow">1:36</span><span>3:34</span></div><div class="ctl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg><span class="pl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></div></div><div class="mr" id="mRow"></div></div>
             <div class="scrn" id="sClock"><div class="ck"><b>21:48</b><span data-t="ckDate">domingo, 28 de setembro</span></div><div class="ckr" id="ckRow"></div><div class="cks" id="ckS"></div></div>
@@ -616,7 +657,7 @@ body.rec.v .screen{width:1080px;aspect-ratio:9/16}
       <h2 data-t="howT">Pronto em <em>dois minutos</em></h2>
       <p class="sub" data-t="howS">Sem conta, sem token e sem gastar tokens. Quem lê o uso é o próprio Claude Code, no seu computador.</p>
       <div class="steps">
-        <div class="step"><h3 data-t="s1T">Instale</h3><p data-t="s1">No celular, instale o APK ou, no iPhone, o IPA. No computador, instale o app do Windows ou do Mac.</p></div>
+        <div class="step"><h3 data-t="s1T">Instale</h3><p data-t="s1">No celular, instale o APK ou, no iPhone, o IPA. No computador, instale o app do Windows ou do Mac. Na primeira vez, o celular pergunta se você quer acompanhar o Claude Code, o Antigravity ou os dois.</p></div>
         <div class="step"><h3 data-t="s2T">Conecte o Claude Code</h3><p data-t="s2">No Windows ou no Mac, é um clique em <b>Conectar Claude Code</b>. No celular, leia o QR code do painel do computador ou de <a href="/conectar/">banditboard.pages.dev/conectar</a>, que funciona até fora de casa.</p></div>
         <div class="step"><h3 data-t="s3T">Trabalhe em paz</h3><p data-t="s3">A cada resposta do Claude Code, o painel atualiza sozinho. Quando o limite chega perto, você fica sabendo antes.</p></div>
       </div>
@@ -785,9 +826,23 @@ const T = {
     c6: "Quando libera, eles comemoram. Com música, <em>dançam</em>.",
     c7: "Relógio de mesa e <em>histórico de 7 dias</em>, direto no celular.",
     c8: "No Windows, dois cliques no widget abrem o <em>painel completo</em>.",
-    c9: "No Mac, o Racco mora na <em>barra de menus</em>.",
+    c9: "No Mac, o mesmo Racco mora na <em>barra de menus</em>.",
     c10: "No iPhone, painel, <em>widgets</em> e StandBy.",
     c11: "E no pulso, com o <em>Apple Watch</em>.",
+    h0: "Cansado de bater no <em>limite</em> das IAs no meio da tarefa?",
+    n1: "O Racco acompanha o seu <em>trabalho</em>.",
+    n2: "No <em>Claude Code</em>, ele mostra a sessão subindo e quando libera.",
+    n3: "Trocou para o <em class=\"ag\">Antigravity</em>? O Racco vai junto.",
+    n4: "Claude Code ou Antigravity: o <em>mesmo Banditboard</em>.",
+    n5: "E ele <em>avisa antes</em> de estourar.",
+    n6: "Quando libera, os Raccos <em>comemoram</em>.",
+    n7: "Primeiro uso? Escolha <em>Claude Code</em>, <em class=\"ag\">Antigravity</em> ou os dois.",
+    n8: "No Windows, um widget com os dois, <em>sempre por cima</em>.",
+    nfin: "<em>Claude Code</em> ou <em class=\"ag\">Antigravity</em>. O Racco acompanha.",
+    nAg1: "Refatorar o checkout", nAg2: "Testes de UI", nAg3: "Revisar o PR", nGs: "Sessão (Gemini)", nGw: "Semana (Gemini)",
+    agFeed: ["✦ Refatorar o checkout", "Gemini 3.1 Pro · planejando…", "✓ Plano pronto · 6 passos", "● Editando 8 arquivos…", "✓ 31 testes de UI passando"],
+    termN: ["$ claude", "> refatore o checkout e rode os testes", "● Editando 12 arquivos…", "✓ 48 testes passando", "● Revisando o diff…", "✓ Tudo salvo antes do limite", "$ claude --continue"],
+    tAg80: "Antigravity · Gemini · Sessão em 80%", tAgSub: "Libera hoje às 16:58",
     c12: "No Antigravity, o Racco acompanha o <em class=\"ag\">Gemini, o Claude e o GPT</em>.",
     pkT: "Qual IA você quer acompanhar?", pkGo: "Continuar", agNear: "quase no limite", agPlan: "· Plano Google AI Pro", agWLeft: "sessão · 1h 05m",
     agWeek: "Semana: Gemini 21% · Claude e GPT 9%", agAt: "hoje às 16:58",
@@ -819,7 +874,7 @@ const T = {
     dlMore: "Prefere não instalar?", dlZip: "Baixe o ZIP portátil", dlGit: "Código no GitHub", ver: v => `· versão ${v}`,
     howT: "Pronto em <em>dois minutos</em>",
     howS: "Sem conta, sem token e sem gastar tokens. Quem lê o uso é o próprio Claude Code, no seu computador.",
-    s1T: "Instale", s1: "No celular, instale o APK ou, no iPhone, o IPA. No computador, instale o app do Windows ou do Mac.",
+    s1T: "Instale", s1: "No celular, instale o APK ou, no iPhone, o IPA. No computador, instale o app do Windows ou do Mac. Na primeira vez, o celular pergunta se você quer acompanhar o Claude Code, o Antigravity ou os dois.",
     s2T: "Conecte o Claude Code ou o Antigravity", s2: "No Windows ou no Mac, é um clique em <b>Conectar Claude Code</b>. O Antigravity aberto no computador é achado sozinho. No celular, leia o QR code do painel do computador ou de <a href=\"/conectar/\">banditboard.pages.dev/conectar</a>, que funciona até fora de casa.",
     s3T: "Trabalhe em paz", s3: "A cada resposta do Claude Code, o painel atualiza sozinho. Quando o limite chega perto, você fica sabendo antes.",
     featT: "Tudo o que você precisa <em>de relance</em>", featS: "Um painel feito para ficar sempre à vista: na mesa, no pulso ou no canto da tela.",
@@ -895,9 +950,23 @@ const T = {
     c6: "When it resets, they celebrate. With music on, they <em>dance</em>.",
     c7: "A desk clock and a <em>7-day history</em>, right on your phone.",
     c8: "On Windows, double-click the widget for the <em>full dashboard</em>.",
-    c9: "On Mac, Racco lives in the <em>menu bar</em>.",
+    c9: "On Mac, the same Racco lives in the <em>menu bar</em>.",
     c10: "On iPhone, a dashboard, <em>widgets</em> and StandBy.",
     c11: "And on your wrist, with <em>Apple Watch</em>.",
+    h0: "Tired of hitting your AI <em>limits</em> in the middle of a task?",
+    n1: "Racco keeps up with your <em>work</em>.",
+    n2: "In <em>Claude Code</em>, it shows the session climbing and when it resets.",
+    n3: "Switched to <em class=\"ag\">Antigravity</em>? Racco comes along.",
+    n4: "Claude Code or Antigravity: the <em>same Banditboard</em>.",
+    n5: "And it <em>warns you</em> before it bursts.",
+    n6: "When it resets, the Raccos <em>celebrate</em>.",
+    n7: "First time? Pick <em>Claude Code</em>, <em class=\"ag\">Antigravity</em> or both.",
+    n8: "On Windows, one widget with both, <em>always on top</em>.",
+    nfin: "<em>Claude Code</em> or <em class=\"ag\">Antigravity</em>. Racco keeps up.",
+    nAg1: "Refactor checkout", nAg2: "UI tests", nAg3: "Review the PR", nGs: "Session (Gemini)", nGw: "Week (Gemini)",
+    agFeed: ["✦ Refactor checkout", "Gemini 3.1 Pro · planning…", "✓ Plan ready · 6 steps", "● Editing 8 files…", "✓ 31 UI tests passing"],
+    termN: ["$ claude", "> refactor checkout and run the tests", "● Editing 12 files…", "✓ 48 tests passing", "● Reviewing the diff…", "✓ Everything saved before the limit", "$ claude --continue"],
+    tAg80: "Antigravity · Gemini · Session at 80%", tAgSub: "Resets today at 4:58 PM",
     c12: "On Antigravity, Racco follows <em class=\"ag\">Gemini, Claude and GPT</em>.",
     pkT: "Which AI do you want to follow?", pkGo: "Continue", agNear: "almost at the limit", agPlan: "· Google AI Pro plan", agWLeft: "session · 1h 05m",
     agWeek: "Week: Gemini 21% · Claude and GPT 9%", agAt: "today at 4:58 PM",
@@ -929,7 +998,7 @@ const T = {
     dlMore: "Rather not install?", dlZip: "Get the portable ZIP", dlGit: "Code on GitHub", ver: v => `· version ${v}`,
     howT: "Ready in <em>two minutes</em>",
     howS: "No account, no token, no tokens spent. Claude Code itself reads the usage, on your computer.",
-    s1T: "Install", s1: "On the phone, install the APK, or the IPA on iPhone. On the computer, install the Windows or Mac app.",
+    s1T: "Install", s1: "On the phone, install the APK, or the IPA on iPhone. On the computer, install the Windows or Mac app. On first launch, the phone asks whether you want to follow Claude Code, Antigravity or both.",
     s2T: "Connect Claude Code or Antigravity", s2: "On Windows or Mac, one click on <b>Connect Claude Code</b>. Antigravity open on the computer is found on its own. On the phone, scan the QR code from the computer dashboard or from <a href=\"/conectar/\">banditboard.pages.dev/conectar</a>, which works even away from home.",
     s3T: "Work in peace", s3: "After each Claude Code reply, the dashboard updates on its own. When the limit gets close, you know first.",
     featT: "Everything you need <em>at a glance</em>", featS: "A dashboard made to stay in sight: on your desk, on your wrist or in a corner of the screen.",
@@ -1127,22 +1196,46 @@ const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
   $("mpRs").innerHTML = row(20, true);
   $("iRow").innerHTML = row(30, true);
   $("wRow").innerHTML = row(40, true);
+  $("bRowC").innerHTML = MODELS.map((m, k) => `<div>${racco(m, {}, k + 60)}${m}</div>`).join("");
+  $("bRowA").innerHTML = AG.map(([k2, name], k) => `<div>${racco(k2, {}, k + 70)}${name.replace("Gemini ", "")}</div>`).join("");
 })();
 
 const ease = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
-const OLD = 43, HOLD = 1.6;
-const INS = [[6.5, 2.4, "pick"]];
-const LOOP = OLD + INS.reduce((a, x) => a + x[1], 0);
-function remap(tn){
-  let t = tn;
-  for (const [at, d, name] of INS) {
-    if (t < at) return [t, null, 0];
-    if (t < at + d) return [at, name, t - at];
-    t -= d;
-  }
-  return [t, null, 0];
+const HOOK = 4.8, ML = 44.4, LOOP = HOOK + ML;
+const CAPS = [["n1", .3, 2.6], ["n2", 2.8, 7.2], ["n3", 7.4, 12.0], ["n4", 12.2, 16.6], ["n5", 16.6, 19.2], ["n6", 19.2, 21.6], ["n7", 21.6, 28.8], ["n8", 28.8, 31.2], ["n9", 31.2, 34.6], ["n10", 34.6, 37.9], ["n11", 37.9, 40.8], ["c5", 40.8, ML]];
+const SWITCH = [[7.2, 1], [12.0, 0], [14.4, 1], [15.6, 0]];
+function srcMix(t){
+  let a = 0;
+  for (const [at, v] of SWITCH) { if (t >= at) { const k = ease((t - at) / .45); a = a + (v - a) * k; } }
+  return a;
 }
-const CAPS = [["c1", 2.9, 5.9], ["c2", 5.9, 8.2], ["c12", 8.2, 11.0], ["c3", 11.0, 12.9], ["c4", 12.9, 14.8], ["c6", 14.8, 19.0], ["c7", 19.0, 23.0], ["c8", 23.0, 26.8], ["c9", 26.8, 30.5], ["c10", 30.5, 33.9], ["c11", 33.9, 37.2], ["c5", 37.2, OLD]];
+const lerp = (a, b, k) => a + (b - a) * Math.max(0, Math.min(1, k));
+let flowGeo = null;
+function geo(){
+  const st = stage.getBoundingClientRect(), sc = st.width / (VERT ? 1080 : 1600);
+  const r = el => { const b = el.getBoundingClientRect(); return {x: (b.left - st.left) / sc, y: (b.top - st.top) / sc, w: b.width / sc, h: b.height / sc}; };
+  const m = r(document.querySelector(".mon")), p = r(document.querySelector(".phone"));
+  const dst = VERT ? [p.x + p.w / 2, p.y + 14] : [p.x + 18, p.y + p.h * .32];
+  const mk = (sx, sy) => {
+    const mx = (sx + dst[0]) / 2, my = (sy + dst[1]) / 2, dx = dst[0] - sx, dy = dst[1] - sy, L = Math.hypot(dx, dy) || 1;
+    const off = Math.min(220, L * .55);
+    return [sx, sy, mx + (dy / L) * off * (VERT ? 1 : -1), my - (dx / L) * off * (VERT ? -1 : 1), dst[0], dst[1]];
+  };
+  return VERT
+    ? {one: mk(m.x + m.w * .5, m.y + m.h - 20), left: mk(m.x + m.w * .3, m.y + m.h - 20), right: mk(m.x + m.w * .7, m.y + m.h - 20)}
+    : {one: mk(m.x + m.w - 24, m.y + m.h * .42), left: mk(m.x + m.w - 24, m.y + m.h * .3), right: mk(m.x + m.w - 24, m.y + m.h * .62)};
+}
+function qpt(c, u){ const v = 1 - u; return [v * v * c[0] + 2 * v * u * c[2] + u * u * c[4], v * v * c[1] + 2 * v * u * c[3] + u * u * c[5]]; }
+function flowHtml(c, t, color, op){
+  if (op <= 0) return "";
+  let h = `<path d="M${c[0]} ${c[1]}Q${c[2]} ${c[3]} ${c[4]} ${c[5]}" fill="none" stroke="${color}" stroke-opacity="${(.32 * op).toFixed(2)}" stroke-width="4" stroke-dasharray="3 10" stroke-linecap="round"/>`;
+  for (let k = 0; k < 7; k++) {
+    const u = ((t * .55) + k / 7) % 1, [x, y] = qpt(c, u), s = 10 + 5 * Math.sin(u * Math.PI);
+    h += `<rect x="${(x - s / 2).toFixed(1)}" y="${(y - s / 2).toFixed(1)}" width="${s.toFixed(1)}" height="${s.toFixed(1)}" rx="1.5" fill="${color}" opacity="${(op * Math.sin(u * Math.PI) * .95).toFixed(2)}"/>`;
+  }
+  return h;
+}
+function mixColor(a){ return a <= 0 ? "#d77757" : a >= 1 ? "#7aa2f7" : mix("#d77757", "#7aa2f7", a); }
 const cache = {};
 function set(key, el, prop, value){ if (cache[key] !== value) { cache[key] = value; if (prop === "html") el.innerHTML = value; else if (prop === "text") el.textContent = value; else if (prop.startsWith("--")) el.style.setProperty(prop, value); else el.style[prop] = value; } }
 function typed(lines, t0, t, speed){
@@ -1161,152 +1254,176 @@ function termHtml(rows, cursor){
   const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
   return rows.map(([s, c], k) => `<div class="${c}">${esc(s)}${cursor && k === rows.length - 1 ? '<span class="cur"></span>' : ""}</div>`).join("");
 }
-function render(tn){
+function main(t){
   const L = T[LANG];
-  const [tt, scene, u] = remap(tn);
-  const pk = scene === "pick" ? Math.min(ease(u / .3), 1 - ease((u - 2.05) / .35)) : 0;
-  set("sPick", $("sPick"), "opacity", pk.toFixed(3));
-  const pkKey = scene === "pick" ? `${u >= .6 ? 1 : 0}${u >= 1.05 ? 1 : 0}${u >= 1.55 && u < 1.8 ? 1 : 0}` : "000";
-  if (cache.pk !== pkKey) { cache.pk = pkKey; $("pkC").classList.toggle("on", pkKey[0] === "1"); $("pkA").classList.toggle("on", pkKey[1] === "1"); $("pkGo").classList.toggle("on", pkKey[2] === "1"); }
-  const t = tt < 4.3 ? tt : tt < 4.3 + HOLD ? 4.299 : tt - HOLD;
-  set("gray", stage, "--g", (1 - ease((tt - 5.2) / .8)).toFixed(3));
-  const vis = t < 4.3 ? Math.floor(2 + t * 2.6) : 8;
-  if (cache.code !== vis) { cache.code = vis; [...$("code").children].forEach((r, k) => { r.style.visibility = k < vis ? "visible" : "hidden"; }); }
   for (const [id, a, b] of CAPS) {
     const fin = id === "c5";
-    const fi = ease((tt - a) / .45), fo = fin ? 1 - ease((tt - (OLD - .5)) / .45) : 1 - ease((tt - (b - .35)) / .35);
-    const o = tt < a || tt > b ? 0 : Math.min(fi, fo);
+    const fi = ease((t - a) / .45), fo = fin ? 1 - ease((t - (ML - .5)) / .45) : 1 - ease((t - (b - .35)) / .35);
+    const o = t < a || t > b ? 0 : Math.min(fi, fo);
     set(id + "o", $(id), "opacity", o.toFixed(3));
     set(id + "t", $(id), "transform", `translateY(${((1 - fi) * 24).toFixed(1)}px)`);
   }
-  let rows;
-  const blink = Math.floor(tt * 2.2) % 2 === 0;
-  if (t < 4.3) {
-    const l = L.term1;
-    rows = typed([[l[0], "d", .2], [l[1], "u", .2], [l[2], "d", .35], [l[3], "er", .8]], 0, t, 30);
-  } else if (t < 13.2) {
-    const l = L.term2;
-    rows = typed([[l[0], "d", .3], [l[1], "u", .2], [l[2], "d", .4], [l[3], "ok", 2.6], [l[4], "ok", 3.4]], 4.3, t, 36);
-  } else {
-    const l = L.term2;
-    rows = [[l[0], "d"], [l[1], "u"], [l[2], "d"], [l[3], "ok"], [l[4], "ok"]].concat(typed([[L.term3, "u", .5]], 13.2, t, 26));
-  }
-  set("term", $("term"), "html", termHtml(rows, blink));
-  const fl = t > 2.75 && t < 4 ? Math.max(0, 1 - Math.abs(t - 3.05) / .5) * (0.6 + 0.4 * Math.sin(t * 40)) : 0;
-  set("flash", $("flash"), "opacity", fl.toFixed(3));
-  const on = ease((t - 4.4) / .5);
+  set("gray", stage, "--g", "0");
+  const both = ease((t - 24.0) / .5) * (1 - ease((t - 31.0) / .4));
+  const a = t >= 21.6 ? 0 : srcMix(t);
+  const blink = Math.floor(t * 2.2) % 2 === 0;
+  const tl = L.termN;
+  const rows = typed([[tl[0], "d", .1], [tl[1], "u", .2], [tl[2], "d", .5], [tl[3], "ok", 10.4], [tl[4], "d", .6], [tl[5], "ok", 6.2], [tl[6], "u", .4]], 0, t, 30);
+  const vis = rows.length;
+  set("term", $("term"), "html", termHtml(rows.slice(-6), blink && a < .5));
+  const fl = L.agFeed;
+  const agRows = typed([[fl[0], "h", .2], [fl[1], "d", .4], [fl[2], "ok", 1.4], [fl[3], "d", 1.2], [fl[4], "ok", 5.4]], 7.2, t, 30);
+  set("agFeed", $("agFeed"), "html", termHtml(agRows, blink && a >= .5));
+  const winOp = Math.max(a, both);
+  set("agWin", $("agWin"), "opacity", winOp.toFixed(3));
+  set("agWinL", $("agWin"), "left", (both * 50).toFixed(2) + "%");
+  const chipsOn = ease((t - 2.4) / .4) * (1 - ease((t - 28.6) / .3));
+  set("chipA", $("chipA"), "opacity", (chipsOn * (1 - a)).toFixed(3));
+  set("chipB", $("chipB"), "opacity", (chipsOn * Math.max(a, both)).toFixed(3));
+  set("chipBL", $("chipB"), "left", both > .5 ? "calc(50% + 10px)" : "10px");
+  const on = ease((t - 2.4) / .5);
   set("off", $("off"), "opacity", (1 - on).toFixed(3));
-  set("wid", $("wid"), "opacity", ease((t - 4.7) / .4).toFixed(3));
+  set("wid", $("wid"), "opacity", ease((t - 2.7) / .4).toFixed(3));
   let p;
-  if (t < 5.2) p = 8;
-  else if (t < 10.4) p = 8 + 80 * ease((t - 5.2) / 5.2);
-  else if (t < 12.2) p = 88 + 12 * ease((t - 10.4) / 1.8);
-  else if (t < 13.2) p = 100;
-  else p = 2;
-  const freed = t >= 13.2;
-  const pr = Math.round(p);
-  const col = level(pr);
-  set("pPct", $("pPct"), "text", pr + "%");
-  set("pPctC", $("pPct"), "color", col);
-  set("pBar", $("pBar"), "width", pr + "%");
-  set("pBarC", $("pBar"), "background", col);
-  set("wPct", $("wPct"), "text", pr + "%");
-  set("wPctC", $("wPct"), "color", col);
-  set("wBar", $("wBar"), "width", pr + "%");
-  set("wBarC", $("wBar"), "background", col);
-  const mins = freed ? 300 : Math.max(0, 132 - Math.floor(Math.max(0, t - 4.4) * 2));
+  if (t < 2.4) p = 12;
+  else if (t < 7.2) p = 18 + 28 * ease((t - 2.4) / 4.8);
+  else if (t < 12.0) p = 46;
+  else if (t < 14.4) p = 46 + 42 * ease((t - 12.0) / 2.4);
+  else if (t < 15.6) p = 88;
+  else if (t < 16.8) p = 88 + 12 * ease((t - 15.6) / 1.2);
+  else if (t < 19.2) p = 100;
+  else if (t < 21.6) p = 3;
+  else p = 37;
+  const freed = t >= 19.2;
+  const pr = Math.round(p), col = level(pr);
+  set("pPct", $("pPct"), "text", pr + "%"); set("pPctC", $("pPct"), "color", col);
+  set("pBar", $("pBar"), "width", pr + "%"); set("pBarC", $("pBar"), "background", col);
+  set("wPct", $("wPct"), "text", pr + "%"); set("wPctC", $("wPct"), "color", col);
+  set("wBar", $("wBar"), "width", pr + "%"); set("wBarC", $("wBar"), "background", col);
+  const mins = freed ? 300 : Math.max(0, 132 - Math.floor(Math.max(0, t - 2.4) * 2));
   const left = `${Math.floor(mins / 60)}h ${String(mins % 60).padStart(2, "0")}m`;
   set("pLeft", $("pLeft"), "text", left);
   set("pAt", $("pAt"), "text", freed ? "" : L.pToday);
   set("wReset", $("wReset"), "text", `${L.wIn} ${left}`);
-  const wk = Math.round(freed ? 64 : 61 + 3 * ease((t - 5.2) / 7));
-  set("pWeek", $("pWeek"), "text", `${L.pWeek} ${wk}%`);
-  const dancing = (t >= 13.2 && t < 17.6) || t >= 25.2;
+  set("pWeek", $("pWeek"), "text", `${L.pWeek} ${freed ? 64 : 61}%`);
+  let ap;
+  if (t < 7.2) ap = 30;
+  else if (t < 12.0) ap = 30 + 54 * ease((t - 7.4) / 4.0);
+  else if (t < 14.4) ap = 84;
+  else if (t < 15.6) ap = 84 + 7 * ease((t - 14.5) / .9);
+  else ap = t >= 21.6 ? 42 : 91;
+  const apr = Math.round(ap), acol = level(apr);
+  set("aPct", $("aPct"), "text", apr + "%"); set("aPctC", $("aPct"), "color", acol);
+  set("aBar", $("aBar"), "width", apr + "%"); set("aBarC", $("aBar"), "background", acol);
+  set("waPct", $("waPct"), "text", apr + "%"); set("waPctC", $("waPct"), "color", acol);
+  set("waBar", $("waBar"), "width", apr + "%"); set("waBarC", $("waBar"), "background", acol);
+  const dancing = t >= 19.2 && t < 21.6;
   const f = freed ? {mood: "NORMAL", heat: 0, dance: dancing} : feel(p);
   const key = `${f.mood}|${f.heat}|${f.dance ? 1 : 0}|${LANG}`;
   if (cache.row !== key) {
     cache.row = key;
     $("pRow").innerHTML = MODELS.map((m, i) => `<div>${racco(m, f, i)}<div class="n${f.mood === "EXHAUSTED" ? " x" : ""}">${m}</div><div class="s">${f.mood === "EXHAUSTED" ? L.pOut : ""}</div></div>`).join("");
     $("wRacco").innerHTML = racco(null, f, 2);
-    const mini = MODELS.map((m, i) => racco(m, f, i)).join("");
-    $("mRow").innerHTML = mini;
-    $("ckRow").innerHTML = mini;
     if (REC) syncAnims(t);
   }
-  let toast = null, to = 0;
-  const win = (a, b) => Math.min(ease((t - a) / .35), 1 - ease((t - (b - .35)) / .35));
-  if (t >= 9.3 && t < 11.2) { toast = [L.t80, L.tSub]; to = win(9.3, 11.2); }
-  else if (t >= 12.1 && t < 13.2) { toast = [L.t100, L.tSub]; to = win(12.1, 13.2); }
-  else if (t >= 13.3 && t < 14.9) { toast = [L.tFree, L.tFreeS]; to = win(13.3, 14.9); }
-  const seg = (a, b) => t >= a && t < b ? Math.max(0, Math.min(ease((t - a) / .35), 1 - ease((t - (b - .35)) / .35))) : 0;
-  const om = seg(14.9, 17.6), oc = seg(17.6, 19.6), oh = seg(19.6, 21.7);
-  set("sMusic", $("sMusic"), "opacity", om.toFixed(3));
-  set("sClock", $("sClock"), "opacity", oc.toFixed(3));
-  set("sChart", $("sChart"), "opacity", oh.toFixed(3));
-  set("sDash", $("sDash"), "opacity", (1 - Math.min(1, om + oc + oh)).toFixed(3));
-  const sec = 96 + Math.max(0, t - 14.9);
-  set("mProg", $("mProg"), "width", (sec / 214 * 100).toFixed(2) + "%");
-  set("mNow", $("mNow"), "text", `${Math.floor(sec / 60)}:${String(Math.floor(sec % 60)).padStart(2, "0")}`);
-  set("ckS", $("ckS"), "text", `${L.pSession} ${pr}% · ${L.pWeek} ${wk}%`);
-  const draw = ease((t - 19.8) / 1.5);
-  if (chartLen) { set("chA", $("chA"), "strokeDashoffset", (chartLen[0] * (1 - draw)).toFixed(1)); set("chB", $("chB"), "strokeDashoffset", (chartLen[1] * (1 - draw)).toFixed(1)); }
-  const cIn = ease((t - 21.5) / .9), cOut = 1 - ease((t - 22.9) / .3);
-  set("cursor", $("cursor"), "opacity", (t >= 21.5 && t < 23.2 ? Math.min(ease((t - 21.5) / .2), cOut) : 0).toFixed(3));
-  set("cursorT", $("cursor"), "transform", `translate(${(520 + 180 * cIn).toFixed(1)}px,${(300 - 200 * cIn).toFixed(1)}px)`);
-  const rp = t >= 22.45 && t < 22.95 ? (t - 22.45) / .5 : -1;
-  set("ripple", $("ripple"), "opacity", rp < 0 ? "0" : (1 - rp).toFixed(3));
-  set("rippleS", $("ripple"), "transform", `scale(${rp < 0 ? 0 : (.4 + rp * 1.6).toFixed(2)})`);
-  const od = t >= 22.7 && t < 25.3 ? Math.min(ease((t - 22.7) / .3), 1 - ease((t - 25.0) / .3)) : 0;
-  set("mDash", $("mDash"), "opacity", od.toFixed(3));
-  set("mDashS", $("mDash"), "transform", `scale(${(.94 + .06 * od).toFixed(3)})`);
-  set("mImg", $("mImg"), "transform", `translateY(${(-440 * ease((t - 23.1) / 1.9)).toFixed(1)}px)`);
-  const m = Math.min(ease((tt - 8.0) / .5), 1 - ease((tt - 10.4) / .5));
-  set("sAg", $("sAg"), "opacity", m.toFixed(3));
-  set("wAg", $("wAg"), "opacity", m.toFixed(3));
-  set("agGlow", $("agGlow"), "opacity", m.toFixed(3));
-  if (m > 0) {
-    const ag2 = Math.round(pr * .45);
-    set("aPct", $("aPct"), "text", pr + "%"); set("aPctC", $("aPct"), "color", col);
-    set("aBar", $("aBar"), "width", pr + "%"); set("aBarC", $("aBar"), "background", col);
-    set("waPct", $("waPct"), "text", pr + "%"); set("waPctC", $("waPct"), "color", col);
-    set("waBar", $("waBar"), "width", pr + "%"); set("waBarC", $("waBar"), "background", col);
-    const fa = feel(pr), fb = feel(ag2);
-    const agKey = `${fa.mood}|${fa.heat}|${fb.mood}|${LANG}`;
-    if (cache.ag !== agKey) {
-      cache.ag = agKey;
-      $("aRow").innerHTML = AG.map(([k, name], i) => { const v = i < 2 ? pr : ag2; return `<div>${racco(k, i < 2 ? fa : fb, i)}<div class="n">${name}</div><div class="s">${v >= 85 ? L.agNear : ""}</div></div>`; }).join("");
-      $("waRacco").innerHTML = racco("Pro", fa, 2);
-      if (REC) syncAnims(tn);
-    }
+  const ag2 = Math.round(ap * .4), fa = feel(ap), fb = feel(ag2);
+  const agKey = `${fa.mood}|${fa.heat}|${fb.mood}|${LANG}`;
+  if (cache.ag !== agKey) {
+    cache.ag = agKey;
+    $("aRow").innerHTML = AG.map(([k, name], i) => { const v = i < 2 ? ap : ag2; return `<div>${racco(k, i < 2 ? fa : fb, i)}<div class="n">${name}</div><div class="s">${v >= 85 ? L.agNear : ""}</div></div>`; }).join("");
+    $("waRacco").innerHTML = racco("Pro", fa, 2);
+    if (REC) syncAnims(t);
   }
+  const pk = Math.min(ease((t - 21.6) / .3), 1 - ease((t - 23.7) / .3));
+  set("sPick", $("sPick"), "opacity", Math.max(0, pk).toFixed(3));
+  const pkKey = `${t >= 22.4 && t < 24.2 ? 1 : 0}${t >= 22.9 && t < 24.2 ? 1 : 0}${t >= 23.35 && t < 23.6 ? 1 : 0}`;
+  if (cache.pk !== pkKey) { cache.pk = pkKey; $("pkC").classList.toggle("on", pkKey[0] === "1"); $("pkA").classList.toggle("on", pkKey[1] === "1"); $("pkGo").classList.toggle("on", pkKey[2] === "1"); }
+  const bo = ease((t - 23.8) / .4) * (1 - ease((t - 31.0) / .4));
+  set("sBoth", $("sBoth"), "opacity", bo.toFixed(3));
+  const dashOp = t >= 21.6 ? 0 : 1 - a;
+  set("sDash", $("sDash"), "opacity", dashOp.toFixed(3));
+  set("sAg", $("sAg"), "opacity", (t >= 21.6 ? 0 : a).toFixed(3));
+  set("sMusic", $("sMusic"), "opacity", "0"); set("sClock", $("sClock"), "opacity", "0"); set("sChart", $("sChart"), "opacity", "0");
+  const brandAg = t < 21.6 ? a >= .5 : null;
+  const bkey = brandAg === null ? "both" : brandAg ? "ag" : "cl";
+  if (cache.brand !== bkey) { cache.brand = bkey; $("srcT").textContent = bkey === "both" ? "· Claude Code + Antigravity" : bkey === "ag" ? "· Antigravity" : "· Claude Code"; $("srcT").style.color = bkey === "ag" ? "#7aa2f7" : bkey === "both" ? "#ece3d6" : "var(--coral)"; }
+  const win2 = ease((t - 28.8) / .5);
+  set("wAg", $("wAg"), "opacity", (t >= 28.8 ? win2 : t >= 21.6 ? 0 : a).toFixed(3));
+  set("wAgT", $("wAg"), "top", (44 + 112 * win2).toFixed(1) + "px");
+  set("agGlow", $("agGlow"), "opacity", (t < 21.6 ? a : both * .45).toFixed(3));
+  let toast = null, to = 0;
+  const win = (x, y) => Math.min(ease((t - x) / .35), 1 - ease((t - (y - .35)) / .35));
+  if (t >= 10.9 && t < 12.1) { toast = [L.tAg80, L.tAgSub]; to = win(10.9, 12.1); }
+  else if (t >= 13.7 && t < 14.5) { toast = [L.t80, L.tSub]; to = win(13.7, 14.5); }
+  else if (t >= 16.9 && t < 18.6) { toast = [L.t100, L.tSub]; to = win(16.9, 18.6); }
+  else if (t >= 19.3 && t < 20.9) { toast = [L.tFree, L.tFreeS]; to = win(19.3, 20.9); }
   if (toast) { set("toastT", $("toastT"), "text", toast[0]); set("toastS", $("toastS"), "text", toast[1]); }
   set("toast", $("toast"), "opacity", to.toFixed(3));
   set("toastY", $("toast"), "transform", `translateY(${((to - 1) * 30).toFixed(1)}px)`);
-  const sc = ease((tt - 26.6) / .6), fz = ease((tt - 37.0) / .5);
+  if (!flowGeo) flowGeo = geo();
+  const fo = ease((t - 2.6) / .5) * (1 - ease((t - 28.6) / .4));
+  let fh = "";
+  if (both > .02) {
+    fh += flowHtml(flowGeo.left, t, "#d77757", fo * both);
+    fh += flowHtml(flowGeo.right, t + .3, "#7aa2f7", fo * both);
+  }
+  fh += flowHtml(flowGeo.one, t, mixColor(a), fo * (1 - both));
+  $("flow").innerHTML = fh;
+  const cIn = ease((t - 29.1) / .8), cOut = 1 - ease((t - 30.4) / .3);
+  set("cursor", $("cursor"), "opacity", (t >= 29.0 && t < 30.7 ? Math.min(ease((t - 29.0) / .2), cOut) : 0).toFixed(3));
+  set("cursorT", $("cursor"), "transform", `translate(${(520 + 180 * cIn).toFixed(1)}px,${(300 - 200 * cIn).toFixed(1)}px)`);
+  const rp = t >= 29.95 && t < 30.45 ? (t - 29.95) / .5 : -1;
+  set("ripple", $("ripple"), "opacity", rp < 0 ? "0" : (1 - rp).toFixed(3));
+  set("rippleS", $("ripple"), "transform", `scale(${rp < 0 ? 0 : (.4 + rp * 1.6).toFixed(2)})`);
+  const od = t >= 30.2 && t < 31.6 ? Math.min(ease((t - 30.2) / .3), 1 - ease((t - 31.3) / .3)) : 0;
+  set("mDash", $("mDash"), "opacity", od.toFixed(3));
+  set("mDashS", $("mDash"), "transform", `scale(${(.94 + .06 * od).toFixed(3)})`);
+  set("mImg", $("mImg"), "transform", `translateY(${(-620 * ease((t - 30.4) / 1.0)).toFixed(1)}px)`);
+  set("flash", $("flash"), "opacity", "0");
+  if (cache.mimg !== LANG) { cache.mimg = LANG; $("mImg").src = `/img/${LANG}/windows-dashboard-ag.webp`; }
+  const sc = ease((t - 31.2) / .6), fz = ease((t - 40.5) / .5);
   set("sc", stage, "--sc", sc.toFixed(3));
   set("url", $("url"), "opacity", (1 - sc).toFixed(3));
-  for (const [id, a] of [["dMac", 26.9], ["dIph", 30.5], ["dWat", 33.9]]) {
-    const k = ease((tt - a) / .6);
+  for (const [id, x] of [["dMac", 31.5], ["dIph", 34.8], ["dWat", 37.9]]) {
+    const k = ease((t - x) / .6);
     set(id + "o", $(id), "opacity", (k * (1 - fz)).toFixed(3));
     set(id + "t", $(id), "transform", `translateY(${((1 - k) * 60 - fz * 30).toFixed(1)}px)`);
   }
-  const wm = ease((tt - 35.6) / .4);
+  const wm = ease((t - 39.4) / .4);
   set("dWm", $("dWm"), "opacity", wm.toFixed(3));
   set("wSes", $("wSes"), "opacity", (1 - wm).toFixed(3));
-  const cIn2 = ease((tt - 27.3) / .8), rb = $("mRb"), tx = rb.offsetLeft + 16, ty = rb.offsetTop + 6;
+  const cIn2 = ease((t - 31.9) / .8), rb = $("mRb"), tx = rb.offsetLeft + 16, ty = rb.offsetTop + 6;
   const cx = tx - 260 + 260 * cIn2, cy = 260 + (ty - 260) * cIn2;
-  set("mCur", $("mCur"), "opacity", (tt >= 27.2 && tt < 29.8 ? Math.min(ease((tt - 27.2) / .2), 1 - ease((tt - 29.4) / .4)) : 0).toFixed(3));
+  set("mCur", $("mCur"), "opacity", (t >= 31.8 && t < 34.4 ? Math.min(ease((t - 31.8) / .2), 1 - ease((t - 34.0) / .4)) : 0).toFixed(3));
   set("mCurT", $("mCur"), "transform", `translate(${cx.toFixed(1)}px,${cy.toFixed(1)}px)`);
-  const clicked = tt >= 28.15 && tt < 37.6;
+  const clicked = t >= 32.75 && t < 40.9;
   if (cache.mRb !== clicked) { cache.mRb = clicked; rb.classList.toggle("on", clicked); }
-  const po = ease((tt - 28.2) / .3);
-  set("mPop", $("mPop"), "opacity", (tt < 28.2 ? 0 : po).toFixed(3));
+  const po = ease((t - 32.8) / .3);
+  set("mPop", $("mPop"), "opacity", (t < 32.8 ? 0 : po).toFixed(3));
   set("mPopS", $("mPop"), "transform", `scale(${(.94 + .06 * po).toFixed(3)})`);
+}
+function render(t){
+  const L = T[LANG];
+  main(Math.max(0, t - HOOK));
+  const fi = ease((t - .9) / .45), fo = 1 - ease((t - (HOOK - .35)) / .35);
+  const o = t >= HOOK ? 0 : Math.max(0, Math.min(fi, fo));
+  set("h0o", $("h0"), "opacity", o.toFixed(3));
+  set("h0t", $("h0"), "transform", `translateY(${((1 - fi) * 24).toFixed(1)}px)`);
+  set("gray", stage, "--g", (1 - ease((t - HOOK) / .8)).toFixed(3));
+  if (t < HOOK) {
+    const l = L.term1;
+    const rows = typed([[l[0], "d", .2], [l[1], "u", .2], [l[2], "d", .35], [l[3], "er", .8]], 0, t, 30);
+    set("term", $("term"), "html", termHtml(rows, Math.floor(t * 2.2) % 2 === 0));
+    const fl = t > 2.75 && t < 4 ? Math.max(0, 1 - Math.abs(t - 3.05) / .5) * (0.6 + 0.4 * Math.sin(t * 40)) : 0;
+    set("flash", $("flash"), "opacity", fl.toFixed(3));
+    const vis = Math.min(8, Math.floor(2 + t * 2.6));
+    if (cache.codeH !== vis) { cache.codeH = vis; [...$("code").children].forEach((r, k) => { r.style.visibility = k < vis ? "visible" : "hidden"; }); }
+  } else if (cache.codeH !== 8) { cache.codeH = 8; [...$("code").children].forEach(r => { r.style.visibility = "visible"; }); }
 }
 function syncAnims(t){ document.getAnimations().forEach(a => { a.pause(); a.currentTime = t * 1000; }); }
 
 let playing = !matchMedia("(prefers-reduced-motion: reduce)").matches;
-let start = performance.now() - 1400, pausedAt = 42, visible = true;
+let start = performance.now() - 1400, pausedAt = 26, visible = true;
 function frame(now){
   if (playing && visible) render(((now - start) / 1000) % LOOP);
   requestAnimationFrame(frame);
