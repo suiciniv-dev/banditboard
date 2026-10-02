@@ -121,9 +121,10 @@ fun Mascot(
     seed: Int = 0,
     feel: Feel = Feel(),
     reserveTop: Boolean = true,
+    wear: Accessory? = null,
 ) {
     val look = LocalLook.current
-    val acc = accessoryFor(look.skin, model)
+    val acc = if (wear != null && look.skin == Skin.MODELS) wear else accessoryFor(look.skin, model)
     val animate = look.animations && alive
     val react = feel.react
     val music = LocalDance.current && animate

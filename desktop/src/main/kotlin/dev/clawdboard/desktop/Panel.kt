@@ -51,7 +51,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.clawdboard.core.AgFamily
+import dev.clawdboard.core.AgPool
+import dev.clawdboard.core.AlertKind
 import dev.clawdboard.core.Language
+import dev.clawdboard.core.Tool
+import dev.clawdboard.core.ToolTheme
+import dev.clawdboard.core.agFeel
 import dev.clawdboard.core.MODELS
 import dev.clawdboard.core.NewsItem
 import dev.clawdboard.core.ScopedLimit
@@ -115,17 +121,17 @@ internal fun Panel(port: Int, status: StatusSnapshot?, controls: WidgetControls)
     val look = Look(skin = p.skin, tint = p.tint, animations = p.animations, species = p.mascot())
     val t = zoned(now)
     CompositionLocalProvider(LocalLook provides look) {
-        Box(Modifier.fillMaxSize().background(C.bg).verticalScroll(rememberScrollState()), contentAlignment = Alignment.TopCenter) {
+        Box(Modifier.fillMaxSize().background(P.bg).verticalScroll(rememberScrollState()), contentAlignment = Alignment.TopCenter) {
             Column(Modifier.widthIn(max = 1180.dp).padding(start = 24.dp, end = 24.dp, bottom = 24.dp, top = if (onMac) 40.dp else 24.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Mascot(Modifier.width(64.dp), reserveTop = false)
                     Column(Modifier.padding(start = 14.dp).weight(1f)) {
-                        Text("Banditboard", color = C.text, fontSize = 30.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
-                        Text(if (onMac) txt.macPanelSubtitle else txt.panelSubtitle, color = C.muted, fontSize = 14.sp)
+                        Text("Banditboard", color = P.text, fontSize = 30.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+                        Text(if (onMac) txt.macPanelSubtitle else txt.panelSubtitle, color = P.muted, fontSize = 14.sp)
                     }
                     Column(horizontalAlignment = Alignment.End) {
-                        Text("%02d:%02d".format(t.hour, t.minute), color = C.text, fontSize = 36.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
-                        Text(fmtDateLong(t), color = C.muted, fontSize = 14.sp)
+                        Text("%02d:%02d".format(t.hour, t.minute), color = P.text, fontSize = 36.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+                        Text(fmtDateLong(t), color = P.muted, fontSize = 14.sp)
                     }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
@@ -139,30 +145,30 @@ internal fun Panel(port: Int, status: StatusSnapshot?, controls: WidgetControls)
                             val pct = own?.percent ?: u?.sevenDay?.percent
                             val down = status?.down?.contains(m) == true
                             Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Text(fmtPct(pct), color = if (own != null && pct != null) C.level(pct) else C.muted, fontSize = 22.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
-                                Bar(pct, if (own != null && pct != null) C.level(pct) else C.dim, Modifier.fillMaxWidth(0.8f), 7)
+                                Text(fmtPct(pct), color = if (own != null && pct != null) C.level(pct) else P.muted, fontSize = 22.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+                                Bar(pct, if (own != null && pct != null) C.level(pct) else P.dim, Modifier.fillMaxWidth(0.8f), 7)
                                 Mascot(Modifier.fillMaxWidth(0.55f), model = m, alive = !down, seed = i, feel = feelOf(u, m))
-                                Text(m, color = if (down) C.bad else C.text, fontSize = 18.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+                                Text(m, color = if (down) C.bad else P.text, fontSize = 18.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
                             }
                         }
                     }
-                    Text(txt.panelModelsHint, color = C.dim, fontSize = 12.sp, modifier = Modifier.padding(top = 10.dp))
+                    Text(txt.panelModelsHint, color = P.dim, fontSize = 12.sp, modifier = Modifier.padding(top = 10.dp))
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
                     Card(Modifier.weight(1f), "Status", "status.claude.com") {
                         when {
-                            status == null -> Text(txt.checkingStatus, color = C.muted, fontSize = 14.sp)
+                            status == null -> Text(txt.checkingStatus, color = P.muted, fontSize = 14.sp)
                             status.incidents.isEmpty() -> Text("● ${txt.allOperational}", color = C.ok, fontSize = 14.sp)
                             else -> status.incidents.take(4).forEach { Text("● ${it.name}", color = C.warn, fontSize = 14.sp, modifier = Modifier.clickable { open(it.url) }) }
                         }
                     }
                     Card(Modifier.weight(1f), txt.panelNews, "anthropic.com/news") {
                         val list = news
-                        if (list == null) Text(txt.loadingNews, color = C.muted, fontSize = 14.sp)
+                        if (list == null) Text(txt.loadingNews, color = P.muted, fontSize = 14.sp)
                         else list.take(4).forEach { n ->
                             Row(Modifier.fillMaxWidth().clickable { open(n.link) }, verticalAlignment = Alignment.Top) {
-                                Text(n.title, color = C.text, fontSize = 14.sp, modifier = Modifier.weight(1f))
-                                Text(fmtShortDate(n.date), color = C.dim, fontSize = 12.sp, modifier = Modifier.padding(start = 10.dp))
+                                Text(n.title, color = P.text, fontSize = 14.sp, modifier = Modifier.weight(1f))
+                                Text(fmtShortDate(n.date), color = P.dim, fontSize = 12.sp, modifier = Modifier.padding(start = 10.dp))
                             }
                         }
                     }
@@ -172,9 +178,11 @@ internal fun Panel(port: Int, status: StatusSnapshot?, controls: WidgetControls)
                     val peak = history.mapNotNull { it.p5 }.maxOrNull()
                     Text(
                         if (history.isEmpty()) txt.noSamples else listOfNotNull(txt.samples(history.size), peak?.let { txt.peak5h(fmtPct(it)) }).joinToString(" · "),
-                        color = C.dim, fontSize = 12.sp,
+                        color = P.dim, fontSize = 12.sp,
                     )
                 }
+                val agOn by Antigravity.enabled.collectAsState()
+                if (agOn) Themed(Tool.ANTIGRAVITY) { AgSection(now) }
                 Row(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
                     Card(Modifier.weight(0.8f), txt.panelClaude) {
                         if (u != null) Text(txt.updatedAgo(fmtAgo(now - at)), color = C.ok, fontSize = 14.sp)
@@ -189,6 +197,13 @@ internal fun Panel(port: Int, status: StatusSnapshot?, controls: WidgetControls)
                         controls.autostart?.let { Toggle(if (onMac) txt.macAutostart else txt.trayAutostart, it, controls.setAutostart) }
                         if (!onMac) Toggle(txt.trayMusic, controls.dance, controls.setDance)
                         Toggle(txt.alerts, p.alerts) { v -> savePrefs { it.copy(alerts = v) } }
+                        val claudeOn by Tools.claude.collectAsState()
+                        val theme by Tools.theme.collectAsState()
+                        Label(txt.tools)
+                        Toggle(txt.toolClaude, claudeOn, Tools::setClaude)
+                        Toggle(txt.toolAntigravity, agOn, Antigravity::setEnabled)
+                        Label(txt.theme)
+                        Pills(ToolTheme.entries.map { it to txt.label(it) }, theme, Tools::setTheme)
                         Label(txt.mascot)
                         Pills(Species.entries.filter { it != Species.CLAWD || p.clawdUnlocked }.map { it to txt.label(it) }, p.mascot()) { s -> savePrefs { it.copy(species = s) } }
                         Label(txt.accessories)
@@ -205,10 +220,10 @@ internal fun Panel(port: Int, status: StatusSnapshot?, controls: WidgetControls)
                     if (sharing) Row(horizontalArrangement = Arrangement.spacedBy(22.dp), verticalAlignment = Alignment.CenterVertically) {
                         Qr(Modifier.size(170.dp), Share.pairUri())
                         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Text(txt.shareHint, color = C.muted, fontSize = 13.sp)
-                            Share.addresses().forEach { Text("http://$it:${Share.port}", color = C.dim, fontSize = 12.sp) }
+                            Text(txt.shareHint, color = P.muted, fontSize = 13.sp)
+                            Share.addresses().forEach { Text("http://$it:${Share.port}", color = P.dim, fontSize = 12.sp) }
                         }
-                    } else Text(txt.shareOff, color = C.dim, fontSize = 12.sp)
+                    } else Text(txt.shareOff, color = P.dim, fontSize = 12.sp)
                 }
                 val watching by Claude.watching.collectAsState()
                 val showFile by Claude.showFile.collectAsState()
@@ -222,7 +237,7 @@ internal fun Panel(port: Int, status: StatusSnapshot?, controls: WidgetControls)
                             scope.launch { withContext(Dispatchers.IO) { Claude.setWatching(v, port) }; installing.value = false }
                         }
                     }
-                    Text(if (installing.value) txt.desktopRefreshing else txt.activityHint, color = C.muted, fontSize = 13.sp)
+                    Text(if (installing.value) txt.desktopRefreshing else txt.activityHint, color = P.muted, fontSize = 13.sp)
                     if (watching) {
                         Toggle(txt.activityNotify, notifying, Claude::setNotifying)
                         Toggle(txt.activityFile, showFile, Claude::setShowFile)
@@ -233,17 +248,79 @@ internal fun Panel(port: Int, status: StatusSnapshot?, controls: WidgetControls)
                     Row(horizontalArrangement = Arrangement.spacedBy(22.dp), verticalAlignment = Alignment.CenterVertically) {
                         Qr(Modifier.size(128.dp).clickable { Promo.open() })
                         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Text("Banditboard ${System.getProperty("jpackage.app-version").orEmpty()}".trim(), color = C.text, fontSize = 18.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
-                            Text(txt.createdBy, color = C.clawd, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-                            Text(txt.mascotRacco, color = C.muted, fontSize = 13.sp)
-                            Text(txt.promoBody, color = C.muted, fontSize = 13.sp)
-                            Text(txt.promoScan, color = C.dim, fontSize = 12.sp)
-                            Text(txt.fanProject, color = C.dim, fontSize = 12.sp)
+                            Text("Banditboard ${System.getProperty("jpackage.app-version").orEmpty()}".trim(), color = P.text, fontSize = 18.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+                            Text(txt.createdBy, color = P.accent, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                            Text(txt.mascotRacco, color = P.muted, fontSize = 13.sp)
+                            Text(txt.promoBody, color = P.muted, fontSize = 13.sp)
+                            Text(txt.promoScan, color = P.dim, fontSize = 12.sp)
+                            Text(txt.fanProject, color = P.dim, fontSize = 12.sp)
                         }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun AgSection(now: Long) {
+    val snap by Antigravity.snapshot.collectAsState()
+    val open by Antigravity.open.collectAsState()
+    val at by Antigravity.lastAt.collectAsState()
+    val history by AgHistory.samples.collectAsState()
+    val s = snap
+    val shape = RoundedCornerShape(22.dp)
+    Column(
+        Modifier.fillMaxWidth().clip(shape).background(P.bg).border(1.dp, P.line, shape).padding(18.dp),
+        verticalArrangement = Arrangement.spacedBy(18.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Mascot(Modifier.width(56.dp), reserveTop = false, wear = AgFamily.PRO.accessory, feel = agFeel(s?.worst()))
+            Column(Modifier.padding(start = 14.dp).weight(1f)) {
+                Text(txt.toolAntigravity, color = P.text, fontSize = 26.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+                val line = when {
+                    !open && s == null -> txt.agWaiting
+                    !open -> txt.agClosed
+                    else -> listOfNotNull(s?.plan?.let { txt.agPlan(it) }, txt.agUpdatedAgo(fmtAgo(now - at))).joinToString(" · ")
+                }
+                Text(line, color = if (open) C.ok else P.muted, fontSize = 14.sp)
+            }
+        }
+        if (s != null) {
+            Row(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
+                AgPool.entries.forEach { pool ->
+                    s.pool(pool)?.let { m ->
+                        val window = if (m.kind == AlertKind.SESSION) txt.sessionWindow else txt.weekWindow
+                        UsageCard(Modifier.weight(1f), txt.label(pool), window, UsageWindow(m.percent, m.resetsAt), emptyList(), now)
+                    }
+                }
+            }
+            Card(Modifier.fillMaxWidth(), txt.panelModels) {
+                Row(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(28.dp)) {
+                    AgFamily.entries.filter { s.family(it) != null }.forEachIndexed { i, f ->
+                        val pct = s.family(f)?.percent
+                        Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(fmtPct(pct), color = pct?.let { C.level(it) } ?: P.muted, fontSize = 22.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+                            Bar(pct, pct?.let { C.level(it) } ?: P.dim, Modifier.fillMaxWidth(0.8f), 7)
+                            Mascot(Modifier.fillMaxWidth(0.55f), seed = i, wear = f.accessory, feel = agFeel(pct))
+                            Text(f.label, color = P.text, fontSize = 18.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+                        }
+                    }
+                }
+                Text(txt.agModelsHint, color = P.dim, fontSize = 12.sp, modifier = Modifier.padding(top = 10.dp))
+                FlowRow(Modifier.padding(top = 6.dp), horizontalArrangement = Arrangement.spacedBy(18.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    s.models.sortedBy { it.label }.forEach { m ->
+                        val reset = m.resetsAt?.let { " · ${fmtLeft(it - now)}" }.orEmpty()
+                        Text("● ${m.label} ${fmtPct(m.percent)}$reset", color = if (m.percent > 0) C.level(m.percent) else P.muted, fontSize = 13.sp)
+                    }
+                }
+            }
+            Card(Modifier.fillMaxWidth(), txt.last7Days) {
+                Chart(history.map { Triple(it.t, it.p5, it.p7) }, now, txt.label(AgPool.GEMINI), txt.label(AgPool.OTHERS))
+                Text(if (history.isEmpty()) txt.noSamples else txt.samples(history.size), color = P.dim, fontSize = 12.sp)
+            }
+        }
+        Text(txt.agPanelHint, color = P.dim, fontSize = 12.sp)
     }
 }
 
@@ -256,12 +333,12 @@ private fun open(url: String?) {
 private fun Card(modifier: Modifier, title: String, sub: String? = null, content: @Composable ColumnScope.() -> Unit) {
     val shape = RoundedCornerShape(18.dp)
     Column(
-        modifier.clip(shape).background(C.card).border(1.dp, C.line, shape).padding(22.dp),
+        modifier.clip(shape).background(P.card).border(1.dp, P.line, shape).padding(22.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Row(verticalAlignment = Alignment.Bottom) {
-            Text(title, color = C.clawd, fontSize = 19.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
-            sub?.let { Text(it, color = C.dim, fontSize = 13.sp, modifier = Modifier.padding(start = 10.dp, bottom = 2.dp)) }
+            Text(title, color = P.accent, fontSize = 19.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+            sub?.let { Text(it, color = P.dim, fontSize = 13.sp, modifier = Modifier.padding(start = 10.dp, bottom = 2.dp)) }
         }
         content()
     }
@@ -269,7 +346,7 @@ private fun Card(modifier: Modifier, title: String, sub: String? = null, content
 
 @Composable
 private fun Bar(pct: Double?, color: Color, modifier: Modifier, height: Int) {
-    Box(modifier.height(height.dp).clip(CircleShape).background(C.track)) {
+    Box(modifier.height(height.dp).clip(CircleShape).background(P.track)) {
         if (pct != null) Box(Modifier.fillMaxWidth((pct / 100).toFloat().coerceIn(0.02f, 1f)).height(height.dp).clip(CircleShape).background(color))
     }
 }
@@ -278,36 +355,36 @@ private fun Bar(pct: Double?, color: Color, modifier: Modifier, height: Int) {
 private fun UsageCard(modifier: Modifier, title: String, window: String, w: UsageWindow?, scoped: List<ScopedLimit>, now: Long) {
     val shape = RoundedCornerShape(18.dp)
     val pct = w?.percent
-    Column(modifier.clip(shape).background(C.card).border(1.dp, C.line, shape).padding(24.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    Column(modifier.clip(shape).background(P.card).border(1.dp, P.line, shape).padding(24.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(verticalAlignment = Alignment.Bottom) {
-            Text(title, color = C.text, fontSize = 22.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
-            Text(window, color = C.dim, fontSize = 13.sp, modifier = Modifier.padding(start = 8.dp, bottom = 3.dp))
+            Text(title, color = P.text, fontSize = 22.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+            Text(window, color = P.dim, fontSize = 13.sp, modifier = Modifier.padding(start = 8.dp, bottom = 3.dp))
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(fmtPct(pct), color = pct?.let { C.level(it) } ?: C.dim, fontSize = 72.sp, fontFamily = Fredoka, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+            Text(fmtPct(pct), color = pct?.let { C.level(it) } ?: P.dim, fontSize = 72.sp, fontFamily = Fredoka, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
             w?.resetsAt?.let {
                 Column(horizontalAlignment = Alignment.End) {
-                    Text(txt.resetsIn, color = C.muted, fontSize = 13.sp)
-                    Text(fmtLeft(it - now), color = C.text, fontSize = 30.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
-                    Text(fmtAt(it, now), color = C.muted, fontSize = 13.sp)
+                    Text(txt.resetsIn, color = P.muted, fontSize = 13.sp)
+                    Text(fmtLeft(it - now), color = P.text, fontSize = 30.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+                    Text(fmtAt(it, now), color = P.muted, fontSize = 13.sp)
                 }
             }
         }
-        Bar(pct, pct?.let { C.level(it) } ?: C.dim, Modifier.fillMaxWidth(), 14)
+        Bar(pct, pct?.let { C.level(it) } ?: P.dim, Modifier.fillMaxWidth(), 14)
         scoped.forEach { s -> Text("● ${s.label} ${fmtPct(s.percent)}", color = C.level(s.percent), fontSize = 13.sp) }
     }
 }
 
 @Composable
-private fun Chart(points: List<Triple<Long, Double?, Double?>>, now: Long) {
+private fun Chart(points: List<Triple<Long, Double?, Double?>>, now: Long, first: String = txt.session, second: String = txt.week) {
     val measurer = rememberTextMeasurer()
-    val label = TextStyle(color = C.dim, fontSize = 11.sp)
-    val grid = C.line
-    val coral = C.clawd
+    val label = TextStyle(color = P.dim, fontSize = 11.sp)
+    val grid = P.line
+    val coral = P.accent
     Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
-        Text("— ${txt.session}", color = coral, fontSize = 12.sp)
+        Text("— $first", color = coral, fontSize = 12.sp)
         Spacer(Modifier.width(14.dp))
-        Text("— ${txt.week}", color = LAV, fontSize = 12.sp)
+        Text("— $second", color = LAV, fontSize = 12.sp)
     }
     Canvas(Modifier.fillMaxWidth().height(230.dp)) {
         val left = 44f
@@ -346,7 +423,7 @@ private fun Chart(points: List<Triple<Long, Double?, Double?>>, now: Long) {
 
 @Composable
 private fun Label(text: String) {
-    Text(text, color = C.muted, fontSize = 13.sp, modifier = Modifier.padding(top = 6.dp))
+    Text(text, color = P.muted, fontSize = 13.sp, modifier = Modifier.padding(top = 6.dp))
 }
 
 @Composable
@@ -355,8 +432,8 @@ private fun <T> Pills(options: List<Pair<T, String>>, selected: T, onPick: (T) -
         options.forEach { (value, name) ->
             val on = value == selected
             Text(
-                name, color = if (on) C.bg else C.muted, fontSize = 13.sp,
-                modifier = Modifier.clip(RoundedCornerShape(50)).background(if (on) C.text else C.card2).clickable { onPick(value) }
+                name, color = if (on) P.bg else P.muted, fontSize = 13.sp,
+                modifier = Modifier.clip(RoundedCornerShape(50)).background(if (on) P.text else P.card2).clickable { onPick(value) }
                     .padding(horizontal = 12.dp, vertical = 6.dp),
             )
         }
@@ -366,7 +443,7 @@ private fun <T> Pills(options: List<Pair<T, String>>, selected: T, onPick: (T) -
 @Composable
 internal fun Toggle(title: String, checked: Boolean, onChange: (Boolean) -> Unit) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text(title, color = C.text, fontSize = 14.sp, modifier = Modifier.weight(1f))
-        Switch(checked, onChange, colors = SwitchDefaults.colors(checkedTrackColor = C.clawd))
+        Text(title, color = P.text, fontSize = 14.sp, modifier = Modifier.weight(1f))
+        Switch(checked, onChange, colors = SwitchDefaults.colors(checkedTrackColor = P.accent))
     }
 }

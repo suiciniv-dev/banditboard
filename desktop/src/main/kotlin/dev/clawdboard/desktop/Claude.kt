@@ -111,17 +111,17 @@ fun ActivityLine(fontSize: TextUnit = 11.sp, modifier: Modifier = Modifier) {
     val s = list.primary()
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         val dot = when {
-            s == null || s.act == Act.IDLE -> C.dim
+            s == null || s.act == Act.IDLE -> P.dim
             s.attention -> C.warn
             s.act == Act.ERROR -> C.bad
             s.act == Act.FINISHED -> C.ok
-            else -> C.clawd
+            else -> P.accent
         }
         androidx.compose.foundation.layout.Box(Modifier.size(7.dp).background(dot, CircleShape))
         Spacer(Modifier.width(6.dp))
         Text(
             s?.let { Claude.line(it, file) } ?: txt.activityNone,
-            color = if (s?.attention == true) C.warn else C.muted, fontSize = fontSize, maxLines = 1, overflow = TextOverflow.Ellipsis,
+            color = if (s?.attention == true) C.warn else P.muted, fontSize = fontSize, maxLines = 1, overflow = TextOverflow.Ellipsis,
         )
     }
 }

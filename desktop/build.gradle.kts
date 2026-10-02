@@ -7,7 +7,7 @@ plugins {
 }
 
 val shared = listOf(
-    "core/Activity.kt", "core/Seal.kt", "core/Alerts.kt", "core/Http.kt", "core/Look.kt", "core/StatusApi.kt", "core/Models.kt", "core/Push.kt", "core/Settings.kt", "core/Texts.kt",
+    "core/Activity.kt", "core/Seal.kt", "core/Alerts.kt", "core/Http.kt", "core/Look.kt", "core/StatusApi.kt", "core/Models.kt", "core/Push.kt", "core/Settings.kt", "core/Texts.kt", "core/Antigravity.kt",
     "ui/Colors.kt", "ui/Format.kt", "ui/Mascot.kt",
 )
 
@@ -41,7 +41,7 @@ compose.desktop {
             targetFormats(TargetFormat.Msi, TargetFormat.Exe, TargetFormat.Dmg)
             modules("java.instrument", "jdk.httpserver", "jdk.unsupported")
             packageName = "Banditboard"
-            packageVersion = "1.15.1"
+            packageVersion = "1.16.0"
             vendor = "suiciniv-dev"
             windows {
                 perUserInstall = true

@@ -58,7 +58,7 @@ const val FUR = 0xFFEEE7DB
 const val MASK = 0xFF4A413B
 const val NOSE = 0xFF0C0A08
 
-enum class Accessory { TOP_HAT, GLASSES, HEADPHONES, SPROUT, CROWN, SANTA }
+enum class Accessory { TOP_HAT, GLASSES, HEADPHONES, SPROUT, CROWN, SANTA, STAR, BOLT, BEANIE }
 
 enum class Mood { NORMAL, SLEEPY, SWEATY, EXHAUSTED }
 
@@ -122,6 +122,11 @@ private const val STEM = 0xFF5E8A4A
 private const val RED = 0xFFD6455D
 private const val WHITE = 0xFFF3EFEA
 private const val RUBY = 0xFFE5604D
+private const val STAR_BLUE = 0xFF8AB4F8
+private const val STAR_CORE = 0xFFDCE7FD
+private const val BEANIE_GREEN = 0xFF4F8F82
+private const val BEANIE_RIM = 0xFF2F5F55
+private const val POMPOM = 0xFFCFE9E2
 
 fun accessoryFor(skin: Skin, model: String?): Accessory? = when (skin) {
     Skin.CLASSIC -> null
@@ -193,6 +198,15 @@ private fun raccoonAccessory(a: Accessory): List<Px> = when (a) {
     )
     Accessory.SANTA -> listOf(
         Px(4, 2, 8, 1, RED), Px(6, 1, 5, 1, RED), Px(9, 0, 3, 1, RED), Px(12, 0, 2, 2, WHITE), Px(4, 3, 8, 1, WHITE),
+    )
+    Accessory.STAR -> listOf(
+        Px(7, 0, 2, 4, STAR_BLUE), Px(5, 1, 6, 2, STAR_BLUE), Px(7, 1, 2, 2, STAR_CORE),
+    )
+    Accessory.BOLT -> listOf(
+        Px(9, 0, 2, 1, GOLD), Px(8, 1, 2, 1, GOLD), Px(7, 2, 4, 1, GOLD), Px(7, 3, 2, 1, GOLD),
+    )
+    Accessory.BEANIE -> listOf(
+        Px(5, 1, 6, 2, BEANIE_GREEN), Px(7, 0, 2, 1, POMPOM), Px(4, 3, 8, 1, BEANIE_RIM),
     )
 }
 

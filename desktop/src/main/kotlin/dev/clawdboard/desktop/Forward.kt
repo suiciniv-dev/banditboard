@@ -10,6 +10,7 @@ import kotlin.concurrent.thread
 
 object Forward {
     private const val GAP_MS = 3_000L
+    private const val MAX_BLOB = 11_000
     private val targets = File(Hook.claudeDir, "clawdboard-targets.json")
     private val lock = Object()
     private var dirty = false
@@ -20,7 +21,9 @@ object Forward {
         val o = Store.get("last")?.let { runCatching { JSONObject(it) }.getOrNull() } ?: JSONObject()
         Store.get("lastAt")?.toLongOrNull()?.let { o.put("usage_at", it) }
         val activity = if (Claude.watching.value) activityJson(Claude.sessions.value, now, Claude.showFile.value) else JSONObject().put("off", true)
-        return o.put("activity", activity)
+        o.put("activity", activity)
+        Antigravity.phoneJson()?.let { o.put("antigravity", it) }
+        return o
     }
 
     fun changed() {
@@ -59,7 +62,11 @@ object Forward {
             val headers = mapOf("Content-Type" to "application/json", "X-Clawdboard" to "1", "X-Clawdboard-Key" to key)
             runCatching {
                 if (enc != null) {
-                    val sealed = JSONObject().put("blob", Seal.close(plain, enc)).put("lvl", Seal.level(body)).toString()
+                    val blob = Seal.close(plain, enc).let { b ->
+                        if (b.length <= MAX_BLOB || !body.has("antigravity")) b
+                        else Seal.close(JSONObject(plain).apply { remove("antigravity") }.toString(), enc)
+                    }
+                    val sealed = JSONObject().put("blob", blob).put("lvl", Seal.level(body)).toString()
                     httpRequest("$url/push", "POST", headers, sealed, 8_000)
                 } else {
                     httpRequest("$url/api/push", "POST", headers, plain, 4_000)

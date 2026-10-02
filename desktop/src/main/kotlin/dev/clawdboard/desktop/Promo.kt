@@ -72,17 +72,17 @@ internal fun Qr(modifier: Modifier, text: String = Promo.URL) {
 
 @Composable
 internal fun PromoCard(onLater: () -> Unit, onNever: () -> Unit) {
-    Box(Modifier.fillMaxSize().padding(8.dp).shadow(10.dp, RoundedCornerShape(22.dp)).clip(RoundedCornerShape(22.dp)).background(C.bg)) {
+    Box(Modifier.fillMaxSize().padding(8.dp).shadow(10.dp, RoundedCornerShape(22.dp)).clip(RoundedCornerShape(22.dp)).background(P.bg)) {
         Row(Modifier.fillMaxSize().padding(16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Qr(Modifier.size(118.dp).clickable { Promo.open() })
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(txt.promoTitle, color = C.text, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
-                Text(txt.promoBody, color = C.muted, fontSize = 12.sp, lineHeight = 16.sp)
-                Text(txt.promoScan, color = C.dim, fontSize = 11.sp)
+                Text(txt.promoTitle, color = P.text, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                Text(txt.promoBody, color = P.muted, fontSize = 12.sp, lineHeight = 16.sp)
+                Text(txt.promoScan, color = P.dim, fontSize = 11.sp)
                 Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                    Text(txt.promoOpen, color = C.clawd, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { Promo.open(); onLater() })
-                    Text(txt.promoLater, color = C.muted, fontSize = 12.sp, modifier = Modifier.clickable(onClick = onLater))
-                    Text(txt.promoNever, color = C.dim, fontSize = 12.sp, modifier = Modifier.clickable(onClick = onNever))
+                    Text(txt.promoOpen, color = P.accent, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { Promo.open(); onLater() })
+                    Text(txt.promoLater, color = P.muted, fontSize = 12.sp, modifier = Modifier.clickable(onClick = onLater))
+                    Text(txt.promoNever, color = P.dim, fontSize = 12.sp, modifier = Modifier.clickable(onClick = onNever))
                 }
             }
         }

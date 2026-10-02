@@ -4,12 +4,11 @@ import dev.clawdboard.core.Sample
 import dev.clawdboard.core.UsageSnapshot
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONArray
+import org.json.JSONObject
 import java.io.File
 
-object DeskHistory {
-    private const val WEEK = 7 * 86_400_000L
-    private const val STEP = 30 * 60_000L
-    private val file = File(Store.dir, "history.json")
+class SampleLog(name: String) {
+    private val file = File(Store.dir, name)
     val samples = MutableStateFlow(load())
 
     private fun load(): List<Sample> = runCatching {
@@ -20,15 +19,24 @@ object DeskHistory {
         }
     }.getOrDefault(emptyList())
 
+    fun record(snap: UsageSnapshot) = record(snap.fetchedAt, snap.fiveHour?.percent, snap.sevenDay?.percent)
+
     @Synchronized
-    fun record(snap: UsageSnapshot) {
-        val now = snap.fetchedAt
+    fun record(now: Long, p5: Double?, p7: Double?) {
         val list = samples.value
         if (list.isNotEmpty() && now - list.last().t < STEP) return
-        val next = (list + Sample(now, snap.fiveHour?.percent, snap.sevenDay?.percent)).filter { now - it.t <= WEEK }
+        val next = (list + Sample(now, p5, p7)).filter { now - it.t <= WEEK }
         val a = JSONArray()
-        next.forEach { a.put(JSONArray().put(it.t).put(it.p5 ?: Double.NaN).put(it.p7 ?: Double.NaN)) }
+        next.forEach { a.put(JSONArray().put(it.t).put(it.p5 ?: JSONObject.NULL).put(it.p7 ?: JSONObject.NULL)) }
         runCatching { file.writeText(a.toString()) }
         samples.value = next
     }
+
+    private companion object {
+        const val WEEK = 7 * 86_400_000L
+        const val STEP = 30 * 60_000L
+    }
 }
+
+val DeskHistory = SampleLog("history.json")
+val AgHistory = SampleLog("history-ag.json")

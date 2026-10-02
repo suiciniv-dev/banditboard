@@ -1,0 +1,399 @@
+{
+  "userStatus": {
+    "name": "Fulano de Tal",
+    "email": "fulano@example.com",
+    "planStatus": {
+      "planInfo": {
+        "teamsTier": "TEAMS_TIER_PRO",
+        "planName": "Pro",
+        "hasAutocompleteFastMode": true,
+        "allowStickyPremiumModels": true,
+        "allowPremiumCommandModels": true,
+        "hasTabToJump": true,
+        "maxNumPremiumChatMessages": "-1",
+        "maxNumChatInputTokens": "16384",
+        "maxCustomChatInstructionCharacters": "600",
+        "maxNumPinnedContextItems": "-1",
+        "maxLocalIndexSize": "-1",
+        "monthlyPromptCredits": 50000,
+        "monthlyFlowCredits": 150000,
+        "monthlyFlexCreditPurchaseAmount": 25000,
+        "canBuyMoreCredits": true,
+        "cascadeWebSearchEnabled": true,
+        "canCustomizeAppIcon": true,
+        "cascadeCanAutoRunCommands": true,
+        "canGenerateCommitMessages": true,
+        "knowledgeBaseEnabled": true,
+        "defaultTeamConfig": {
+          "allowMcpServers": true,
+          "allowAutoRunCommands": true,
+          "allowBrowserExperimentalFeatures": true
+        },
+        "canAllowCascadeInBackground": true,
+        "browserEnabled": true
+      },
+      "availablePromptCredits": 500,
+      "availableFlowCredits": 100
+    },
+    "cascadeModelConfigData": {
+      "clientModelConfigs": [
+        {
+          "label": "Gemini 3.7 Flash (High)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M298"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-10-09T10:27:50Z"
+          },
+          "tagTitle": "Fast",
+          "tagDescription": "Limited time",
+          "modelId": "gemini-3.7-flash-high"
+        },
+        {
+          "label": "Gemini 3.7 Flash (Medium)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M299"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-10-09T10:27:50Z"
+          },
+          "tagTitle": "Fast",
+          "tagDescription": "Limited time",
+          "modelId": "gemini-3.7-flash-medium"
+        },
+        {
+          "label": "Gemini 3.6 Flash (High)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M71"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-10-09T10:27:50Z"
+          },
+          "tagTitle": "Fast",
+          "tagDescription": "Limited time",
+          "modelId": "gemini-3.6-flash-high"
+        },
+        {
+          "label": "Gemini 3.6 Flash (Low)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M73"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-10-09T10:27:50Z"
+          },
+          "tagTitle": "Fast",
+          "tagDescription": "Limited time",
+          "modelId": "gemini-3.6-flash-low"
+        },
+        {
+          "label": "Gemini 3.1 Pro (High)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M16"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-10-09T10:27:50Z"
+          },
+          "modelId": "gemini-pro-agent"
+        },
+        {
+          "label": "Gemini 3.8 Flash (Low)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M320"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-10-09T10:27:50Z"
+          },
+          "tagTitle": "Fast",
+          "tagDescription": "Limited time",
+          "modelId": "gemini-3.8-flash-low"
+        },
+        {
+          "label": "Gemini 3.7 Flash (Low)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M300"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-10-09T10:27:50Z"
+          },
+          "tagTitle": "Fast",
+          "tagDescription": "Limited time",
+          "modelId": "gemini-3.7-flash-low"
+        },
+        {
+          "label": "Gemini 3.6 Flash (Medium)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M72"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-10-09T10:27:50Z"
+          },
+          "tagTitle": "Fast",
+          "tagDescription": "Limited time",
+          "modelId": "gemini-3.6-flash-medium"
+        },
+        {
+          "label": "Gemini 3.1 Pro (Low)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M36"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-10-09T10:27:50Z"
+          },
+          "modelId": "gemini-3.1-pro-low"
+        },
+        {
+          "label": "Claude Sonnet 4.6 (Thinking)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M35"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-10-09T10:27:50Z"
+          },
+          "modelId": "claude-sonnet-4-6"
+        },
+        {
+          "label": "Claude Opus 4.6 (Thinking)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M26"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-10-09T10:27:50Z"
+          },
+          "modelId": "claude-opus-4-6-thinking"
+        },
+        {
+          "label": "GPT-OSS 120B (Medium)",
+          "modelOrAlias": {
+            "model": "MODEL_OPENAI_GPT_OSS_120B_MEDIUM"
+          },
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-10-09T10:27:50Z"
+          },
+          "modelId": "gpt-oss-120b-medium"
+        },
+        {
+          "label": "Gemini 3.8 Flash (High)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M318"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-10-09T10:27:50Z"
+          },
+          "tagTitle": "Fast",
+          "tagDescription": "Limited time",
+          "modelId": "gemini-3.8-flash-high"
+        },
+        {
+          "label": "Gemini 3.8 Flash (Medium)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M319"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-10-09T10:27:50Z"
+          },
+          "tagTitle": "Fast",
+          "tagDescription": "Limited time",
+          "modelId": "gemini-3.8-flash-medium"
+        }
+      ],
+      "clientModelSorts": [
+        {
+          "name": "Recommended",
+          "groups": [
+            {
+              "modelLabels": [
+                "Gemini 3.8 Flash (High)",
+                "Gemini 3.8 Flash (Medium)",
+                "Gemini 3.8 Flash (Low)",
+                "Gemini 3.7 Flash (High)",
+                "Gemini 3.7 Flash (Medium)",
+                "Gemini 3.7 Flash (Low)",
+                "Gemini 3.6 Flash (High)",
+                "Gemini 3.6 Flash (Medium)",
+                "Gemini 3.6 Flash (Low)",
+                "Gemini 3.1 Pro (High)",
+                "Gemini 3.1 Pro (Low)",
+                "Claude Sonnet 4.6 (Thinking)",
+                "Claude Opus 4.6 (Thinking)",
+                "GPT-OSS 120B (Medium)"
+              ]
+            }
+          ]
+        }
+      ],
+      "defaultOverrideModelConfig": {
+        "modelOrAlias": {
+          "model": "MODEL_PLACEHOLDER_M318"
+        }
+      }
+    },
+    "acceptedLatestTermsOfService": true,
+    "userTier": {
+      "id": "g1-plus-tier",
+      "name": "Google AI Plus",
+      "description": "Antigravity Starter Quota",
+      "upgradeSubscriptionUri": "https://antigravity.google/g1-upgrade",
+      "upgradeSubscriptionText": "Google AI Plus users receive the minimum base limits on Antigravity. You can upgrade to Google AI Pro or above to receive higher rate limits.",
+      "availableCredits": [
+        {
+          "creditType": "GOOGLE_ONE_AI",
+          "minimumCreditAmountForUsage": "50"
+        }
+      ]
+    },
+    "profilePictureUrl": "data:image/png;base64,AAAA"
+  }
+}

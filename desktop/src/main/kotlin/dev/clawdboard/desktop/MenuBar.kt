@@ -40,6 +40,7 @@ import androidx.compose.ui.window.Notification
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
+import dev.clawdboard.core.Tool
 import dev.clawdboard.core.BANDIT
 import dev.clawdboard.core.FUR
 import dev.clawdboard.core.MASK
@@ -229,8 +230,8 @@ private fun ApplicationScope.Popover(
             window.toFront()
             window.requestFocus()
         }
-        Box(Modifier.fillMaxSize().padding(8.dp).shadow(12.dp, RoundedCornerShape(16.dp)).clip(RoundedCornerShape(16.dp)).background(C.bg)) {
-            Card(port, widget, onWidget, { close(); onPanel() }, onQuit)
+        Box(Modifier.fillMaxSize().padding(8.dp).shadow(12.dp, RoundedCornerShape(16.dp)).clip(RoundedCornerShape(16.dp)).background(P.bg)) {
+            Themed(Tool.CLAUDE) { Card(port, widget, onWidget, { close(); onPanel() }, onQuit) }
         }
     }
 }
@@ -251,9 +252,9 @@ private fun Card(port: Int, widget: Boolean, onWidget: (Boolean) -> Unit, onPane
     CompositionLocalProvider(LocalLook provides look) {
         Column(Modifier.fillMaxSize().padding(horizontal = 18.dp, vertical = 14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Banditboard", color = C.text, fontSize = 16.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
+                Text("Banditboard", color = P.text, fontSize = 16.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.weight(1f))
-                if (u != null) Text(txt.updatedAgo(fmtAgo(now - at)), color = C.dim, fontSize = 11.sp)
+                if (u != null) Text(txt.updatedAgo(fmtAgo(now - at)), color = P.dim, fontSize = 11.sp)
             }
             ActivityLine(12.sp)
             Meter(txt.session, u?.fiveHour, now, small = true)
@@ -265,9 +266,9 @@ private fun Card(port: Int, widget: Boolean, onWidget: (Boolean) -> Unit, onPane
                     val pct = own?.percent ?: u.sevenDay?.percent
                     Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                         Mascot(Modifier.fillMaxWidth(0.8f), model = m, seed = i, feel = feelOf(u, m, Claude.react(m, list, now, on)))
-                        Text(m, color = C.muted, fontSize = 11.sp, fontFamily = Fredoka)
+                        Text(m, color = P.muted, fontSize = 11.sp, fontFamily = Fredoka)
                         Text(
-                            fmtPct(pct), color = if (own != null && pct != null) C.level(pct) else C.dim,
+                            fmtPct(pct), color = if (own != null && pct != null) C.level(pct) else P.dim,
                             fontSize = 12.sp, fontFamily = Fredoka, fontWeight = FontWeight.SemiBold,
                         )
                     }
@@ -275,7 +276,7 @@ private fun Card(port: Int, widget: Boolean, onWidget: (Boolean) -> Unit, onPane
             }
             Spacer(Modifier.weight(1f))
             Toggle(txt.macWidget, widget, onWidget)
-            Box(Modifier.fillMaxWidth().height(1.dp).background(C.line))
+            Box(Modifier.fillMaxWidth().height(1.dp).background(P.line))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Link(txt.trayPanel, onPanel)
                 Link(if (busy) txt.desktopRefreshing else txt.desktopRefresh) {
@@ -292,5 +293,5 @@ private fun Card(port: Int, widget: Boolean, onWidget: (Boolean) -> Unit, onPane
 
 @Composable
 private fun Link(text: String, onClick: () -> Unit) {
-    Text(text, color = C.clawd, fontSize = 13.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable(onClick = onClick))
+    Text(text, color = P.accent, fontSize = 13.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable(onClick = onClick))
 }

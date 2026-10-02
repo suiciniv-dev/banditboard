@@ -286,6 +286,19 @@ interface Texts {
     val installConnected: String
     fun installBackup(path: String): String
     fun installEvery(url: String): String
+    val tools: String
+    val toolClaude: String
+    val toolAntigravity: String
+    val theme: String
+    fun label(t: ToolTheme): String
+    val agClosed: String
+    val agWaiting: String
+    val agAlertFree: String
+    val agModelsHint: String
+    fun agPlan(name: String): String
+    fun agUpdatedAgo(ago: String): String
+    fun label(p: AgPool): String
+    val agPanelHint: String
 }
 
 private fun languageLabel(l: Language, auto: String) = when (l) {
@@ -629,6 +642,26 @@ object Pt : Texts {
     override val installConnected = "Banditboard conectado ao Claude Code."
     override fun installBackup(path: String) = "Backup dos seus ajustes: $path"
     override fun installEvery(url: String) = "A cada resposta do Claude Code (VS Code ou terminal) o uso vai para o celular, no maximo a cada 2 minutos ($url)."
+    override val tools = "Ferramentas"
+    override val toolClaude = "Claude Code"
+    override val toolAntigravity = "Antigravity"
+    override val theme = "Tema"
+    override fun label(t: ToolTheme) = when (t) {
+        ToolTheme.FOLLOW -> "Segue a ferramenta"
+        ToolTheme.CLAUDE -> "Sempre o do Claude"
+        ToolTheme.BLACK -> "Preto AMOLED"
+    }
+    override val agClosed = "Antigravity fechado"
+    override val agWaiting = "Abra o Antigravity para ler a cota"
+    override val agAlertFree = "Pode voltar a usar o Antigravity."
+    override val agModelsHint = "Cada Racco mostra a cota do próprio modelo. Os Gemini dividem uma cota, e o Claude e o GPT dividem outra, como no View Usage do Antigravity."
+    override fun agPlan(name: String) = "Plano $name"
+    override fun agUpdatedAgo(ago: String) = "atualizado $ago · Antigravity"
+    override fun label(p: AgPool) = when (p) {
+        AgPool.GEMINI -> "Gemini"
+        AgPool.OTHERS -> "Claude e GPT"
+    }
+    override val agPanelHint = "Lê a cota do Antigravity aberto neste computador, só por 127.0.0.1. Para o celular vão só os percentuais, os horários e o nome do plano."
 }
 
 object En : Texts {
@@ -966,4 +999,24 @@ object En : Texts {
     override val installConnected = "Banditboard connected to Claude Code."
     override fun installBackup(path: String) = "Backup of your settings: $path"
     override fun installEvery(url: String) = "After each Claude Code response (VS Code or terminal) the usage goes to the phone, at most every 2 minutes ($url)."
+    override val tools = "Tools"
+    override val toolClaude = "Claude Code"
+    override val toolAntigravity = "Antigravity"
+    override val theme = "Theme"
+    override fun label(t: ToolTheme) = when (t) {
+        ToolTheme.FOLLOW -> "Follow the tool"
+        ToolTheme.CLAUDE -> "Always Claude"
+        ToolTheme.BLACK -> "AMOLED black"
+    }
+    override val agClosed = "Antigravity closed"
+    override val agWaiting = "Open Antigravity to read its quota"
+    override val agAlertFree = "You can use Antigravity again."
+    override val agModelsHint = "Each Racco shows its own model's quota. The Gemini models share one quota, and Claude and GPT share another, as in Antigravity's View Usage."
+    override fun agPlan(name: String) = "$name plan"
+    override fun agUpdatedAgo(ago: String) = "updated $ago · Antigravity"
+    override fun label(p: AgPool) = when (p) {
+        AgPool.GEMINI -> "Gemini"
+        AgPool.OTHERS -> "Claude and GPT"
+    }
+    override val agPanelHint = "Reads the quota of the Antigravity open on this computer, only through 127.0.0.1. Only percentages, reset times and the plan name go to the phone."
 }

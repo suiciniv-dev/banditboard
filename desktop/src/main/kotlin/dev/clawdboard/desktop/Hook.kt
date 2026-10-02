@@ -30,7 +30,7 @@ object Hook {
     val log = File(Store.dir, "conectar.log")
     val failure = MutableStateFlow<Failure?>(null)
 
-    private val powershell = File(System.getenv("SystemRoot") ?: "C:\\Windows", "System32\\WindowsPowerShell\\v1.0\\powershell.exe")
+    internal val powershell = File(System.getenv("SystemRoot") ?: "C:\\Windows", "System32\\WindowsPowerShell\\v1.0\\powershell.exe")
         .takeIf { it.exists() }?.path ?: "powershell.exe"
 
     private interface Kernel32 : Library {
