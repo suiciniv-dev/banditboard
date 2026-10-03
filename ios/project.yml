@@ -6,7 +6,7 @@ options:
 settings:
   base:
     CODE_SIGN_STYLE: Automatic
-    MARKETING_VERSION: "1.17.0"
+    MARKETING_VERSION: "1.17.1"
     BUNDLE_BASE: dev.clawdboard.banditboard.preview
     CURRENT_PROJECT_VERSION: "1"
     SWIFT_VERSION: "5.0"

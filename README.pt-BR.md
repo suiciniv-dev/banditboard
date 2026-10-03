@@ -50,8 +50,8 @@ próprios Raccos e as próprias telas, e com as duas ligadas ainda tem uma tela 
 No Antigravity, o Banditboard do Windows lê a cota do Antigravity aberto no mesmo computador, do jeito que o View Usage
 mostra: o Gemini de um lado, o Claude e o GPT do outro, cada um com a janela de 5 horas e a semanal. Os Raccos do Gemini Pro,
 do Gemini Flash, do Claude e do GPT-OSS usam estrela, raio, óculos e gorro. A cota chega no celular pelo mesmo pareamento do
-Claude Code, e os avisos chegam mesmo com o app fechado. Por enquanto, o Antigravity funciona no widget do Windows e no
-Android; o Mac, o iPhone e o Apple Watch recebem depois.
+Claude Code, e no Android os avisos chegam mesmo com o app fechado. Desde a 1.17.1 o iPhone também tem, com página própria e
+a tela com os dois lado a lado. O Mac, os widgets do iPhone e o Apple Watch recebem depois.
 
 <p align="center">
   <img src="prints/1.17.0/pt/android-picker.webp" width="400" alt="Primeira vez no Android: qual IA você quer acompanhar, com Claude Code e Antigravity marcados">
@@ -72,7 +72,7 @@ então você não entrega token nem login para ninguém.
 - 🤖 **Atividade do Claude** (opcional): o projeto, a branch e o que o Claude Code está fazendo agora, e o Racco de cada modelo reage. Ele trabalha junto, mostra "…" enquanto roda comando, levanta a mão com "!" quando o Claude pede permissão ou tem uma pergunta, comemora quando termina e dorme quando ele para. Se o Claude continuar esperando por você, o Windows e o Android avisam. No Windows e no Android desde a 1.15.0; o Mac, o iPhone e o Apple Watch recebem na próxima versão
 - 🦝 **Racco, o guaxinim**: um para cada modelo (Haiku, Sonnet, Opus e Fable). Eles piscam, acenam, dormem quando a sessão está vazia, começam a suar em 85%, ficam vermelhos em 90% e estouram em 100%. Skins, cores e o Racco clássico ficam nas configurações. No Antigravity, o Gemini Pro, o Gemini Flash, o Claude e o GPT-OSS usam estrela, raio, óculos e gorro
 - 🔔 **Avisos de limite**: notificação quando a sessão ou a semana chegam em 80%, 90% e 100%, e outra quando liberam. No Android, chegam mesmo com o app fechado, e o aviso de que liberou sai na hora certa mesmo com o computador desligado
-- 📱 **iPhone**: painel, widgets na Tela de Início e na Tela Bloqueada, StandBy no carregador e avisos
+- 📱 **iPhone**: as mesmas páginas do Android (painel, Raccos, gráfico de 7 dias, relógio, Antigravity e os dois lado a lado), em pé e deitado, além dos widgets na Tela de Início e na Tela Bloqueada, StandBy no carregador e avisos
 - ⌚ **Apple Watch**: app com sessão, semana e modelos, e complicações para o mostrador. Depois de parear pelo iPhone, o relógio busca o uso sozinho
 - 🍎 **Barra de menus do Mac**: o Racco e a porcentagem da sessão do lado do relógio, um painelzinho ao clicar e, se quiser, um widget na mesa
 - 🪟 **Widget no Windows**: completo, compacto ou só o Racco no canto da tela, sempre por cima das janelas, com avisos do próprio Windows. Um clique atualiza na hora, e o botão direito abre o menu
@@ -85,17 +85,17 @@ então você não entrega token nem login para ninguém.
 - 🚦 **Status e notícias**: problemas em aberto no status.claude.com e as últimas notícias da Anthropic
 - 🌙 **Preto AMOLED**: e a tela se mexe alguns pixels por minuto para não marcar
 - 🌍 **Português e inglês**: segue o idioma do aparelho, ou você escolhe
-- 📱 **Em pé ou deitado**: no Android, um layout para cada, e zoom de 90% a 150%
+- 📱 **Em pé ou deitado**: no Android e no iPhone, um layout para cada, e zoom de 90% a 150% no Android
 
 ## 🚀 Para começar
 
 | Onde | Arquivo | |
 |---|---|---|
 | Android 8.0 ou mais novo | `Banditboard-<versão>.apk` | [Baixar](../../releases/latest) |
-| iPhone (iOS 17 ou mais novo) e Apple Watch (watchOS 10 ou mais novo), beta | `Banditboard-1.14.0-iphone.ipa` | [Baixar](../../releases/tag/v1.14.0) |
+| iPhone (iOS 17 ou mais novo) e Apple Watch (watchOS 10 ou mais novo), beta | `Banditboard-<versão>-iphone.ipa` | [Baixar](../../releases/latest) |
 | Windows 10 ou mais novo, instalador | `Banditboard-<versão>.msi` | [Baixar](../../releases/latest) |
 | Windows 10 ou mais novo, portátil | `Banditboard-<versão>-windows.zip` | [Baixar](../../releases/latest) |
-| macOS 11 ou mais novo, Intel ou Apple Silicon | `Banditboard-1.17.0.dmg` | [Baixar](../../releases/tag/v1.17.0) |
+| macOS 11 ou mais novo, Intel ou Apple Silicon | `Banditboard-<versão>.dmg` | [Baixar](../../releases/latest) |
 
 ### No computador
 
@@ -180,11 +180,11 @@ instalador). O servidor é o [`worker/src/index.js`](worker/src/index.js).
 **Confira o download.** Cada versão traz o SHA-256 de cada arquivo. Compare com o do arquivo que você baixou:
 
 ```powershell
-Get-FileHash .\Banditboard-1.17.0.msi -Algorithm SHA256
+Get-FileHash .\Banditboard-1.17.1.msi -Algorithm SHA256
 ```
 
 ```sh
-shasum -a 256 Banditboard-1.17.0.dmg
+shasum -a 256 Banditboard-1.17.1.dmg
 ```
 
 ## 📱 Como ele é
@@ -225,18 +225,21 @@ cada ferramenta e escolher o tema em Configurações → Ferramentas.
 ### iPhone
 
 <p>
-  <img src="prints/1.14.0/pt/ios-dashboard.webp" width="200" alt="Painel do iPhone com sessão, semana e os quatro guaxinins">
-  <img src="prints/1.14.0/pt/ios-dashboard-news.webp" width="200" alt="Painel do iPhone rolado até o status e as notícias">
-  <img src="prints/1.14.0/pt/ios-settings.webp" width="200" alt="Ajustes do iPhone com guaxinim, skin, cor, idioma, avisos e pareamento">
+  <img src="prints/1.17.1/pt/ios-antigravity.webp" width="200" alt="Página do Antigravity no iPhone com as janelas do Gemini e do Claude e GPT, e os quatro guaxinins do Antigravity">
+  <img src="prints/1.17.1/pt/ios-both.webp" width="200" alt="Claude Code e Antigravity lado a lado no iPhone, cada um com a sua cor">
+  <img src="prints/1.17.1/pt/ios-mascots.webp" width="200" alt="Página dos Raccos no iPhone com sessão, semana e um guaxinim por modelo">
 </p>
+
+<img src="prints/1.17.1/pt/ios-both-landscape.webp" width="640" alt="O iPhone deitado, com o Claude Code e o Antigravity lado a lado">
 
 <p>
   <img src="prints/1.14.0/pt/ios-home-widgets.webp" width="340" alt="Widgets médio e pequeno na Tela de Início com sessão, semana e o Racco">
   <img src="prints/1.14.0/pt/ios-notifications.webp" width="340" alt="Avisos de limite no iPhone">
 </p>
 
-O painel, os ajustes, os widgets da Tela de Início e os avisos. Os widgets também vêm nos tamanhos da Tela Bloqueada e aparecem
-no StandBy. O iOS decide com que frequência os apps atualizam em segundo plano, então no iPhone um aviso pode chegar alguns
+A página do Antigravity, as duas ferramentas lado a lado e a página dos Raccos. Para trocar de página, deslize ou toque nos
+pontinhos; deitando o iPhone, cada página muda de layout. Embaixo, os widgets da Tela de Início e os avisos, que por enquanto
+mostram só o Claude Code. Os widgets também vêm nos tamanhos da Tela Bloqueada e aparecem no StandBy. O iOS decide com que frequência os apps atualizam em segundo plano, então no iPhone um aviso pode chegar alguns
 minutos depois.
 
 ### Apple Watch
@@ -324,7 +327,7 @@ status.claude.com.
 ## 🧭 Próximos passos
 
 - [Linux: uma versão do hook em shell](../../issues/1)
-- O Antigravity no Mac, no iPhone e no Apple Watch
+- O Antigravity no Mac, no Apple Watch e nos widgets do iPhone
 - iPhone e Apple Watch no TestFlight e na App Store, com avisos por push
 - App para Wear OS, no Galaxy Watch e nos outros relógios com Android
 - [Android 16: passar para a API 36](../../issues/4)
