@@ -10,6 +10,8 @@ import java.awt.MouseInfo
 import java.awt.Rectangle
 import java.awt.Toolkit
 import java.awt.Window
+import java.awt.event.MouseEvent
+import javax.swing.SwingUtilities
 import kotlin.math.abs
 
 internal fun Modifier.dragWindow(
@@ -17,16 +19,15 @@ internal fun Modifier.dragWindow(
     key: Any?,
     onClick: () -> Unit,
     onDoubleClick: () -> Unit,
-    onMenu: () -> Unit,
     onMoved: () -> Unit,
 ): Modifier = pointerInput(window, key) {
     var lastTap = 0L
     awaitEachGesture {
         val down = awaitFirstDown()
-        if (currentEvent.buttons.isSecondaryPressed) {
+        val awt = currentEvent.nativeEvent as? MouseEvent
+        if (currentEvent.buttons.isSecondaryPressed || (awt != null && SwingUtilities.isRightMouseButton(awt))) {
             down.consume()
             lastTap = 0L
-            onMenu()
             return@awaitEachGesture
         }
         val start = MouseInfo.getPointerInfo()?.location ?: return@awaitEachGesture

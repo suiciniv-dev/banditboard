@@ -60,8 +60,11 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.runtime.key
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
+import javax.swing.SwingUtilities
 import javax.swing.WindowConstants
 import dev.clawdboard.core.Alert
 import dev.clawdboard.core.AgFamily
@@ -373,6 +376,11 @@ fun main(args: Array<String>) {
                     addWindowListener(object : WindowAdapter() {
                         override fun windowClosing(e: WindowEvent) = showWidget(false)
                     })
+                    addMouseListener(object : MouseAdapter() {
+                        override fun mouseReleased(e: MouseEvent) {
+                            if (e.isPopupTrigger || SwingUtilities.isRightMouseButton(e)) WidgetMenu.show(this@apply)
+                        }
+                    })
                 }
             },
             dispose = ComposeWindow::dispose,
@@ -386,7 +394,6 @@ fun main(args: Array<String>) {
                         window, tool,
                         onClick = { if (tool == null) Refresh.all() else Refresh.now(tool) },
                         onDoubleClick = { panel = true },
-                        onMenu = { WidgetMenu.show(window) },
                         onMoved = { WidgetSpot.save(shown, window) },
                     )
                 }
