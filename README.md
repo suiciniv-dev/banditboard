@@ -90,7 +90,7 @@ itself, so there is no token or login to hand over.
 | Platform | File | |
 |---|---|---|
 | Android 8.0 or newer | `Banditboard-<version>.apk` | [Download](../../releases/latest) |
-| iPhone (iOS 17 or newer) and Apple Watch (watchOS 10 or newer), beta | `Banditboard-1.17.0-iphone.ipa` | [Download](../../releases/tag/v1.17.0) |
+| iPhone (iOS 17 or newer) and Apple Watch (watchOS 10 or newer), beta | `Banditboard-1.14.0-iphone.ipa` | [Download](../../releases/tag/v1.14.0) |
 | Windows 10 or newer, installer | `Banditboard-<version>.msi` | [Download](../../releases/latest) |
 | Windows 10 or newer, portable | `Banditboard-<version>-windows.zip` | [Download](../../releases/latest) |
 | macOS 11 or newer, Intel or Apple silicon | `Banditboard-1.17.0.dmg` | [Download](../../releases/tag/v1.17.0) |
