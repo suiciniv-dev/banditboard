@@ -588,6 +588,24 @@ enum L {
             : "The Gemini models share one quota, and Claude and GPT share another, as in Antigravity's View Usage. Each Racco shows the tightest window of its group."
     }
     static var toolNoData: String { pt ? "Ainda sem dados" : "No data yet" }
+    static var agConnectTitle: String { pt ? "Ligar o Antigravity" : "Connect Antigravity" }
+    static var agConnectSteps: [String] {
+        pt ? [
+            "No PC com Windows, abra o app do Banditboard (o mesmo do widget). É ele que lê a cota do Antigravity.",
+            "No app, vá em Ferramentas e ligue o Antigravity.",
+            "Deixe o Antigravity aberto. Em alguns segundos a cota aparece aqui.",
+        ] : [
+            "On the Windows PC, open the Banditboard app (the one with the widget). It is what reads the Antigravity quota.",
+            "In the app, go to Tools and turn on Antigravity.",
+            "Keep Antigravity open. The quota shows up here in a few seconds.",
+        ]
+    }
+    static var agConnectNote: String {
+        pt ? "Não precisa parear de novo: vai pelo mesmo código deste iPhone. Se você pareou pelo banditboard.pages.dev/conectar, o comando desse código precisa ter rodado nesse PC."
+            : "No need to pair again: it goes through this iPhone's code. If you paired through banditboard.pages.dev/conectar, that code's command must have run on that PC."
+    }
+    static var agReceiving: String { pt ? "Recebendo do PC" : "Receiving from the PC" }
+    static var agNoDataYet: String { pt ? "Ainda sem dados do Antigravity. Os passos estão na página dele." : "No Antigravity data yet. The steps are on its page." }
     static var pickTitle: String { pt ? "Qual IA você quer acompanhar?" : "Which AI do you want to follow?" }
     static var pickSubtitle: String { pt ? "Dá para ligar mais de uma. Cada uma ganha a própria cor." : "You can turn on more than one. Each one gets its own color." }
     static var pickClaudeHint: String { pt ? "Hook no PC lê o /usage do Claude Code" : "A hook on the PC reads Claude Code's /usage" }

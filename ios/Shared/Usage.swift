@@ -362,7 +362,11 @@ enum FetchError: Error {
 
 enum Client {
     static func fetch() async throws -> Snapshot {
-        if Vault.demo { return Snapshot.demo() }
+        if Vault.demo {
+            var demo = Snapshot.demo()
+            if ProcessInfo.processInfo.arguments.contains("--no-ag") { demo.ag = nil }
+            return demo
+        }
         guard var pairing = Vault.pairing else { throw FetchError.notPaired }
         if let master = pairing.seal { return try await fromBox(pairing, master) }
         for (i, base) in pairing.urls.enumerated() {

@@ -455,12 +455,29 @@ struct AgPage: View {
                 .padding(.horizontal, 22).padding(.top, 10).padding(.bottom, 40)
             }
         } else {
-            VStack(spacing: 14) {
-                MascotView(feel: agFeel(nil), reserveTop: false, wear: .star, alive: true).frame(width: 120)
-                Text(L.toolAntigravity).font(.system(size: 24, weight: .semibold, design: .rounded)).foregroundStyle(tone.text)
-                Text(L.agWaitingPhone).font(.callout).foregroundStyle(tone.muted).multilineTextAlignment(.center)
+            ScrollView {
+                VStack(spacing: 16) {
+                    MascotView(feel: agFeel(nil), wear: .star, alive: true).frame(width: landscape ? 80 : 110)
+                    Text(L.agConnectTitle).font(.system(size: 22, weight: .semibold, design: .rounded)).foregroundStyle(tone.text)
+                        .multilineTextAlignment(.center)
+                    VStack(alignment: .leading, spacing: 12) {
+                        ForEach(Array(L.agConnectSteps.enumerated()), id: \.offset) { i, step in
+                            HStack(alignment: .top, spacing: 12) {
+                                Text("\(i + 1)").font(.system(size: 15, weight: .bold, design: .rounded)).foregroundStyle(tone.bg)
+                                    .frame(width: 26, height: 26).background(tone.accent, in: Circle())
+                                Text(step).font(.callout).foregroundStyle(tone.text).fixedSize(horizontal: false, vertical: true)
+                            }
+                        }
+                    }
+                    .padding(18)
+                    .frame(maxWidth: 520, alignment: .leading)
+                    .background(tone.card, in: RoundedRectangle(cornerRadius: 18))
+                    .overlay(RoundedRectangle(cornerRadius: 18).stroke(tone.line, lineWidth: 1))
+                    Text(L.agConnectNote).font(.footnote).foregroundStyle(tone.muted).multilineTextAlignment(.center).frame(maxWidth: 520)
+                }
+                .padding(.horizontal, 24).padding(.top, landscape ? 12 : 40).padding(.bottom, 44)
+                .frame(maxWidth: .infinity)
             }
-            .padding(32)
         }
     }
 }

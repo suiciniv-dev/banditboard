@@ -10,7 +10,7 @@ struct DashboardView: View {
 
     private func pages(_ u: Snapshot?) -> [Page] {
         let p = prefs
-        let agOn = p.showAg && (u?.ag != nil || !p.showClaude)
+        let agOn = p.showAg
         return Page.allCases.filter {
             switch $0 {
             case .ag: return agOn

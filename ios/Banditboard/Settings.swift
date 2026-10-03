@@ -37,6 +37,13 @@ struct SettingsView: View {
                             .tint(Tone.agAccent)
                             .foregroundStyle(Palette.text)
                         if prefs.showAg {
+                            if let ag = model.snapshot?.ag {
+                                let ago = formatAgo(Date.now.timeIntervalSince(ag.fetchedAt))
+                                Text(ag.open ? "● \(L.agReceiving) · \(ago)" : "● \(L.agClosed) · \(ago)")
+                                    .font(.footnote).foregroundStyle(ag.open ? Palette.ok : Palette.muted)
+                            } else {
+                                Text(L.agNoDataYet).font(.footnote).foregroundStyle(Palette.warn)
+                            }
                             choice(L.theme, ToolTheme.allCases, prefs.toolTheme, { L.label($0) }) { prefs.toolTheme = $0 }
                         }
                     }
