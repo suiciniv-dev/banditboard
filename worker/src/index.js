@@ -11,14 +11,16 @@ const CORS = {
 
 const TEXTS = {
   pt: {
-    connected: 'Banditboard conectado ao Claude Code.',
+    connected: 'Banditboard conectado.',
     backup: 'Backup dos seus ajustes: ',
     every: 'A cada resposta do Claude Code (VS Code ou terminal) o uso vai cifrado para os seus celulares, no maximo a cada 2 minutos.',
+    ag: 'Antigravity: com o app do Windows aberto e o Antigravity ligado em Ferramentas, a cota vai pelo mesmo codigo.',
   },
   en: {
-    connected: 'Banditboard connected to Claude Code.',
+    connected: 'Banditboard connected.',
     backup: 'Backup of your settings: ',
     every: 'After each Claude Code response (VS Code or terminal) the usage goes encrypted to your phones, at most every 2 minutes.',
+    ag: 'Antigravity: while the Windows app is open with Antigravity turned on in Tools, the quota goes through the same code.',
   },
 }
 
@@ -59,7 +61,7 @@ function boxPs1(t) {
     .replaceAll("'__ID__'", () => "'box'")
     .replace('__T_CONNECTED__', () => t.connected)
     .replace('__T_BACKUP__', () => t.backup)
-    .replace('__T_EVERY__', () => t.every)
+    .replace('__T_EVERY__', () => t.every + ' ' + t.ag)
 }
 
 function boxSh(t) {
