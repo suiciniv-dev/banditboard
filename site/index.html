@@ -1210,7 +1210,7 @@ function srcMix(t){
   return a;
 }
 const lerp = (a, b, k) => a + (b - a) * Math.max(0, Math.min(1, k));
-let flowGeo = null;
+let flowGeo = null, rbAt = null;
 function geo(){
   const st = stage.getBoundingClientRect(), sc = st.width / (VERT ? 1080 : 1600);
   const r = el => { const b = el.getBoundingClientRect(); return {x: (b.left - st.left) / sc, y: (b.top - st.top) / sc, w: b.width / sc, h: b.height / sc}; };
@@ -1226,14 +1226,39 @@ function geo(){
     : {one: mk(m.x + m.w - 24, m.y + m.h * .42), left: mk(m.x + m.w - 24, m.y + m.h * .3), right: mk(m.x + m.w - 24, m.y + m.h * .62)};
 }
 function qpt(c, u){ const v = 1 - u; return [v * v * c[0] + 2 * v * u * c[2] + u * u * c[4], v * v * c[1] + 2 * v * u * c[3] + u * u * c[5]]; }
-function flowHtml(c, t, color, op){
-  if (op <= 0) return "";
-  let h = `<path d="M${c[0]} ${c[1]}Q${c[2]} ${c[3]} ${c[4]} ${c[5]}" fill="none" stroke="${color}" stroke-opacity="${(.32 * op).toFixed(2)}" stroke-width="4" stroke-dasharray="3 10" stroke-linecap="round"/>`;
-  for (let k = 0; k < 7; k++) {
-    const u = ((t * .55) + k / 7) % 1, [x, y] = qpt(c, u), s = 10 + 5 * Math.sin(u * Math.PI);
-    h += `<rect x="${(x - s / 2).toFixed(1)}" y="${(y - s / 2).toFixed(1)}" width="${s.toFixed(1)}" height="${s.toFixed(1)}" rx="1.5" fill="${color}" opacity="${(op * Math.sin(u * Math.PI) * .95).toFixed(2)}"/>`;
+let flows = null;
+function flowEls(){
+  if (flows) return flows;
+  const svg = $("flow"), ns = "http://www.w3.org/2000/svg";
+  const make = (tag, attrs) => { const e = document.createElementNS(ns, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); svg.appendChild(e); return e; };
+  flows = {};
+  for (const name of ["left", "right", "one"]) {
+    const g = make("g", {display: "none"});
+    const path = document.createElementNS(ns, "path");
+    for (const [k, v] of [["fill", "none"], ["stroke-width", "4"], ["stroke-dasharray", "3 10"], ["stroke-linecap", "round"]]) path.setAttribute(k, v);
+    g.appendChild(path);
+    const rects = [];
+    for (let k = 0; k < 7; k++) { const r = document.createElementNS(ns, "rect"); r.setAttribute("rx", "1.5"); g.appendChild(r); rects.push(r); }
+    flows[name] = {g, path, rects, d: "", color: "", on: false};
   }
-  return h;
+  return flows;
+}
+function flowSet(name, c, t, color, op){
+  const f = flowEls()[name];
+  if (op <= 0) { if (f.on) { f.on = false; f.g.setAttribute("display", "none"); } return; }
+  if (!f.on) { f.on = true; f.g.removeAttribute("display"); }
+  const d = `M${c[0]} ${c[1]}Q${c[2]} ${c[3]} ${c[4]} ${c[5]}`;
+  if (f.d !== d) { f.d = d; f.path.setAttribute("d", d); }
+  if (f.color !== color) { f.color = color; f.path.setAttribute("stroke", color); f.rects.forEach(r => r.setAttribute("fill", color)); }
+  f.path.setAttribute("stroke-opacity", (.32 * op).toFixed(2));
+  for (let k = 0; k < 7; k++) {
+    const u = ((t * .55) + k / 7) % 1, [x, y] = qpt(c, u), s = 10 + 5 * Math.sin(u * Math.PI), r = f.rects[k];
+    r.setAttribute("x", (x - s / 2).toFixed(1));
+    r.setAttribute("y", (y - s / 2).toFixed(1));
+    r.setAttribute("width", s.toFixed(1));
+    r.setAttribute("height", s.toFixed(1));
+    r.setAttribute("opacity", (op * Math.sin(u * Math.PI) * .95).toFixed(2));
+  }
 }
 function mixColor(a){ return a <= 0 ? "#d77757" : a >= 1 ? "#7aa2f7" : mix("#d77757", "#7aa2f7", a); }
 const cache = {};
@@ -1362,13 +1387,9 @@ function main(t){
   set("toastY", $("toast"), "transform", `translateY(${((to - 1) * 30).toFixed(1)}px)`);
   if (!flowGeo) flowGeo = geo();
   const fo = ease((t - 2.6) / .5) * (1 - ease((t - 28.6) / .4));
-  let fh = "";
-  if (both > .02) {
-    fh += flowHtml(flowGeo.left, t, "#d77757", fo * both);
-    fh += flowHtml(flowGeo.right, t + .3, "#7aa2f7", fo * both);
-  }
-  fh += flowHtml(flowGeo.one, t, mixColor(a), fo * (1 - both));
-  $("flow").innerHTML = fh;
+  flowSet("left", flowGeo.left, t, "#d77757", both > .02 ? fo * both : 0);
+  flowSet("right", flowGeo.right, t + .3, "#7aa2f7", both > .02 ? fo * both : 0);
+  flowSet("one", flowGeo.one, t, mixColor(a), fo * (1 - both));
   const cIn = ease((t - 29.1) / .8), cOut = 1 - ease((t - 30.4) / .3);
   set("cursor", $("cursor"), "opacity", (t >= 29.0 && t < 30.7 ? Math.min(ease((t - 29.0) / .2), cOut) : 0).toFixed(3));
   set("cursorT", $("cursor"), "transform", `translate(${(520 + 180 * cIn).toFixed(1)}px,${(300 - 200 * cIn).toFixed(1)}px)`);
@@ -1380,7 +1401,7 @@ function main(t){
   set("mDashS", $("mDash"), "transform", `scale(${(.94 + .06 * od).toFixed(3)})`);
   set("mImg", $("mImg"), "transform", `translateY(${(-620 * ease((t - 30.4) / 1.0)).toFixed(1)}px)`);
   set("flash", $("flash"), "opacity", "0");
-  if (cache.mimg !== LANG) { cache.mimg = LANG; $("mImg").src = `/img/${LANG}/windows-dashboard-ag.webp`; }
+  if (cache.mimg !== LANG) { cache.mimg = LANG; rbAt = null; $("mImg").src = `/img/${LANG}/windows-dashboard-ag.webp`; }
   const sc = ease((t - 31.2) / .6), fz = ease((t - 40.5) / .5);
   set("sc", stage, "--sc", sc.toFixed(3));
   set("url", $("url"), "opacity", (1 - sc).toFixed(3));
@@ -1392,7 +1413,9 @@ function main(t){
   const wm = ease((t - 39.4) / .4);
   set("dWm", $("dWm"), "opacity", wm.toFixed(3));
   set("wSes", $("wSes"), "opacity", (1 - wm).toFixed(3));
-  const cIn2 = ease((t - 31.9) / .8), rb = $("mRb"), tx = rb.offsetLeft + 16, ty = rb.offsetTop + 6;
+  const rb = $("mRb");
+  if (!rbAt && t >= 31.5) rbAt = [rb.offsetLeft + 16, rb.offsetTop + 6];
+  const cIn2 = ease((t - 31.9) / .8), [tx, ty] = rbAt || [0, 0];
   const cx = tx - 260 + 260 * cIn2, cy = 260 + (ty - 260) * cIn2;
   set("mCur", $("mCur"), "opacity", (t >= 31.8 && t < 34.4 ? Math.min(ease((t - 31.8) / .2), 1 - ease((t - 34.0) / .4)) : 0).toFixed(3));
   set("mCurT", $("mCur"), "transform", `translate(${cx.toFixed(1)}px,${cy.toFixed(1)}px)`);
