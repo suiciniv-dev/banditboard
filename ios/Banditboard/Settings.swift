@@ -15,7 +15,7 @@ struct SettingsView: View {
                     HStack(alignment: .bottom, spacing: 12) {
                         ForEach(MODELS, id: \.self) { m in
                             VStack(spacing: 4) {
-                                MascotView(model: m, look: prefs)
+                                MascotView(model: m, look: prefs, seed: MODELS.firstIndex(of: m) ?? 0, alive: true)
                                 Text(m).font(.caption).foregroundStyle(Palette.muted)
                             }
                             .frame(maxWidth: .infinity)
@@ -28,6 +28,31 @@ struct SettingsView: View {
                     Toggle(L.alertsToggle, isOn: $prefs.alerts)
                         .tint(Palette.clawd)
                         .foregroundStyle(Palette.text)
+                    Panel {
+                        Text(L.tools).font(.system(size: 18, weight: .semibold, design: .rounded)).foregroundStyle(Palette.clawd)
+                        Toggle(L.toolClaude, isOn: Binding(get: { prefs.showClaude }, set: { prefs.showClaude = $0 || !prefs.showAg }))
+                            .tint(Palette.clawd)
+                            .foregroundStyle(Palette.text)
+                        Toggle(L.toolAntigravity, isOn: Binding(get: { prefs.showAg }, set: { prefs.showAg = $0 || !prefs.showClaude }))
+                            .tint(Tone.agAccent)
+                            .foregroundStyle(Palette.text)
+                        if prefs.showAg {
+                            choice(L.theme, ToolTheme.allCases, prefs.toolTheme, { L.label($0) }) { prefs.toolTheme = $0 }
+                        }
+                    }
+                    Panel {
+                        Text(L.screen).font(.system(size: 18, weight: .semibold, design: .rounded)).foregroundStyle(Palette.clawd)
+                        if prefs.showClaude {
+                            choice(L.homePage, Home.allCases, prefs.home, { L.label($0) }) { prefs.home = $0 }
+                        }
+                        Toggle(L.carousel, isOn: $prefs.carousel).tint(Palette.clawd).foregroundStyle(Palette.text)
+                        if prefs.carousel {
+                            choice(L.dwell, Prefs.DWELL, prefs.dwell, { L.seconds($0) }) { prefs.dwell = $0 }
+                        }
+                        Toggle(L.keepAwake, isOn: $prefs.keepAwake).tint(Palette.clawd).foregroundStyle(Palette.text)
+                        Toggle(L.animations, isOn: $prefs.animations).tint(Palette.clawd).foregroundStyle(Palette.text)
+                        Text(L.rotateHint).font(.caption).foregroundStyle(Palette.dim)
+                    }
                     Panel {
                         Text(L.pairing).font(.system(size: 18, weight: .semibold, design: .rounded)).foregroundStyle(Palette.clawd)
                         Text(Vault.pairing?.seal != nil || Vault.demo ? L.pairedBox : L.pairedLan).font(.subheadline).foregroundStyle(Palette.muted)
@@ -62,6 +87,7 @@ struct SettingsView: View {
         .environment(\.locale, L.locale)
         .onChange(of: prefs) { _, new in
             Vault.prefs = new
+            UIApplication.shared.isIdleTimerDisabled = new.keepAwake
             WidgetCenter.shared.reloadAllTimelines()
             WatchSync.shared.send()
             model.objectWillChange.send()

@@ -13,12 +13,120 @@ struct ScopedLimit: Codable, Equatable {
     var resetsAt: Date?
 }
 
+enum AgPool: String, Codable, CaseIterable { case GEMINI, OTHERS }
+
+enum AgFamily: String, Codable, CaseIterable {
+    case pro, flash, claude, gpt
+
+    var label: String {
+        switch self {
+        case .pro: return "Gemini Pro"
+        case .flash: return "Gemini Flash"
+        case .claude: return "Claude"
+        case .gpt: return "GPT-OSS"
+        }
+    }
+
+    var short: String {
+        switch self {
+        case .pro: return "Pro"
+        case .flash: return "Flash"
+        case .claude: return "Claude"
+        case .gpt: return "GPT"
+        }
+    }
+
+    var pool: AgPool { self == .pro || self == .flash ? .GEMINI : .OTHERS }
+
+    static func of(_ label: String) -> AgFamily? {
+        let l = label.lowercased()
+        if l.contains("gemini") && l.contains("flash") { return .flash }
+        if l.contains("gemini") { return .pro }
+        if l.contains("claude") { return .claude }
+        if l.contains("gpt") { return .gpt }
+        return nil
+    }
+}
+
+struct AgGroup: Codable, Equatable {
+    var pool: AgPool
+    var session: UsageWindow?
+    var week: UsageWindow?
+
+    var worst: UsageWindow? { [session, week].compactMap { $0 }.max { $0.percent < $1.percent } }
+}
+
+struct AgSnap: Codable, Equatable {
+    var groups: [AgGroup]
+    var families: [AgFamily]
+    var plan: String?
+    var fetchedAt: Date
+    var open: Bool
+
+    func group(_ p: AgPool) -> AgGroup? { groups.first { $0.pool == p } }
+
+    func percent(_ f: AgFamily) -> Double? { group(f.pool)?.worst?.percent }
+
+    var shown: [AgFamily] { families.isEmpty ? AgFamily.allCases.filter { group($0.pool) != nil } : families }
+
+    func settled(_ now: Date) -> AgSnap {
+        func settle(_ w: UsageWindow?) -> UsageWindow? {
+            if let r = w?.resetsAt, r <= now { return UsageWindow(percent: 0, resetsAt: nil) }
+            return w
+        }
+        var s = self
+        s.groups = groups.map { AgGroup(pool: $0.pool, session: settle($0.session), week: settle($0.week)) }
+        return s
+    }
+
+    static func off(_ o: [String: Any]?) -> Bool { (o?["off"] as? Bool) == true }
+
+    static func parse(_ o: [String: Any]?) -> AgSnap? {
+        guard let o, !off(o), let pools = o["pools"] as? [[String: Any]] else { return nil }
+        func num(_ v: Any?) -> Double? { (v as? NSNumber)?.doubleValue ?? (v as? String).flatMap(Double.init) }
+        func window(_ v: Any?) -> UsageWindow? {
+            guard let w = v as? [String: Any], let pct = num(w["percent"]) else { return nil }
+            let reset = num(w["resetsAt"]).flatMap { $0 > 0 ? Date(timeIntervalSince1970: $0 / 1000) : nil }
+            return UsageWindow(percent: min(max(pct, 0), 100), resetsAt: reset)
+        }
+        let groups = pools.compactMap { g -> AgGroup? in
+            guard let pool = (g["pool"] as? String).flatMap(AgPool.init(rawValue:)) else { return nil }
+            if g["session"] == nil && g["week"] == nil {
+                guard let flat = window(g) else { return nil }
+                return (g["kind"] as? String) == "SESSION" ? AgGroup(pool: pool, session: flat) : AgGroup(pool: pool, week: flat)
+            }
+            let group = AgGroup(pool: pool, session: window(g["session"]), week: window(g["week"]))
+            return group.session == nil && group.week == nil ? nil : group
+        }.sorted { $0.pool == .GEMINI && $1.pool == .OTHERS }
+        if groups.isEmpty { return nil }
+        let found = (o["models"] as? [[String: Any]] ?? []).compactMap { ($0["label"] as? String).flatMap(AgFamily.of) }
+        let at = num(o["usage_at"]).flatMap { $0 > 0 ? Date(timeIntervalSince1970: $0 / 1000) : nil } ?? .now
+        return AgSnap(groups: groups, families: AgFamily.allCases.filter(found.contains), plan: o["plan"] as? String,
+                      fetchedAt: at, open: (o["open"] as? Bool) ?? true)
+    }
+
+    static func demo(_ now: Date = .now) -> AgSnap {
+        AgSnap(
+            groups: [
+                AgGroup(pool: .GEMINI, session: UsageWindow(percent: 38, resetsAt: now.addingTimeInterval(2 * 3600 + 39 * 60)),
+                        week: UsageWindow(percent: 21, resetsAt: now.addingTimeInterval(4 * 86_400 + 4 * 3600))),
+                AgGroup(pool: .OTHERS, session: UsageWindow(percent: 12, resetsAt: now.addingTimeInterval(3600)),
+                        week: UsageWindow(percent: 88, resetsAt: now.addingTimeInterval(4 * 86_400 + 4 * 3600))),
+            ],
+            families: AgFamily.allCases, plan: "Pro", fetchedAt: now.addingTimeInterval(-33), open: true
+        )
+    }
+}
+
 struct Snapshot: Codable, Equatable {
     var fiveHour: UsageWindow?
     var sevenDay: UsageWindow?
     var scoped: [ScopedLimit]
     var fetchedAt: Date
     var sessions: [String]?
+    var ag: AgSnap? = nil
+
+    var hasClaude: Bool { fiveHour != nil || sevenDay != nil }
 
     func settled(_ now: Date = .now) -> Snapshot {
         func settle(_ w: UsageWindow?) -> UsageWindow? {
@@ -29,6 +137,7 @@ struct Snapshot: Codable, Equatable {
         s.fiveHour = settle(fiveHour)
         s.sevenDay = settle(sevenDay)
         s.scoped = scoped.filter { $0.resetsAt.map { $0 > now } ?? true }
+        s.ag = ag?.settled(now)
         return s
     }
 
@@ -38,7 +147,8 @@ struct Snapshot: Codable, Equatable {
             sevenDay: UsageWindow(percent: 64, resetsAt: now.addingTimeInterval(3 * 86_400 + 5 * 3600)),
             scoped: [ScopedLimit(label: "Fable", percent: 22, resetsAt: now.addingTimeInterval(3 * 86_400 + 5 * 3600))],
             fetchedAt: now.addingTimeInterval(-12),
-            sessions: ["opus"]
+            sessions: ["opus"],
+            ag: AgSnap.demo(now)
         )
     }
 
@@ -50,7 +160,7 @@ struct Snapshot: Codable, Equatable {
         scoped.first { $0.label.localizedCaseInsensitiveContains(model) }
     }
 
-    static func parse(_ o: [String: Any], at: Date) -> Snapshot? {
+    static func parse(_ o: [String: Any], at: Date, previous: Snapshot? = nil) -> Snapshot? {
         func num(_ v: Any?) -> Double? { (v as? NSNumber)?.doubleValue ?? (v as? String).flatMap(Double.init) }
         func date(_ v: Any?) -> Date? { num(v).flatMap { $0 > 0 ? Date(timeIntervalSince1970: $0) : nil } }
         func window(_ name: String) -> UsageWindow? {
@@ -58,12 +168,15 @@ struct Snapshot: Codable, Equatable {
             return UsageWindow(percent: min(max(pct, 0), 100), resetsAt: date(w["resets_at"]))
         }
         let five = window("five_hour"), seven = window("seven_day")
-        if five == nil && seven == nil { return nil }
+        let agBody = o["antigravity"] as? [String: Any]
+        let ag = AgSnap.parse(agBody) ?? (agBody == nil ? previous?.ag : nil)
+        if five == nil && seven == nil && ag == nil { return nil }
         let scoped = (o["scoped"] as? [[String: Any]] ?? []).compactMap { s -> ScopedLimit? in
             guard let label = s["label"] as? String, let pct = num(s["used_percentage"]) else { return nil }
             return ScopedLimit(label: label, percent: min(max(pct, 0), 100), resetsAt: date(s["resets_at"]))
         }
-        return Snapshot(fiveHour: five, sevenDay: seven, scoped: scoped, fetchedAt: at, sessions: o["sessions"] as? [String])
+        let usageAt = num(o["usage_at"]).flatMap { $0 > 0 ? Date(timeIntervalSince1970: $0 / 1000) : nil }
+        return Snapshot(fiveHour: five, sevenDay: seven, scoped: scoped, fetchedAt: usageAt ?? at, sessions: o["sessions"] as? [String], ag: ag)
     }
 }
 
@@ -264,7 +377,7 @@ enum Client {
                 Vault.pairing = pairing
             }
             let at = (o["at"] as? NSNumber).map { Date(timeIntervalSince1970: $0.doubleValue / 1000) } ?? .now
-            guard let usage = o["usage"] as? [String: Any], let snap = Snapshot.parse(usage, at: at) else { throw FetchError.noData }
+            guard let usage = o["usage"] as? [String: Any], let snap = Snapshot.parse(usage, at: at, previous: Vault.snapshot) else { throw FetchError.noData }
             Vault.snapshot = snap
             return snap
         }
@@ -283,9 +396,34 @@ enum Client {
             throw FetchError.badKey
         }
         let at = (o["at"] as? NSNumber).map { Date(timeIntervalSince1970: $0.doubleValue / 1000) } ?? .now
-        guard let snap = Snapshot.parse(usage, at: at) else { throw FetchError.noData }
+        guard let snap = Snapshot.parse(usage, at: at, previous: Vault.snapshot) else { throw FetchError.noData }
         Vault.snapshot = snap
         return snap
+    }
+}
+
+struct Sample: Codable, Equatable {
+    var t: Date
+    var p5: Double?
+    var p7: Double?
+}
+
+enum History {
+    static let window: TimeInterval = 7 * 86_400
+    static let slot: TimeInterval = 30 * 60
+
+    static var samples: [Sample] {
+        guard let data = UserDefaults.standard.data(forKey: "history"), let list = try? JSONDecoder().decode([Sample].self, from: data) else { return [] }
+        return list
+    }
+
+    static func record(_ s: Snapshot, now: Date = .now) {
+        guard s.hasClaude else { return }
+        let t = Date(timeIntervalSince1970: (s.fetchedAt.timeIntervalSince1970 / slot).rounded(.down) * slot)
+        var list = samples.filter { $0.t > now.addingTimeInterval(-window) && $0.t != t }
+        list.append(Sample(t: t, p5: s.fiveHour?.percent, p7: s.sevenDay?.percent))
+        list.sort { $0.t < $1.t }
+        if let data = try? JSONEncoder().encode(list) { UserDefaults.standard.set(data, forKey: "history") }
     }
 }
 

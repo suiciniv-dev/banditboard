@@ -19,28 +19,42 @@ enum Notifier {
         guard Vault.prefs.alerts else { return }
         let now = Date.now
         let s = snap.settled(now)
-        for (kind, week, w) in [("SESSION", false, s.fiveHour), ("WEEK", true, s.sevenDay)] {
-            let sent = Vault.mark(kind)
-            let (alert, level) = nextAlert(week: week, w, sent: sent)
-            Vault.setMark(kind, level)
-            if let alert {
-                if alert.level == 0 {
-                    let scheduled = Vault.freeAt(kind)
-                    Vault.setFreeAt(kind, nil)
-                    if scheduled.map({ $0 > now }) ?? true {
-                        cancel("free.\(kind)")
-                        post("free.\(kind)", L.alertTitle(week: week, level: 0), L.alertFree, at: nil)
-                    }
-                } else {
-                    let body = alert.resetsAt.map { L.resets(formatAt($0, now: now)) } ?? ""
-                    post("alert.\(kind)", L.alertTitle(week: week, level: alert.level), body, at: nil)
+        if Vault.prefs.showClaude && s.hasClaude {
+            for (kind, week, w) in [("SESSION", false, s.fiveHour), ("WEEK", true, s.sevenDay)] {
+                track(kind, week: week, w, now: now, title: { L.alertTitle(week: week, level: $0) }, free: L.alertFree)
+            }
+        }
+        if Vault.prefs.showAg, let ag = s.ag {
+            for g in ag.groups {
+                for (week, w) in [(false, g.session), (true, g.week)] where w != nil {
+                    let kind = "AG.\(g.pool.rawValue).\(week ? "WEEK" : "SESSION")"
+                    track(kind, week: week, w, now: now, title: { L.agAlertTitle(g.pool, week: week, level: $0) }, free: L.agAlertFree)
                 }
             }
-            if level >= 90, let reset = w?.resetsAt, reset > now {
-                if Vault.freeAt(kind) != reset {
-                    Vault.setFreeAt(kind, reset)
-                    post("free.\(kind)", L.alertTitle(week: week, level: 0), L.alertFree, at: reset)
+        }
+    }
+
+    private static func track(_ kind: String, week: Bool, _ w: UsageWindow?, now: Date, title: (Int) -> String, free: String) {
+        let sent = Vault.mark(kind)
+        let (alert, level) = nextAlert(week: week, w, sent: sent)
+        Vault.setMark(kind, level)
+        if let alert {
+            if alert.level == 0 {
+                let scheduled = Vault.freeAt(kind)
+                Vault.setFreeAt(kind, nil)
+                if scheduled.map({ $0 > now }) ?? true {
+                    cancel("free.\(kind)")
+                    post("free.\(kind)", title(0), free, at: nil)
                 }
+            } else {
+                let body = alert.resetsAt.map { L.resets(formatAt($0, now: now)) } ?? ""
+                post("alert.\(kind)", title(alert.level), body, at: nil)
+            }
+        }
+        if level >= 80, let reset = w?.resetsAt, reset > now {
+            if Vault.freeAt(kind) != reset {
+                Vault.setFreeAt(kind, reset)
+                post("free.\(kind)", title(0), free, at: reset)
             }
         }
     }

@@ -59,10 +59,20 @@ func feelOf(_ u: Snapshot?, _ model: String) -> Feel {
     return Feel(mood: .normal, heat: heat)
 }
 
+func agFeel(_ pct: Double?) -> Feel {
+    let heat = pct.map { min(max(($0 - 90) / 10, 0), 1) } ?? 0
+    guard let pct, pct >= 0.5 else { return Feel(mood: .sleepy, heat: heat) }
+    if pct >= 99.5 { return Feel(mood: .exhausted, heat: heat) }
+    if pct >= 85 { return Feel(mood: .sweaty, heat: heat) }
+    return Feel(mood: .normal, heat: heat)
+}
+
 enum Species: String, Codable, CaseIterable { case raccoon, classic }
 enum Skin: String, Codable, CaseIterable { case classic, models, crowns, xmas }
 enum Tint: String, Codable, CaseIterable { case natural, rainbow, lavender, mint, bubblegum }
 enum Language: String, Codable, CaseIterable { case auto, pt, en }
+enum ToolTheme: String, Codable, CaseIterable { case follow, claude, black }
+enum Home: String, Codable, CaseIterable { case dash, mascots, clock }
 
 struct Prefs: Codable, Equatable {
     var species: Species = .raccoon
@@ -70,6 +80,15 @@ struct Prefs: Codable, Equatable {
     var tint: Tint = .natural
     var language: Language = .auto
     var alerts = true
+    var showClaude = true
+    var showAg = true
+    var toolTheme: ToolTheme = .follow
+    var toolsChosen = false
+    var home: Home = .dash
+    var carousel = false
+    var dwell = 15
+    var keepAwake = false
+    var animations = true
 
     init() {}
 
@@ -80,6 +99,48 @@ struct Prefs: Codable, Equatable {
         tint = (try? c.decodeIfPresent(Tint.self, forKey: .tint)) ?? .natural
         language = (try? c.decodeIfPresent(Language.self, forKey: .language)) ?? .auto
         alerts = (try? c.decodeIfPresent(Bool.self, forKey: .alerts)) ?? true
+        showClaude = (try? c.decodeIfPresent(Bool.self, forKey: .showClaude)) ?? true
+        showAg = (try? c.decodeIfPresent(Bool.self, forKey: .showAg)) ?? true
+        toolTheme = (try? c.decodeIfPresent(ToolTheme.self, forKey: .toolTheme)) ?? .follow
+        toolsChosen = (try? c.decodeIfPresent(Bool.self, forKey: .toolsChosen)) ?? false
+        home = (try? c.decodeIfPresent(Home.self, forKey: .home)) ?? .dash
+        carousel = (try? c.decodeIfPresent(Bool.self, forKey: .carousel)) ?? false
+        dwell = (try? c.decodeIfPresent(Int.self, forKey: .dwell)) ?? 15
+        keepAwake = (try? c.decodeIfPresent(Bool.self, forKey: .keepAwake)) ?? false
+        animations = (try? c.decodeIfPresent(Bool.self, forKey: .animations)) ?? true
+        if !showClaude && !showAg { showClaude = true }
+    }
+
+    static let DWELL = [8, 15, 30, 60]
+}
+
+struct Tone {
+    let bg, card, line, track, text, muted, dim, accent, glow: Color
+
+    static let claude = Tone(
+        bg: Palette.bg, card: Palette.card, line: Palette.line, track: Palette.track, text: Palette.text,
+        muted: Palette.muted, dim: Palette.dim, accent: Palette.clawd, glow: Palette.clawd.opacity(0.12)
+    )
+
+    static let agAccent = Color(hex: 0x7AA2F7)
+
+    static func ag(_ theme: ToolTheme) -> Tone {
+        switch theme {
+        case .claude: return claude
+        case .black: return black(agAccent)
+        case .follow:
+            return Tone(
+                bg: Color(hex: 0x0F1218), card: Color(hex: 0x151A23), line: Color(hex: 0x283042), track: Color(hex: 0x1C2230),
+                text: Color(hex: 0xE4E8F0), muted: Color(hex: 0x98A2B3), dim: Color(hex: 0x6B7487), accent: agAccent, glow: agAccent.opacity(0.16)
+            )
+        }
+    }
+
+    static func black(_ accent: Color) -> Tone {
+        Tone(
+            bg: .black, card: Color(hex: 0x0E0E10), line: Color(hex: 0x26262B), track: Color(hex: 0x1E1E22),
+            text: Color(hex: 0xF3EFEA), muted: Color(hex: 0x9A958F), dim: Color(hex: 0x5E5A55), accent: accent, glow: .clear
+        )
     }
 }
 
@@ -130,7 +191,7 @@ private struct Px {
     }
 }
 
-private enum Accessory { case topHat, glasses, headphones, sprout, crown, santa }
+enum Accessory { case topHat, glasses, headphones, sprout, crown, santa, star, bolt, beanie }
 
 private let GOLD: UInt32 = 0xF5D66A
 private let HAT: UInt32 = 0x3B3446
@@ -142,6 +203,11 @@ private let STEM: UInt32 = 0x5E8A4A
 private let RED: UInt32 = 0xD6455D
 private let WHITE: UInt32 = 0xF3EFEA
 private let RUBY: UInt32 = 0xE5604D
+private let STAR_BLUE: UInt32 = 0x8AB4F8
+private let STAR_CORE: UInt32 = 0xDCE7FD
+private let BEANIE_GREEN: UInt32 = 0x4F8F82
+private let BEANIE_RIM: UInt32 = 0x2F5F55
+private let POMPOM: UInt32 = 0xCFE9E2
 
 private func accessoryFor(_ skin: Skin, _ model: String?) -> Accessory? {
     switch skin {
@@ -221,6 +287,23 @@ private func pixels(_ a: Accessory, _ species: Species) -> [Px] {
         return [Px(4, 2, 8, 2, GOLD), Px(4, 1, 1, 1, GOLD), Px(7, 0, 2, 2, GOLD), Px(11, 1, 1, 1, GOLD), Px(7, 2, 2, 1, RUBY)]
     case .santa:
         return [Px(4, 2, 8, 1, RED), Px(6, 1, 5, 1, RED), Px(9, 0, 3, 1, RED), Px(12, 0, 2, 2, WHITE), Px(4, 3, 8, 1, WHITE)]
+    case .star:
+        return [Px(7, 0, 2, 4, STAR_BLUE), Px(5, 1, 6, 2, STAR_BLUE), Px(7, 1, 2, 2, STAR_CORE)]
+    case .bolt:
+        return [Px(9, 0, 2, 1, GOLD), Px(8, 1, 2, 1, GOLD), Px(7, 2, 4, 1, GOLD), Px(7, 3, 2, 1, GOLD)]
+    case .beanie:
+        return [Px(5, 1, 6, 2, BEANIE_GREEN), Px(7, 0, 2, 1, POMPOM), Px(4, 3, 8, 1, BEANIE_RIM)]
+    }
+}
+
+extension AgFamily {
+    var wear: Accessory {
+        switch self {
+        case .pro: return .star
+        case .flash: return .bolt
+        case .claude: return .glasses
+        case .gpt: return .beanie
+        }
     }
 }
 
@@ -259,8 +342,88 @@ struct MascotView: View {
     var feel = Feel()
     var reserveTop = true
     var look = Vault.prefs
+    var wear: Accessory? = nil
+    var seed = 0
+    var alive = false
+
+    @State private var blink = false
+    @State private var glance = 0.0
+    @State private var legs = 0
+    @State private var hop = false
+
+    init(model: String? = nil, feel: Feel = Feel(), reserveTop: Bool = true, look: Prefs = Vault.prefs, wear: Accessory? = nil, seed: Int = 0, alive: Bool = false) {
+        self.model = model
+        self.feel = feel
+        self.reserveTop = reserveTop
+        self.look = look
+        self.wear = wear
+        self.seed = seed
+        self.alive = alive
+    }
+
+    private var moving: Bool { alive && look.animations && feel.mood != .exhausted }
 
     var body: some View {
+        let up = hop
+        return sprite
+            .visualEffect { content, proxy in content.offset(y: up ? -proxy.size.width / 16 : 0) }
+            .animation(.spring(response: 0.16, dampingFraction: 0.55), value: hop)
+            .animation(.easeInOut(duration: 0.18), value: glance)
+            .task(id: "\(moving)-\(feel.mood)") { await animate() }
+    }
+
+    private func animate() async {
+        blink = false
+        glance = 0
+        legs = 0
+        hop = false
+        guard moving else { return }
+        func wait(_ ms: ClosedRange<Int>) async { try? await Task.sleep(for: .milliseconds(Int.random(in: ms))) }
+        let sleepy = feel.mood == .sleepy
+        let acc = (wear != nil && look.skin == .models) ? wear : accessoryFor(look.skin, model)
+        await wait(400...3000 + seed % 7 * 150)
+        var next = Date.now.addingTimeInterval(Double.random(in: 1.5...6))
+        while !Task.isCancelled {
+            if !sleepy {
+                blink = true
+                await wait(130...150)
+                blink = false
+                if Int.random(in: 0..<4) == 0 {
+                    await wait(110...130)
+                    blink = true
+                    await wait(110...130)
+                    blink = false
+                }
+            }
+            if !sleepy && Date.now >= next {
+                switch Int.random(in: 0..<3) {
+                case 0 where acc != .glasses:
+                    glance = Bool.random() ? 1 : -1
+                    await wait(1000...1300)
+                    glance = 0
+                case 1:
+                    for _ in 0..<3 {
+                        legs = 1
+                        await wait(150...170)
+                        legs = 2
+                        await wait(150...170)
+                    }
+                    legs = 0
+                default:
+                    for _ in 0..<2 {
+                        hop = true
+                        await wait(140...160)
+                        hop = false
+                        await wait(170...200)
+                    }
+                }
+                next = Date.now.addingTimeInterval(feel.mood == .sweaty ? Double.random(in: 1.2...3.2) : Double.random(in: 4...11))
+            }
+            await wait(2400...6600)
+        }
+    }
+
+    private var sprite: some View {
         Canvas { ctx, size in
             let top = reserveTop ? 0.0 : 3.0
             let u = size.width / 16
@@ -289,7 +452,7 @@ struct MascotView: View {
             }
             let classic = look.species == .classic
             for (r, row) in (classic ? SPRITE : BANDIT).enumerated() {
-                for (c, ch) in row.enumerated() where ch != "." {
+                for (c, ch) in row.enumerated() where ch != "." && !(r == 13 && ((legs == 1 && c < 8) || (legs == 2 && c >= 8))) {
                     let color: Color
                     switch ch {
                     case "B": color = body
@@ -305,25 +468,25 @@ struct MascotView: View {
                 for e in [3.0, 11.0] {
                     if out {
                         cross((e + 1) * u, oy + 8 * u)
-                    } else if feel.mood == .sleepy {
-                        rect(e, 8.6, 2, 0.4, ink)
+                    } else if feel.mood == .sleepy || blink {
+                        rect(e + glance, 8.6, 2, 0.4, ink)
                     } else {
-                        rect(e, 7, 2, 2, ink)
-                        rect(e, 7, 1, 1, shine)
+                        rect(e + glance, 7, 2, 2, ink)
+                        rect(e + glance, 7, 1, 1, shine)
                     }
                 }
             } else {
                 for e in [4.0, 11.0] {
                     if out {
                         cross((e + 0.5) * u, oy + 7 * u)
-                    } else if feel.mood == .sleepy {
-                        rect(e, 7.6, 1, 0.4, shine)
+                    } else if feel.mood == .sleepy || blink {
+                        rect(e + glance, 7.6, 1, 0.4, shine)
                     } else {
-                        rect(e, 6, 1, 2, shine)
+                        rect(e + glance, 6, 1, 2, shine)
                     }
                 }
             }
-            if let a = accessoryFor(look.skin, model) {
+            if let a = (wear != nil && look.skin == .models) ? wear : accessoryFor(look.skin, model) {
                 for p in pixels(a, look.species) { rect(p.x, p.y, p.w, p.h, Color(hex: p.color)) }
             }
             if feel.mood == .sweaty { rect(15, 4, 1, 2, Color(hex: 0x8FD3F4)) }
@@ -363,7 +526,7 @@ enum L {
         pt ? "Barra colorida é o limite próprio do modelo. Cinza é o limite semanal geral, que vale para todos."
             : "A colored bar is the model's own limit. Gray is the general weekly limit, shared by all."
     }
-    static var subtitle: String { pt ? "iPhone · uso do Claude" : "iPhone · Claude usage" }
+    static var subtitle: String { pt ? "iPhone · uso das IAs" : "iPhone · AI usage" }
     static var refresh: String { pt ? "Atualizar" : "Refresh" }
     static var repair: String { pt ? "Parear de novo" : "Pair again" }
     static var now: String { pt ? "agora" : "now" }
@@ -406,6 +569,78 @@ enum L {
             : "Use Banditboard on any device: phone, tablet or computer. The dashboard stays in sight and the limit alerts reach you wherever you are."
     }
     static var fanProject: String { pt ? "Projeto pessoal de fã, sem vínculo com a Anthropic." : "Personal fan project, not affiliated with Anthropic." }
+
+    static var tools: String { pt ? "Ferramentas" : "Tools" }
+    static var toolClaude: String { "Claude Code" }
+    static var toolAntigravity: String { "Antigravity" }
+    static var theme: String { pt ? "Tema do Antigravity" : "Antigravity theme" }
+    static var hours5: String { pt ? "5 horas" : "5 hours" }
+    static var days7: String { pt ? "7 dias" : "7 days" }
+    static var noReset: String { pt ? "sem reset" : "no reset" }
+    static var noResetScheduled: String { pt ? "sem reset agendado" : "no reset scheduled" }
+    static var exhausted: String { pt ? "esgotado" : "maxed out" }
+    static var agClosed: String { pt ? "Antigravity fechado" : "Antigravity closed" }
+    static var agNearLimit: String { pt ? "quase no limite" : "almost at the limit" }
+    static var agWaitingPhone: String { pt ? "Abra o Antigravity no PC com o Banditboard ligado" : "Open Antigravity on the PC with Banditboard running" }
+    static var agAlertFree: String { pt ? "Pode voltar a usar o Antigravity." : "You can use Antigravity again." }
+    static var agModelsHint: String {
+        pt ? "Os Gemini dividem uma cota, e o Claude e o GPT dividem outra, como no View Usage do Antigravity. Cada Racco mostra a janela mais apertada do seu grupo."
+            : "The Gemini models share one quota, and Claude and GPT share another, as in Antigravity's View Usage. Each Racco shows the tightest window of its group."
+    }
+    static var toolNoData: String { pt ? "Ainda sem dados" : "No data yet" }
+    static var pickTitle: String { pt ? "Qual IA você quer acompanhar?" : "Which AI do you want to follow?" }
+    static var pickSubtitle: String { pt ? "Dá para ligar mais de uma. Cada uma ganha a própria cor." : "You can turn on more than one. Each one gets its own color." }
+    static var pickClaudeHint: String { pt ? "Hook no PC lê o /usage do Claude Code" : "A hook on the PC reads Claude Code's /usage" }
+    static var pickAgHint: String { pt ? "O Banditboard no PC lê a cota do Antigravity aberto" : "Banditboard on the PC reads the open Antigravity's quota" }
+    static var pickContinue: String { pt ? "Continuar" : "Continue" }
+    static var last7Days: String { pt ? "Últimos 7 dias" : "Last 7 days" }
+    static var legendSession: String { pt ? "sessão 5h" : "5h session" }
+    static var legendWeek: String { pt ? "semana 7d" : "7d week" }
+    static var noSamples: String { pt ? "sem amostras ainda, uma a cada 30 min com o app aberto" : "no samples yet, one every 30 min while the app is open" }
+    static var screen: String { pt ? "Tela" : "Screen" }
+    static var homePage: String { pt ? "Tela inicial" : "Home screen" }
+    static var carousel: String { pt ? "Trocar de tela sozinho" : "Cycle screens automatically" }
+    static var dwell: String { pt ? "Tempo em cada tela" : "Time on each screen" }
+    static var keepAwake: String { pt ? "Manter a tela ligada com o app aberto" : "Keep the screen on while the app is open" }
+    static var animations: String { pt ? "Racco animado" : "Animated Racco" }
+    static var rotateHint: String { pt ? "Vire o iPhone para ver o painel deitado." : "Turn the iPhone sideways for the landscape dashboard." }
+
+    static func peak5h(_ p: String) -> String { pt ? "pico 5h: \(p)" : "5h peak: \(p)" }
+    static func weekNow(_ p: String) -> String { pt ? "semana agora: \(p)" : "week now: \(p)" }
+    static func samples(_ n: Int) -> String { pt ? "\(n) de 336 amostras" : "\(n) of 336 samples" }
+    static func agPlan(_ name: String) -> String { pt ? "Plano \(name)" : "\(name) plan" }
+    static func agUpdatedAgo(_ ago: String) -> String { pt ? "atualizado \(ago) · Antigravity" : "updated \(ago) · Antigravity" }
+    static func seconds(_ n: Int) -> String { "\(n)s" }
+
+    static func label(_ p: AgPool) -> String {
+        switch p {
+        case .GEMINI: return "Gemini"
+        case .OTHERS: return pt ? "Claude e GPT" : "Claude and GPT"
+        }
+    }
+
+    static func label(_ t: ToolTheme) -> String {
+        switch t {
+        case .follow: return pt ? "Azul" : "Blue"
+        case .claude: return pt ? "O do Claude" : "Claude's"
+        case .black: return pt ? "Preto AMOLED" : "AMOLED black"
+        }
+    }
+
+    static func label(_ h: Home) -> String {
+        switch h {
+        case .dash: return "Dashboard"
+        case .mascots: return "Raccos"
+        case .clock: return pt ? "Relógio" : "Clock"
+        }
+    }
+
+    static func agAlertTitle(_ pool: AgPool, week: Bool, level: Int) -> String {
+        let name = label(pool)
+        if level == 0 { return week ? (pt ? "\(name): semana liberada" : "\(name): week reset") : (pt ? "\(name): sessão liberada" : "\(name): session reset") }
+        if level >= 100 { return week ? (pt ? "\(name): limite da semana atingido" : "\(name): weekly limit reached") : (pt ? "\(name): limite da sessão atingido" : "\(name): session limit reached") }
+        return week ? (pt ? "\(name): semana em \(level)%" : "\(name): week at \(level)%") : (pt ? "\(name): sessão em \(level)%" : "\(name): session at \(level)%")
+    }
 
     static func label(_ s: Species) -> String {
         switch s {

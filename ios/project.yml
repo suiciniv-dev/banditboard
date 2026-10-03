@@ -30,7 +30,7 @@ targets:
         CFBundleAllowMixedLocalizations: true
         UILaunchScreen:
           UIColorName: ""
-        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         UIUserInterfaceStyle: Dark
         CFBundleURLTypes:
           - CFBundleURLName: dev.clawdboard.banditboard

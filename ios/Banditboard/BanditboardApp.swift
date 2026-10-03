@@ -58,6 +58,7 @@ enum Refresher {
     static func run() async {
         schedule()
         guard let snap = try? await Client.fetch() else { return }
+        History.record(snap)
         Notifier.process(snap)
         WidgetCenter.shared.reloadAllTimelines()
         WatchSync.shared.send()
@@ -91,6 +92,7 @@ final class DashboardModel: ObservableObject {
             let snap = try await Client.fetch()
             snapshot = snap
             problem = nil
+            History.record(snap)
             Notifier.process(snap)
             WidgetCenter.shared.reloadAllTimelines()
             WatchSync.shared.send()
