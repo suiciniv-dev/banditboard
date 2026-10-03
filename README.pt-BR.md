@@ -92,10 +92,10 @@ então você não entrega token nem login para ninguém.
 | Onde | Arquivo | |
 |---|---|---|
 | Android 8.0 ou mais novo | `Banditboard-<versão>.apk` | [Baixar](../../releases/latest) |
-| iPhone (iOS 17 ou mais novo) e Apple Watch (watchOS 10 ou mais novo), beta | `Banditboard-1.14.0-iphone.ipa` | [Baixar](../../releases/tag/v1.14.0) |
+| iPhone (iOS 17 ou mais novo) e Apple Watch (watchOS 10 ou mais novo), beta | `Banditboard-1.17.0-iphone.ipa` | [Baixar](../../releases/tag/v1.17.0) |
 | Windows 10 ou mais novo, instalador | `Banditboard-<versão>.msi` | [Baixar](../../releases/latest) |
 | Windows 10 ou mais novo, portátil | `Banditboard-<versão>-windows.zip` | [Baixar](../../releases/latest) |
-| macOS 11 ou mais novo, Intel ou Apple Silicon | `Banditboard-1.14.0.dmg` | [Baixar](../../releases/tag/v1.14.0) |
+| macOS 11 ou mais novo, Intel ou Apple Silicon | `Banditboard-1.17.0.dmg` | [Baixar](../../releases/tag/v1.17.0) |
 
 ### No computador
 
@@ -184,7 +184,7 @@ Get-FileHash .\Banditboard-1.17.0.msi -Algorithm SHA256
 ```
 
 ```sh
-shasum -a 256 Banditboard-1.14.0.dmg
+shasum -a 256 Banditboard-1.17.0.dmg
 ```
 
 ## 📱 Como ele é
