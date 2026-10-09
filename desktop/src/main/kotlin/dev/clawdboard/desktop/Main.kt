@@ -83,6 +83,7 @@ import dev.clawdboard.core.Prefs
 import dev.clawdboard.core.UsageSnapshot
 import dev.clawdboard.core.UsageWindow
 import dev.clawdboard.core.feelOf
+import dev.clawdboard.core.httpRequest
 import dev.clawdboard.core.nextAlert
 import dev.clawdboard.core.parsePush
 import dev.clawdboard.core.settled
@@ -143,6 +144,7 @@ private object RaccoonIcon : Painter() {
 
 internal val usage = MutableStateFlow<UsageSnapshot?>(null)
 internal val pushedAt = MutableStateFlow(0L)
+internal val showPanel = MutableStateFlow(0L)
 
 private fun receive(body: JSONObject, tray: TrayState): Boolean {
     val now = System.currentTimeMillis()
@@ -223,7 +225,12 @@ fun main(args: Array<String>) {
     if (!onMac && System.getenv("SKIKO_RENDER_API") == null) System.setProperty("skiko.renderApi", "SOFTWARE")
     val lock = runCatching {
         FileChannel.open(File(Store.dir, "lock").toPath(), StandardOpenOption.CREATE, StandardOpenOption.WRITE).tryLock()
-    }.getOrNull() ?: return
+    }.getOrNull() ?: run {
+        if ("--panel" in args) runCatching {
+            httpRequest("http://127.0.0.1:${Store.int("hookPort")}/api/show", "POST", mapOf("X-Clawdboard" to "1", "X-Clawdboard-Key" to Store.key), "", 3_000)
+        }
+        return
+    }
     Store.key
     Autostart.repair()
     Share.restore()
@@ -238,7 +245,13 @@ fun main(args: Array<String>) {
     }
     application {
         val tray = rememberTrayState()
-        val server = remember { Server(onHook = Claude::onHook) { receive(it, tray) }.also { it.start() } }
+        val server = remember {
+            Server(
+                onHook = Claude::onHook,
+                onShow = { showPanel.value = System.currentTimeMillis() },
+                onRefresh = { Refresh.all() },
+            ) { receive(it, tray) }.also { it.start() }
+        }
         LaunchedEffect(Unit) { while (true) { delay(2_000); Claude.tick() } }
         LaunchedEffect(Unit) {
             while (true) {
@@ -261,6 +274,8 @@ fun main(args: Array<String>) {
             )
         }
         var panel by remember { mutableStateOf("--panel" in args) }
+        val showAt by showPanel.collectAsState()
+        LaunchedEffect(showAt) { if (showAt > 0) panel = true }
         var danceOn by remember { mutableStateOf(Store.get("dance") != "false") }
         val playing by WinMusic.playing.collectAsState()
         val dance = danceOn && playing
@@ -409,6 +424,13 @@ fun main(args: Array<String>) {
         ) {
             val title = Tools.palette(Tool.CLAUDE)
             LaunchedEffect(Unit) { DarkTitle.apply(window, title.bg.toArgb(), title.text.toArgb()) }
+            LaunchedEffect(showAt) {
+                if (showAt > 0) {
+                    if (window.extendedState and java.awt.Frame.ICONIFIED != 0) window.extendedState = java.awt.Frame.NORMAL
+                    window.toFront()
+                    window.requestFocus()
+                }
+            }
             val controls = WidgetControls(
                 layout, { layout = it; Store.put("layout", it.name) },
                 onTop, { onTop = it; Store.put("onTop", it.toString()) },
