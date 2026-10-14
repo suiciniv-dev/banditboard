@@ -121,7 +121,7 @@ avisos são notificações do macOS (permita em Ajustes do Sistema → Notifica�
 
 ## Conectar de qualquer lugar
 
-A página [banditboard.pages.dev/conectar](https://banditboard.pages.dev/conectar/) cria uma "caixa" no servidor do Banditboard,
+A página [banditboard.suiciniv.dev/conectar](https://banditboard.suiciniv.dev/conectar/) cria uma "caixa" no servidor do Banditboard,
 um Worker da Cloudflare com um banco D1. O navegador gera quatro valores aleatórios: o código da caixa, uma chave de escrita,
 uma de leitura e uma chave mestra de 256 bits. Para o servidor vão só o código e o hash SHA-256 das duas chaves.
 

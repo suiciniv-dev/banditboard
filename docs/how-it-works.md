@@ -117,7 +117,7 @@ alerts are macOS notifications (allow them in System Settings → Notifications 
 
 ## Connecting from anywhere
 
-[banditboard.pages.dev/conectar](https://banditboard.pages.dev/conectar/) creates a "box" on the Banditboard server, a Cloudflare
+[banditboard.suiciniv.dev/conectar](https://banditboard.suiciniv.dev/conectar/) creates a "box" on the Banditboard server, a Cloudflare
 Worker with a D1 database. The browser generates four random values: the box ID, a write key, a read key and a 256-bit master
 key. Only the ID and the SHA-256 hashes of the two keys go to the server.
 

@@ -112,7 +112,7 @@ same rules as the Kotlin code: the same Racco sprite, the same alert levels and 
 - `desktop/`: the Windows widget and tray and the Mac menu bar app, with the local server and the home network sharing, built from the same `core/` and `ui/` sources
 - `ios/`: the iPhone app, its widgets, the Apple Watch app and the complications, in SwiftUI (`Shared/` is the code they have in common)
 - `worker/`: the server behind "connect from anywhere" and the Firebase alerts
-- `site/`: the website at banditboard.pages.dev, a static page published by Cloudflare Pages on every push to `main`, with the /conectar page
+- `site/`: the website at banditboard.suiciniv.dev, a static page published by Cloudflare Pages on every push to `main`, with the /conectar page
 
 Some internal names still say `clawdboard` (the `dev.clawdboard` package, `clawdboard-usage.ps1`, the `X-Clawdboard` header).
 They stay that way on purpose so existing installs and pairings keep working.

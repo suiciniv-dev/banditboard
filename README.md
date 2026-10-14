@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <a href="https://banditboard.pages.dev/video/banditboard-en.mp4"><img src="prints/1.17.0/en/video.webp" width="560" alt="Watch the video: Banditboard for Claude Code and Antigravity on Android, iPhone, Apple Watch, Windows and Mac"></a><br>
-  <sub>▶️ <a href="https://banditboard.pages.dev/video/banditboard-en.mp4">Watch the video</a></sub>
+  <a href="https://banditboard.suiciniv.dev/video/banditboard-en.mp4"><img src="prints/1.17.0/en/video.webp" width="560" alt="Watch the video: Banditboard for Claude Code and Antigravity on Android, iPhone, Apple Watch, Windows and Mac"></a><br>
+  <sub>▶️ <a href="https://banditboard.suiciniv.dev/video/banditboard-en.mp4">Watch the video</a></sub>
 </p>
 
 <p align="center">
@@ -27,7 +27,7 @@
   <img src="https://img.shields.io/badge/macOS-11%2B-555555" alt="macOS 11+">
 </p>
 
-<p align="center"><b><a href="#-get-started">Get started</a></b> · <a href="https://banditboard.pages.dev/en/">Website</a> · <a href="https://banditboard.pages.dev/conectar/">Connect from anywhere</a> · <a href="../../releases">All releases</a></p>
+<p align="center"><b><a href="#-get-started">Get started</a></b> · <a href="https://banditboard.suiciniv.dev/en/">Website</a> · <a href="https://banditboard.suiciniv.dev/conectar/">Connect from anywhere</a> · <a href="../../releases">All releases</a></p>
 
 ## What is Banditboard?
 
@@ -74,7 +74,7 @@ itself, so there is no token or login to hand over.
 - ⌚ **Apple Watch**: an app with session, week and models, plus complications for your watch face. After pairing through the iPhone, the watch fetches usage by itself
 - 🍎 **Mac menu bar**: Racco and the session percentage next to the clock, a small panel on click and an optional desktop widget
 - 🪟 **Windows widget**: full, compact or just Racco in a corner of the screen, always on top, with alerts from Windows itself. Click it to refresh right away, or right-click it for the menu
-- 🌐 **Connect from anywhere**: pair on [banditboard.pages.dev/conectar](https://banditboard.pages.dev/conectar/) and usage reaches your phone outside your home network, encrypted end to end
+- 🌐 **Connect from anywhere**: pair on [banditboard.suiciniv.dev/conectar](https://banditboard.suiciniv.dev/conectar/) and usage reaches your phone outside your home network, encrypted end to end
 - 📷 **QR code pairing**: scan a code from the website or from the Windows or Mac dashboard, no PIN needed
 - 🔌 **No token on the phone**: the numbers come from Claude Code's own `/usage` on your computer
 - 🎵 **Music mode**: whatever plays on the phone (Spotify, YouTube Music or any player), with cover, controls and volume, while the raccoons dance on every screen
@@ -116,7 +116,7 @@ The Windows and Mac apps are complete monitors on their own, and they also conne
 
 Pick one of three ways to get the numbers there:
 
-- **From anywhere (Android and iPhone).** Open [banditboard.pages.dev/conectar](https://banditboard.pages.dev/conectar/) on any browser. Scan the QR code with the phone, then copy the command for Windows or Mac and run it on the computer where Claude Code runs. Usage goes through the Banditboard server encrypted end to end, so the phone doesn't need to be on your Wi-Fi. On Android, alerts arrive even with the app closed.
+- **From anywhere (Android and iPhone).** Open [banditboard.suiciniv.dev/conectar](https://banditboard.suiciniv.dev/conectar/) on any browser. Scan the QR code with the phone, then copy the command for Windows or Mac and run it on the computer where Claude Code runs. Usage goes through the Banditboard server encrypted end to end, so the phone doesn't need to be on your Wi-Fi. On Android, alerts arrive even with the app closed.
 - **QR code on your home network (Android and iPhone).** On the Windows or Mac dashboard, turn on "Share usage with the iPhone on your home network" and scan the code. It works for Android too.
 - **PIN on your home network (Android).** Open the address shown on the phone in your PC browser, create a PIN, click "Copy" on the "Claude Code on your PC" card and paste the command into PowerShell.
 

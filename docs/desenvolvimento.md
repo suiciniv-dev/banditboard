@@ -112,7 +112,7 @@ as mesmas regras do código em Kotlin: o mesmo desenho do Racco, os mesmos níve
 - `desktop/`: o widget e o ícone da bandeja do Windows e o app da barra de menus do Mac, com o servidor local e o compartilhamento na rede de casa, feitos com os mesmos arquivos de `core/` e `ui/`
 - `ios/`: o app do iPhone, os widgets, o app do Apple Watch e as complicações, em SwiftUI (`Shared/` é o código que eles têm em comum)
 - `worker/`: o servidor por trás do "conectar de qualquer lugar" e dos avisos pelo Firebase
-- `site/`: o site banditboard.pages.dev, uma página estática que o Cloudflare Pages publica a cada push na `main`, com a página /conectar
+- `site/`: o site banditboard.suiciniv.dev, uma página estática que o Cloudflare Pages publica a cada push na `main`, com a página /conectar
 
 Alguns nomes internos ainda dizem `clawdboard` (o pacote `dev.clawdboard`, o `clawdboard-usage.ps1`, o cabeçalho
 `X-Clawdboard`). Eles ficaram assim de propósito, para não quebrar a instalação e o pareamento de quem já usa.

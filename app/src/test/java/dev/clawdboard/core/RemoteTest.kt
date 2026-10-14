@@ -27,7 +27,7 @@ class RemoteTest {
 
     @Test
     fun refusesLinksThatAreNotFromBanditboard() {
-        assertNull(Remote.parse("https://banditboard.pages.dev/conectar"))
+        assertNull(Remote.parse("https://banditboard.suiciniv.dev/conectar"))
         assertNull(Remote.parse("banditboard://box?w=http%3A%2F%2Finseguro&b=1&r=2&e=$master"))
         assertNull(Remote.parse("banditboard://box?w=https%3A%2F%2Fa.dev&b=1&r=2&e=curta"))
         assertNull(Remote.parse("banditboard://pair?k=chave"))

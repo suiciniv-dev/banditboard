@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <a href="https://banditboard.pages.dev/video/banditboard-pt.mp4"><img src="prints/1.17.0/pt/video.webp" width="560" alt="Veja o vídeo: o Banditboard para Claude Code e Antigravity no Android, iPhone, Apple Watch, Windows e Mac"></a><br>
-  <sub>▶️ <a href="https://banditboard.pages.dev/video/banditboard-pt.mp4">Veja em vídeo</a></sub>
+  <a href="https://banditboard.suiciniv.dev/video/banditboard-pt.mp4"><img src="prints/1.17.0/pt/video.webp" width="560" alt="Veja o vídeo: o Banditboard para Claude Code e Antigravity no Android, iPhone, Apple Watch, Windows e Mac"></a><br>
+  <sub>▶️ <a href="https://banditboard.suiciniv.dev/video/banditboard-pt.mp4">Veja em vídeo</a></sub>
 </p>
 
 <p align="center">
@@ -27,7 +27,7 @@
   <img src="https://img.shields.io/badge/macOS-11%2B-555555" alt="macOS 11+">
 </p>
 
-<p align="center"><b><a href="#-para-começar">Para começar</a></b> · <a href="https://banditboard.pages.dev/">Site</a> · <a href="https://banditboard.pages.dev/conectar/">Conectar de qualquer lugar</a> · <a href="../../releases">Todas as versões</a></p>
+<p align="center"><b><a href="#-para-começar">Para começar</a></b> · <a href="https://banditboard.suiciniv.dev/">Site</a> · <a href="https://banditboard.suiciniv.dev/conectar/">Conectar de qualquer lugar</a> · <a href="../../releases">Todas as versões</a></p>
 
 ## O que é o Banditboard?
 
@@ -76,7 +76,7 @@ então você não entrega token nem login para ninguém.
 - ⌚ **Apple Watch**: app com sessão, semana e modelos, e complicações para o mostrador. Depois de parear pelo iPhone, o relógio busca o uso sozinho
 - 🍎 **Barra de menus do Mac**: o Racco e a porcentagem da sessão do lado do relógio, um painelzinho ao clicar e, se quiser, um widget na mesa
 - 🪟 **Widget no Windows**: completo, compacto ou só o Racco no canto da tela, sempre por cima das janelas, com avisos do próprio Windows. Um clique atualiza na hora, e o botão direito abre o menu
-- 🌐 **Conectar de qualquer lugar**: pareie em [banditboard.pages.dev/conectar](https://banditboard.pages.dev/conectar/) e o uso chega no celular mesmo fora da rede de casa, cifrado de ponta a ponta
+- 🌐 **Conectar de qualquer lugar**: pareie em [banditboard.suiciniv.dev/conectar](https://banditboard.suiciniv.dev/conectar/) e o uso chega no celular mesmo fora da rede de casa, cifrado de ponta a ponta
 - 📷 **Pareamento por QR code**: leia um código do site ou do painel do Windows ou do Mac, sem PIN
 - 🔌 **Sem token no celular**: os números vêm do `/usage` do próprio Claude Code, no seu computador
 - 🎵 **Modo música**: mostra o que está tocando no celular (Spotify, YouTube Music ou qualquer outro), com capa, controles e volume, e os guaxinins dançam em todas as telas
@@ -118,7 +118,7 @@ Os apps do Windows e do Mac já funcionam sozinhos como painel, e também conect
 
 Escolha um dos três jeitos de levar os números até lá:
 
-- **De qualquer lugar (Android e iPhone).** Abra [banditboard.pages.dev/conectar](https://banditboard.pages.dev/conectar/) em qualquer navegador. Leia o QR code com o celular, copie o comando do Windows ou do Mac e rode no computador onde está o Claude Code. O uso passa pelo servidor do Banditboard cifrado de ponta a ponta, então o celular não precisa estar no seu Wi-Fi. No Android, os avisos chegam mesmo com o app fechado.
+- **De qualquer lugar (Android e iPhone).** Abra [banditboard.suiciniv.dev/conectar](https://banditboard.suiciniv.dev/conectar/) em qualquer navegador. Leia o QR code com o celular, copie o comando do Windows ou do Mac e rode no computador onde está o Claude Code. O uso passa pelo servidor do Banditboard cifrado de ponta a ponta, então o celular não precisa estar no seu Wi-Fi. No Android, os avisos chegam mesmo com o app fechado.
 - **QR code na rede de casa (Android e iPhone).** No painel do Windows ou do Mac, ligue "Compartilhar o uso com o iPhone na rede de casa" e leia o código. Funciona para o Android também.
 - **PIN na rede de casa (Android).** Abra no navegador do PC o endereço que aparece no celular, crie um PIN, clique em "Copiar" no cartão "Claude Code no seu PC" e cole o comando no PowerShell.
 

@@ -532,8 +532,8 @@ enum L {
     static var now: String { pt ? "agora" : "now" }
     static var pairTitle: String { pt ? "Pareie com o PC ou o Mac" : "Pair with your PC or Mac" }
     static var pairBody: String {
-        pt ? "No navegador do PC, abra banditboard.pages.dev/conectar, aponte a câmera do iPhone para o código e rode o comando que aparece. Funciona em qualquer rede.\n\nSe já usa o Banditboard no Windows ou no Mac, também dá para ligar \"Compartilhar o uso com o iPhone\" no painel e ler o código de lá."
-            : "In your PC browser, open banditboard.pages.dev/conectar, point the iPhone camera at the code and run the command shown. Works on any network.\n\nIf you already use Banditboard on Windows or Mac, you can also turn on \"Share usage with the iPhone\" in its dashboard and scan the code there."
+        pt ? "No navegador do PC, abra banditboard.suiciniv.dev/conectar, aponte a câmera do iPhone para o código e rode o comando que aparece. Funciona em qualquer rede.\n\nSe já usa o Banditboard no Windows ou no Mac, também dá para ligar \"Compartilhar o uso com o iPhone\" no painel e ler o código de lá."
+            : "In your PC browser, open banditboard.suiciniv.dev/conectar, point the iPhone camera at the code and run the command shown. Works on any network.\n\nIf you already use Banditboard on Windows or Mac, you can also turn on \"Share usage with the iPhone\" in its dashboard and scan the code there."
     }
     static var unreachable: String {
         pt ? "Não achei o Banditboard do PC. Veja se o iPhone está no mesmo Wi-Fi e se o compartilhamento está ligado."
@@ -549,8 +549,8 @@ enum L {
     static var loadingNews: String { pt ? "Buscando as notícias..." : "Loading news..." }
     static var settings: String { pt ? "Ajustes" : "Settings" }
     static var watchPair: String {
-        pt ? "Abra o Banditboard no iPhone e pareie pela página banditboard.pages.dev/conectar. O relógio recebe o pareamento sozinho."
-            : "Open Banditboard on the iPhone and pair through banditboard.pages.dev/conectar. The watch gets the pairing on its own."
+        pt ? "Abra o Banditboard no iPhone e pareie pela página banditboard.suiciniv.dev/conectar. O relógio recebe o pareamento sozinho."
+            : "Open Banditboard on the iPhone and pair through banditboard.suiciniv.dev/conectar. The watch gets the pairing on its own."
     }
     static var close: String { pt ? "Fechar" : "Close" }
     static var mascot: String { pt ? "Mascote" : "Mascot" }
@@ -601,8 +601,8 @@ enum L {
         ]
     }
     static var agConnectNote: String {
-        pt ? "Não precisa parear de novo: vai pelo mesmo código deste iPhone. Se você pareou pelo banditboard.pages.dev/conectar, o comando desse código precisa ter rodado nesse PC."
-            : "No need to pair again: it goes through this iPhone's code. If you paired through banditboard.pages.dev/conectar, that code's command must have run on that PC."
+        pt ? "Não precisa parear de novo: vai pelo mesmo código deste iPhone. Se você pareou pelo banditboard.suiciniv.dev/conectar, o comando desse código precisa ter rodado nesse PC."
+            : "No need to pair again: it goes through this iPhone's code. If you paired through banditboard.suiciniv.dev/conectar, that code's command must have run on that PC."
     }
     static var agReceiving: String { pt ? "Recebendo do PC" : "Receiving from the PC" }
     static var agNoDataYet: String { pt ? "Ainda sem dados do Antigravity. Os passos estão na página dele." : "No Antigravity data yet. The steps are on its page." }
